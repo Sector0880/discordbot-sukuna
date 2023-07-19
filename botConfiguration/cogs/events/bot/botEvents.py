@@ -197,8 +197,7 @@ class BotEvents(commands.Cog):
 					embs_title = {
 						#"title": f"Информация о {bot_name} | beta",
 						"title": f"Карточка сервера | version 1.0",
-						"description": f"Основные данные бота на сервере **{guild_name(ctx = message) if bot_switches_output_correct() else guild_name}**."
-						+ "\n||Для этой команды нету украинского перевода.||",
+						"description": f"Основные данные бота на сервере **{guild_name(ctx = message) if bot_switches_output_correct() else guild_name}**.",
 						"color": random.choice(colors_bot)
 					}
 
@@ -691,8 +690,9 @@ class BotEvents(commands.Cog):
 		print("\n".join([
 			"/ " *20,
 			#f"{(datetime.now()).strftime('%d-%m-%Y %H:%M:%S')} {self.bot.user} успешно запустился!"
-			f"{datetime.now()} {self.bot.user} успешно запустился!"
-		])) #▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬ ▬
+			f"\x1b[30;47m{datetime.now()}\x1b[0m {self.bot.user} успешно запустился!"
+			# \x1b[30;47m                \x1b[0m
+		]))
 
 
 async def setup(bot):

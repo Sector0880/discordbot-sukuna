@@ -4,7 +4,7 @@
             "guild_name": "Nexus Library Beta",
             "owner": 522136072151367691
         },
-        "prefix": "j!",
+        "prefix": "s!",
         "language": "ru",
         "additional-features": [
             {
@@ -35,10 +35,10 @@
     },
     "1130857157215146064": {
         "overview": {
-            "guild_name": "�������� ������ ���� ���",
+            "guild_name": "Тестовый сервер бота Ады",
             "owner": 980175834373562439
         },
-        "prefix": "j!",
+        "prefix": "s!",
         "language": "ru",
         "additional-features": [
             {

@@ -1,7 +1,5 @@
 work_commands:
   mention: true
-  db_info: false
-  update_check: false
 special-functions:
   commands:
     output:

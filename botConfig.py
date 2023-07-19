@@ -1,6 +1,6 @@
 version = {
-	"number": "0.9.1.1",
-	"name": "Febrephosten"
+	"number": "0.9",
+	"name": "Ада хочет убрать карточку сервера но я против"
 }
 
 

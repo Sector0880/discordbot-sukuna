@@ -4,13 +4,13 @@ import yaml
 
 class Bot:
 	def bot_config_data(self):
-		with open("./botConfiguration/.db/bot/botConfiguration/botConfig.yml", "r") as read_file: return yaml.safe_load(read_file)
+		with open("./botConfiguration/.db/bot/botConfiguration/botConfig.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 	
 	def get_bot_presence(self): return self.bot_config_data()["presence"]["title"]
 
 
 	def bot_switches_data(self):
-		with open("./botConfiguration/.db/bot/botConfiguration/botSwitches.yml", "r") as read_file: return yaml.safe_load(read_file)
+		with open("./botConfiguration/.db/bot/botConfiguration/botSwitches.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 	
 	def get_bot_switches_testers_work_commands_mention(self): return self.bot_switches_data()["work_commands"]["mention"]
 	def get_bot_switches_testers_work_commands_db_info(self): return self.bot_switches_data()["work_commands"]["db_info"]
@@ -43,7 +43,7 @@ bot_switches_updates_mention_embs_check = Bot().get_bot_switches_updates_mention
 
 class Guild:
 	def guilds_config_data(self):
-		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r") as read_file: return json.load(read_file)
+		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: return json.load(read_file)
 
 	def get_guild_name(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["overview"]["guild_name"]
 	def get_guild_prefix(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["prefix"]
@@ -68,7 +68,7 @@ guild_bot_output = Guild().get_guild_bot_output
 
 class Staff:
 	def staff_config_data(self):
-		with open("./botConfiguration/.db/staff/list/staffList.yml", "r") as read_file: return yaml.safe_load(read_file)
+		with open("./botConfiguration/.db/staff/list/staffList.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 	def get_staff_owner_id(self): return self.staff_config_data()["owner"]["id"]
 
@@ -92,32 +92,28 @@ class Doc:
 	class Errors:
 		class CommandBlocked:
 			def get_error_command_offed(self):
-				with open("./botConfiguration/.db/doc/errors/commandBlocked/commandOffed.yml") as read_file: return yaml.safe_load(read_file)
+				with open("./botConfiguration/.db/doc/errors/commandBlocked/commandOffed.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 			def get_error_command_testing(self):
-				with open("./botConfiguration/.db/doc/errors/commandBlocked/commandTesting.yml") as read_file: return yaml.safe_load(read_file)
+				with open("./botConfiguration/.db/doc/errors/commandBlocked/commandTesting.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		
 		class Terminal:
 			def get_error_terminal_command_error(self):
-				with open("./botConfiguration/.db/doc/errors/terminal/terminalCommandError.yml") as read_file: return yaml.safe_load(read_file)
+				with open("./botConfiguration/.db/doc/errors/terminal/terminalCommandError.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 			def get_error_terminal_traceback_error(self):
-				with open("./botConfiguration/.db/doc/errors/terminal/terminalTracebackError.yml") as read_file: return yaml.safe_load(read_file)
+				with open("./botConfiguration/.db/doc/errors/terminal/terminalTracebackError.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 		def get_error_switch_false_command_offed(self):
-			with open("./botConfiguration/.db/doc/errors/commandBlocked/commandOffed.yml") as read_file: return yaml.safe_load(read_file)
+			with open("./botConfiguration/.db/doc/errors/commandBlocked/commandOffed.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 		def get_error_switch_false_command_testing(self):
-			with open("./botConfiguration/.db/doc/errors/commandBlocked/commandTesting.yml") as read_file: return yaml.safe_load(read_file)
+			with open("./botConfiguration/.db/doc/errors/commandBlocked/commandTesting.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 		def get_error_command_not_found(self):
-			with open("./botConfiguration/.db/doc/errors/commandNotFound.yml") as read_file: return yaml.safe_load(read_file)
+			with open("./botConfiguration/.db/doc/errors/commandNotFound.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		def get_error_server_blocked(self):
-			with open("./botConfiguration/.db/doc/errors/serverBlocked.yml") as read_file: return yaml.safe_load(read_file)
+			with open("./botConfiguration/.db/doc/errors/serverBlocked.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		def get_error_invalid_language(self):
-			with open("./botConfiguration/.db/doc/errors/invalidLanguage.yml") as read_file: return yaml.safe_load(read_file)
-		#def get_error_terminal_traceback_error(self):
-			#with open("./botConfiguration/.db/doc/errors/terminalTracebackError.yml") as read_file: return yaml.safe_load(read_file)
-		#def get_error_terminal_command_error(self):
-			#with open("./botConfiguration/.db/doc/errors/terminalCommandError.yml") as read_file: return yaml.safe_load(read_file)
+			with open("./botConfiguration/.db/doc/errors/invalidLanguage.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 error_command_offed = Doc().Errors().CommandBlocked().get_error_command_offed
 error_command_testing = Doc().Errors().CommandBlocked().get_error_command_testing

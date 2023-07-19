@@ -1,5 +1,9 @@
 import discord
 from discord.ext import commands
+from discord.ext import menus
+from discord.ext.menus import ListPageSource
+from discord.ext.commands import Cog, Bot, Context, command
+from discord import TextChannel
 
 import asyncio
 
@@ -39,12 +43,12 @@ from dbVars import (
 	error_terminal_traceback_error, error_terminal_command_error
 )
 
-class BotCommands(commands.Cog):
+class BotCommands(Cog):
 	def __init__(self, bot):
 		self.bot = bot
+		self.commands = ["/time", "/command2", "/command3"]  # Ваши команды
 	
-	# Узнать время
-	@commands.command(aliases = ['время'])
+	@command(aliases = ['время'])
 	async def time(self, ctx):
 		emb = discord.Embed(title = 'Время онлаин:')
 		emb.add_field(name = 'Текущее время МСК', value = (datetime.utcnow() + timedelta(hours = 3)).strftime('**Дата:** %Y.%m.%d\n**Время:** %H:%M:%S'))
