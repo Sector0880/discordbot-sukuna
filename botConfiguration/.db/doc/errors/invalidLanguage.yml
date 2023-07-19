@@ -1,0 +1,8 @@
+ru:
+  error:
+    description1: "{} Стоит неподдерживаемый язык `{}`."
+    description2: "Языки бота: `{}`."
+uk:
+  error:
+    description1: "{} Варто підтримуваний мову `{}`."
+    description2: "Мови бота: `{}`."

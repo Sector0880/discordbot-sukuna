@@ -1,0 +1,45 @@
+{
+    "dev": [
+		{
+			"special-functions": [
+				{
+					"commands": [
+						{
+							"output": {
+								"correct": true,
+								"partial-sleep": false,
+								"emoji": true
+							}
+						}
+					]
+				},
+				{
+					"message-output": {
+						"delete_after": 5
+					}
+				}
+			]
+		},
+		{
+			"updates": [
+				{
+					"commands": [
+						{
+							"mention": {
+								"embs": {
+									"stopwatch": true,
+									"checks": true
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"testers": [
+		{
+			"work_code-conditions": false
+		}
+	]
+}

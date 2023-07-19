@@ -1,0 +1,6 @@
+ru:
+  error:
+    output: "```makefile\nКоманда:\n{}```"
+uk:
+  error:
+    output: "```makefile\nКоманда:\n{}```"

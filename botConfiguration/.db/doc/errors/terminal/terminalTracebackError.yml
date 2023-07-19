@@ -1,0 +1,6 @@
+ru:
+  error:
+    output: "```makefile\nТерминал:\n{}```"
+uk:
+  error:
+    output: "```makefile\nТермінал:\n{}```"

@@ -1,0 +1,17 @@
+work_commands:
+  mention: true
+  db_info: false
+  update_check: false
+special-functions:
+  commands:
+    output:
+      correct: true
+      partial-sleep: false
+      emoji: true
+  message-output:
+    delete_after: 10
+updates:
+  mention:
+    embs:
+      stopwatch: true
+      check: false

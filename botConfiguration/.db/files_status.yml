@@ -1,0 +1,8 @@
+# Статусы: ОК, ПРОВЕРКА, ОБНОВЛЕНИЕ КОДА, НЕИЗВЕСТНО
+main:
+  bot.py: "ОК"
+  botConfig.py: "OK"
+  dbVars.py: "ОК"
+  guildsEvents.py: "НЕИЗВЕСТНО"
+db:
+  bot: "ОК"
