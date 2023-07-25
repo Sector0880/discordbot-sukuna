@@ -1,3 +1,3 @@
 # Sukuna
 Бот на платформе Discord
-version: 0.9.1.1 Febrephostens
+version: 0.9 Ада хочет убрать карточку сервера но я против

@@ -1,17 +1,8 @@
-owner:
-  name: "Sector#1327"
-  id: 522136072151367691
-testers:
-  tester-1:
-    name: "Sector#1327"
-    id: 522136072151367691
-  main-testers:
-    testers-list: [0]
-  divided-testers:
-    for_commands:
-      mention:
-        testers-list: [0]
-      db_info:
-        testers-list: [0]
-      update_check:
-        testers-list: [0]
+creator:
+  name: "sectormain_"
+  id: 980175834373562439
+administrators:
+  # Ада
+  admin1:
+    name: "minus7yingz"
+    id: 224632121879166976
