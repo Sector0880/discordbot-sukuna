@@ -34,9 +34,9 @@
         "additional-features": {
             "privileges": [
                 {
-                    "premium": false,
-                    "premium-start-date": null,
-                    "premium-end-date": null
+                    "premium": true,
+                    "premium-start-date": "2023-07-25 23:24:30.863174",
+                    "premium-end-date": "2023-07-27 08:44:30.863174"
                 }
             ],
             "show_id": false
