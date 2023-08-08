@@ -1,6 +1,6 @@
 used:
   commands:
-    all: 0
+    all: 4
     mention: 0
-    time: 0
+    time: 4
     files_status: 0

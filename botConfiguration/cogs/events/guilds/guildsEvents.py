@@ -24,9 +24,7 @@ class GuildsEvents(commands.Cog):
 			"additional-features": {
 				"privileges": [
 					{
-						"premium": False, 
-	  					"premium-start-date": None,
-						"premium-end-date": None
+						"premium": False
 	  				}
 				],
 				"show_id": False
@@ -69,9 +67,7 @@ class GuildsEvents(commands.Cog):
 					"additional-features": {
 						"privileges": [
 							{
-								"premium": False, 
-								"premium-start-date": None,
-								"premium-end-date": None
+								"premium": False
 							}
 						],
 						"show_id": False

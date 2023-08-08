@@ -10,8 +10,11 @@ from datetime import *
 
 # Импорты всех данных с botConfig:
 from botConfig import (
-	info, version, avatar, languages,
+	# базовые настройки бота
+	info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages,
+	# цветовая схема
 	colors_bot, color_success, color_error,
+	# эмодзи
 	emoji_mark_none, emoji_mark_error, emoji_mark_success,
 	emoji_switch_off, emoji_switch_on,
 	emoji_lock_lock, emoji_lock_unlock,
@@ -24,8 +27,7 @@ from dbVars import (
 	# Параметры бота
 	bot_activity, bot_delete_after,
 	# Параметры гильдий
-	guild_name, guild_owner_id,
-	guild_prefix, guild_language,
+	guild_name, guild_prefix, guild_language,
 	guild_premium, guild_premium_start_date, guild_premium_end_date,
 	guild_show_id,
 	guild_bot_output,
@@ -44,6 +46,23 @@ async def command_counter(ctx):
 	botInfo["used"]["commands"]["all"] += 1 # все команды
 	botInfo["used"]["commands"][command] += 1 # вызываемая команда
 	with open("./botConfiguration/.db/bot/botConfiguration/botInfo.yml", "w") as write_file: yaml.safe_dump(botInfo, write_file, sort_keys = False, allow_unicode = True)
+
+async def bot_output_blocked(ctx):
+	emb = discord.Embed(
+		description = "\n".join([
+			#f"{emoji_mark_error if bot_switches_output_emoji() else ''} **На этом сервере работоспособность бота заблокирована.**",
+			error_server_blocked()[guild_language(ctx)]["error"]["description1"].format(emoji_mark_error),
+			#f"Для разблокировки обратитесь к разработчику бота (<@{staff_owner_id() if bot_switches_output_correct() else staff_owner_id}>)."
+			error_server_blocked()[guild_language(ctx)]["error"]["description2"].format(staff_creator_id())
+		]),
+		color = color_error,
+		timestamp = datetime.now()
+	)
+	emb.set_footer(text = ctx.author.name, icon_url = ctx.author.avatar)
+	#emb.set_image(url = "https://cdn.discordapp.com/attachments/817101575289176064/1137345466875518986/black__200px.gif")
+	await ctx.send(embed = emb)
+async def bot_output_blocked_forcreator(ctx):
+	await ctx.send("Мой создатель, повенуюсь!")
 
 
 class BotCommands(commands.Cog):
@@ -88,6 +107,7 @@ class BotCommands(commands.Cog):
 		message = await ctx.channel.fetch_message(int(ctx.message.id))
 		await message.add_reaction(emoji_mark_success)
 	
+
 	# Узнать пинг
 	@commands.command(aliases = ['пинг'])
 	async def ping(self, ctx):
@@ -122,7 +142,12 @@ class BotCommands(commands.Cog):
 	
 	@commands.command(aliases = ["chm"])
 	async def checkmessage(self, ctx):
-		await ctx.send(guild_premium_end_date(ctx))
+		if not guild_bot_output(ctx): 
+			if ctx.author.id == staff_creator_id(): await bot_output_blocked_forcreator(ctx)
+			else: return await bot_output_blocked(ctx)
+		await ctx.send(staff_creator_id())
+		await ctx.send(guild_bot_output(ctx))
+	
 
 
 async def setup(bot):

@@ -1,7 +1,10 @@
 # Импорты всех данных с botConfig:
 from botConfig import (
-	info, version, avatar, languages,
+	# базовые настройки бота
+	info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages,
+	# цветовая схема
 	colors_bot, color_success, color_error,
+	# эмодзи
 	emoji_mark_none, emoji_mark_error, emoji_mark_success,
 	emoji_switch_off, emoji_switch_on,
 	emoji_lock_lock, emoji_lock_unlock,
@@ -12,14 +15,14 @@ from botConfig import (
 # Импорты всех данных с dbVars:
 from dbVars import (
 	# Параметры бота
-	bot_presence, bot_delete_after,
+	bot_activity, bot_delete_after,
 	# Параметры гильдий
 	guild_name, guild_prefix, guild_language,
 	guild_premium, guild_premium_start_date, guild_premium_end_date,
 	guild_show_id,
 	guild_bot_output,
 	# Параметры сотрудников
-	staff_creator_id,
+	staff_creator_id, staff_ada_id, 
 	# Параметры ошибок
 	error_terminal_command_error, error_terminal_traceback_error,
 	error_command_not_found, error_server_blocked, error_invalid_language,

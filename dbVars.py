@@ -47,11 +47,13 @@ guild_bot_output = Guild().get_guild_bot_output
 
 class Staff:
 	def staff_config_data(self):
-		with open("./botConfiguration/.db/staff/list/staffList.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+		with open("./botConfiguration/.db/staff/list/staff.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 	def get_staff_creator_id(self): return self.staff_config_data()["creator"]["id"]
+	def get_staff_ada_id(self): return self.staff_config_data()["administrators"]["admin1"]["id"]
 
 staff_creator_id = Staff().get_staff_creator_id
+staff_ada_id = Staff().get_staff_ada_id
 
 
 class Doc:
