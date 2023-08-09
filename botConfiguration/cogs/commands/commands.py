@@ -4,6 +4,9 @@ from discord.ext import commands
 import yaml
 import json
 import asyncio
+import datetime
+import sys
+from time import sleep
 
 from googletrans import Translator
 from datetime import *
@@ -32,7 +35,7 @@ from dbVars import (
 	guild_show_id,
 	guild_bot_output,
 	# Параметры сотрудников
-	staff_creator_id,
+	staff_creator_id, staff_ada_id, 
 	# Параметры ошибок
 	error_terminal_command_error, error_terminal_traceback_error,
 	error_command_not_found, error_server_blocked, error_invalid_language,
@@ -40,29 +43,7 @@ from dbVars import (
 	files_status_txt
 )
 
-async def command_counter(ctx):
-	command = ctx.invoked_with
-	with open("./botConfiguration/.db/bot/botConfiguration/botInfo.yml", "r") as read_file: botInfo = yaml.safe_load(read_file)
-	botInfo["used"]["commands"]["all"] += 1 # все команды
-	botInfo["used"]["commands"][command] += 1 # вызываемая команда
-	with open("./botConfiguration/.db/bot/botConfiguration/botInfo.yml", "w") as write_file: yaml.safe_dump(botInfo, write_file, sort_keys = False, allow_unicode = True)
-
-async def bot_output_blocked(ctx):
-	emb = discord.Embed(
-		description = "\n".join([
-			#f"{emoji_mark_error if bot_switches_output_emoji() else ''} **На этом сервере работоспособность бота заблокирована.**",
-			error_server_blocked()[guild_language(ctx)]["error"]["description1"].format(emoji_mark_error),
-			#f"Для разблокировки обратитесь к разработчику бота (<@{staff_owner_id() if bot_switches_output_correct() else staff_owner_id}>)."
-			error_server_blocked()[guild_language(ctx)]["error"]["description2"].format(staff_creator_id())
-		]),
-		color = color_error,
-		timestamp = datetime.now()
-	)
-	emb.set_footer(text = ctx.author.name, icon_url = ctx.author.avatar)
-	#emb.set_image(url = "https://cdn.discordapp.com/attachments/817101575289176064/1137345466875518986/black__200px.gif")
-	await ctx.send(embed = emb)
-async def bot_output_blocked_forcreator(ctx):
-	await ctx.send("Мой создатель, повенуюсь!")
+import botFunctions
 
 
 class BotCommands(commands.Cog):
@@ -88,7 +69,7 @@ class BotCommands(commands.Cog):
 		emb.set_footer(text = ctx.author, icon_url = ctx.author.avatar.url)
 		await ctx.send(embed = emb)
 
-		await command_counter(ctx = ctx)
+		asyncio.run(botFunctions.command_counter(ctx = ctx))
 	
 	@commands.command()
 	async def files_status(self, ctx):
@@ -142,12 +123,44 @@ class BotCommands(commands.Cog):
 	
 	@commands.command(aliases = ["chm"])
 	async def checkmessage(self, ctx):
-		if not guild_bot_output(ctx): 
-			if ctx.author.id == staff_creator_id(): await bot_output_blocked_forcreator(ctx)
-			else: return await bot_output_blocked(ctx)
+		if ctx.author.id not in [staff_creator_id(), staff_ada_id()] and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id in [staff_creator_id(), staff_ada_id()]: 
+			await ctx.send("Повенуюсь!")
+			
+		#if not guild_bot_output(ctx): 
+			#if ctx.author.id == staff_creator_id(): asyncio.run(functions.bot_output_blocked_forcreator(ctx))
+			#else: return asyncio.run(functions.bot_output_blocked(ctx))
 		await ctx.send(staff_creator_id())
 		await ctx.send(guild_bot_output(ctx))
 	
+
+	@commands.command(aliases = ["e"])
+	async def exit(self, ctx):
+		await ctx.send("Выключен.")
+		await self.bot.change_presence(status = discord.Status.offline)
+		sys.exit()
+	
+	@commands.command()
+	async def cmdC(self, ctx):
+		# импорты
+		cmd_Count = open("./botConfiguration/.db/info/commandsCount.yml", encoding="utf-8")
+
+		# команда
+		# я потом это все удалю
+		msg1 = await ctx.send("```Загрузка счетчика команд: []```")
+		sleep(.2)
+		msg2 = await msg1.edit(content = "```Загрузка счетчика команд: 0% \ [……………………………]```")
+		sleep(.2)
+		msg3 = await msg2.edit(content = "```Загрузка счетчика команд: 24% | [■■………………………]```")
+		sleep(.2)
+		msg4 = await msg3.edit(content = "```Загрузка счетчика команд: 60% / [■■■■■■■…………]```")
+		sleep(.2)
+		await msg4.edit(content = "```Загрузка счетчика команд: 100% \ [■■■■■■■■■■]```")
+		await ctx.channel.purge(limit = 1)
+		sleep(.1)
+		await ctx.send(content = "```Счетчик команд:```")
+		sleep(.2)
+		await ctx.send(f"```dts\n{cmd_Count.read()}```")
 
 
 async def setup(bot):

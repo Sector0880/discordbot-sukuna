@@ -45,10 +45,10 @@ def get_prefix(bot, ctx):
 	with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as file: return json.load(file)[str(ctx.guild.id)]["prefix"]
 
 bot = commands.AutoShardedBot(
-	command_prefix=get_prefix,
-	case_insensitive=True,
-	shard_count=1,
-	intents=discord.Intents.all()
+	command_prefix = get_prefix,
+	case_insensitive = True,
+	shard_count = 1,
+	intents = discord.Intents.all()
 )
 bot.remove_command("help")
 

@@ -362,10 +362,10 @@ class BotEvents(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_ready(self):
-		await self.bot.change_presence(status = discord.Status.online, activity = discord.Game(bot_activity()))
+		await self.bot.change_presence(activity = discord.Game(bot_activity()))
 
 		print("\n".join([
-			"/ " *20,
+			"/ " * 20,
 			f"\x1b[30;47m{datetime.now()}\x1b[0m {self.bot.user} успешно запустился!"
 			# \x1b[30;47m                \x1b[0m
 		]))

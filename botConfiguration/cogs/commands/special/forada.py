@@ -36,8 +36,9 @@ from dbVars import (
 	files_status_txt
 )
 
+from botFunctions import *
 
-class BotCommands_message_dublite(commands.Cog):
+class ForADA(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
@@ -61,6 +62,25 @@ class BotCommands_message_dublite(commands.Cog):
 			await ctx.send(f"Успешно, сообщение: {message_output.jump_url}")
 		except asyncio.TimeoutError:
 			await ctx.send(f"Время ожидания истекло ({time_waiting} секунд)")
+		
+	@commands.command(aliases = ["изменить_статус", "chac"])
+	async def change_activity(self, ctx, *, activity_text = None):
+		# проверки
+		if ctx.author.id not in [staff_creator_id(), staff_ada_id()]: return await ctx.send("Нету прав.") # на автора сообщения
+		if activity_text == None: return await ctx.send("Напиши мне статус")
+		if re.fullmatch("RESET", activity_text):
+			#activity = self.bot.activity
+			#if isinstance(activity, discord.Game): game_name = activity.name
+			#if re.fullmatch(bot_activity(), game_name):
+				#return await ctx.send("Статус реснуть нельзя.")
+			await self.bot.change_presence(activity = discord.Game(bot_activity()))
+			await command_counter(ctx)
+			return await ctx.send(f"Статус бота был сброшен.")
+
+		# команда
+		await self.bot.change_presence(activity = discord.Game(activity_text))
+		await ctx.send(f"Статус бота изменен на `{activity_text}`")
+		await command_counter(ctx)
 			
 async def setup(bot):
-	await bot.add_cog(BotCommands_message_dublite(bot))
+	await bot.add_cog(ForADA(bot))

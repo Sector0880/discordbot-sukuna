@@ -17,7 +17,7 @@
         },
         "protection": {
             "gateaway": {
-                "bot_output": true
+                "bot_output": false
             }
         }
     },
@@ -39,7 +39,7 @@
         },
         "protection": {
             "gateaway": {
-                "bot_output": true
+                "bot_output": false
             }
         }
     }

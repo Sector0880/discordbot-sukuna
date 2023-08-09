@@ -1,5 +1,6 @@
 info = {
-    "creator": "Пашков Максим (Sectormain)"
+    "creator": "Пашков Максим (Sectormain)",
+    "admin": "Ада"
 }
 version = {
 	"number": "0.9",
