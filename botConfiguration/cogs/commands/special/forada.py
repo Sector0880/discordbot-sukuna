@@ -24,11 +24,11 @@ from dbVars import (
 	bot_activity, bot_delete_after,
 	# Параметры гильдий
 	guild_name, guild_prefix, guild_language,
-	guild_premium, guild_premium_start_date, guild_premium_end_date,
+	guild_premium, guild_premium_uuid, guild_premium_time_start, guild_premium_time_set, guild_premium_time_extra_history, guild_premium_time_end, guild_premium_time_remaining,
 	guild_show_id,
 	guild_bot_output,
 	# Параметры сотрудников
-	staff_creator_id, staff_ada_id, 
+	staff_creator_id, staff_ada_id, staff_staffList_SpecialPerms,
 	# Параметры ошибок
 	error_terminal_command_error, error_terminal_traceback_error,
 	error_command_not_found, error_server_blocked, error_invalid_language,

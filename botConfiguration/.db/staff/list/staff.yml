@@ -1,8 +1,10 @@
 creator:
   name: "sectormain_"
-  id: 980175834373562439
+  id: &creator_id 980175834373562439 #11111 # "якори"
 administrators:
   # Ада
   admin1:
     name: "minus7yingz"
-    id: 224632121879166976
+    id: &ada_id 224632121879166976
+staffList_Admins: [*ada_id]
+staffList_SpecialPerms: [*creator_id, *ada_id]

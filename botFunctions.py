@@ -24,11 +24,11 @@ from dbVars import (
 	bot_activity, bot_delete_after,
 	# Параметры гильдий
 	guild_name, guild_prefix, guild_language,
-	guild_premium, guild_premium_start_date, guild_premium_end_date,
+	guild_premium, guild_premium_uuid, guild_premium_time_start, guild_premium_time_set, guild_premium_time_extra_history, guild_premium_time_end, guild_premium_time_remaining,
 	guild_show_id,
 	guild_bot_output,
 	# Параметры сотрудников
-	staff_creator_id, staff_ada_id, 
+	staff_creator_id, staff_ada_id, staff_staffList_SpecialPerms,
 	# Параметры ошибок
 	error_terminal_command_error, error_terminal_traceback_error,
 	error_command_not_found, error_server_blocked, error_invalid_language,
@@ -49,9 +49,7 @@ async def command_counter(ctx):
 async def bot_output_blocked(ctx):
 	emb = discord.Embed(
 		description = "\n".join([
-			#f"{emoji_mark_error if bot_switches_output_emoji() else ''} **На этом сервере работоспособность бота заблокирована.**",
 			error_server_blocked()[guild_language(ctx)]["error"]["description1"].format(emoji_mark_error),
-			#f"Для разблокировки обратитесь к разработчику бота (<@{staff_owner_id() if bot_switches_output_correct() else staff_owner_id}>)."
 			error_server_blocked()[guild_language(ctx)]["error"]["description2"].format(staff_creator_id())
 		]),
 		color = color_error,
@@ -60,3 +58,6 @@ async def bot_output_blocked(ctx):
 	emb.set_image(url = "https://cdn.discordapp.com/attachments/817101575289176064/1137345466875518986/black__200px.gif")
 	emb.set_footer(text = ctx.author.name, icon_url = ctx.author.avatar)
 	await ctx.send(embed = emb)
+
+async def command_for_staff(ctx):
+	await ctx.send(f"{emoji_mark_error} Команда предназначена только для определенных лиц, относящихся к разработке бота.")

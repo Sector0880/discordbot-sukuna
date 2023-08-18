@@ -7,6 +7,7 @@ import asyncio
 import datetime
 import sys
 from time import sleep
+import uuid
 
 from googletrans import Translator
 from datetime import *
@@ -31,11 +32,11 @@ from dbVars import (
 	bot_activity, bot_delete_after,
 	# Параметры гильдий
 	guild_name, guild_prefix, guild_language,
-	guild_premium, guild_premium_start_date, guild_premium_end_date,
+	guild_premium, guild_premium_uuid, guild_premium_time_start, guild_premium_time_set, guild_premium_time_extra_history, guild_premium_time_end, guild_premium_time_remaining,
 	guild_show_id,
 	guild_bot_output,
 	# Параметры сотрудников
-	staff_creator_id, staff_ada_id, 
+	staff_creator_id, staff_ada_id, staff_staffList_SpecialPerms,
 	# Параметры ошибок
 	error_terminal_command_error, error_terminal_traceback_error,
 	error_command_not_found, error_server_blocked, error_invalid_language,
@@ -130,21 +131,24 @@ class BotCommands(commands.Cog):
 		#if not guild_bot_output(ctx): 
 			#if ctx.author.id == staff_creator_id(): asyncio.run(functions.bot_output_blocked_forcreator(ctx))
 			#else: return asyncio.run(functions.bot_output_blocked(ctx))
-		await ctx.send(staff_creator_id())
-		await ctx.send(guild_bot_output(ctx))
-	
+		await ctx.send(staff_staffList_SpecialPerms())
+		await ctx.send(str(uuid.uuid4().hex))
+		await ctx.send(ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx))
 
 	@commands.command(aliases = ["e"])
 	async def exit(self, ctx):
+		if ctx.author.id not in [staff_creator_id(), staff_ada_id()]: return await ctx.send("Нету прав.") # на автора сообщения
 		await ctx.send("Выключен.")
 		await self.bot.change_presence(status = discord.Status.offline)
 		sys.exit()
 	
 	@commands.command()
 	async def cmdC(self, ctx):
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await ctx.send("Нету прав.") # на автора сообщения
 		# импорты
 		cmd_Count = open("./botConfiguration/.db/info/commandsCount.yml", encoding="utf-8")
-
+ 
 		# команда
 		# я потом это все удалю
 		msg1 = await ctx.send("```Загрузка счетчика команд: []```")

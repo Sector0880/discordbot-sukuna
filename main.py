@@ -21,24 +21,6 @@ from botConfig import (
 	emoji_db_rework, emoji_db_ok
 )
 
-# Импорты всех данных с dbVars:
-from dbVars import (
-	# Параметры бота
-	bot_activity, bot_delete_after,
-	# Параметры гильдий
-	guild_name, guild_prefix, guild_language,
-	guild_premium, guild_premium_start_date, guild_premium_end_date,
-	guild_show_id,
-	guild_bot_output,
-	# Параметры сотрудников
-	staff_creator_id,
-	# Параметры ошибок
-	error_terminal_command_error, error_terminal_traceback_error,
-	error_command_not_found, error_server_blocked, error_invalid_language,
-	# Дополнительные параметры
-	files_status_txt
-)
-
 
 # получаем префикс
 def get_prefix(bot, ctx):

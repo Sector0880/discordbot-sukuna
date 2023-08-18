@@ -24,8 +24,15 @@ class Guild:
 	def get_guild_language(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["language"]
 	
 	def get_guild_premium(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium"]
-	def get_guild_premium_start_date(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-start-date"]
-	def get_guild_premium_end_date(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-end-date"]
+	def get_guild_premium_uuid(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-uuid"]
+	def get_guild_premium_time_start(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-time-start"]
+	def get_guild_premium_time_set(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-time-set"]
+	def get_guild_premium_time_extra(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-time-extra"]
+	def get_guild_premium_time_extra_history(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-time-extra-history"]
+	def get_guild_premium_time_extra_count(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-time-extra-count"]
+	def get_guild_premium_time_end(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-time-end"]
+	def get_guild_premium_time_remaining(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["privileges"][0]["premium-time-remaining"]
+	
 	def get_guild_show_id(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["show_id"]
 
 	def get_guild_bot_output(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["protection"]["gateaway"]["bot_output"]
@@ -37,8 +44,14 @@ guild_prefix = Guild().get_guild_prefix
 guild_language = Guild().get_guild_language
 
 guild_premium = Guild().get_guild_premium
-guild_premium_start_date = Guild().get_guild_premium_start_date
-guild_premium_end_date = Guild().get_guild_premium_end_date
+guild_premium_uuid = Guild().get_guild_premium_uuid
+guild_premium_time_start = Guild().get_guild_premium_time_start
+guild_premium_time_set = Guild().get_guild_premium_time_set
+guild_premium_time_extra = Guild().get_guild_premium_time_extra
+guild_premium_time_extra_history = Guild().get_guild_premium_time_extra_history
+guild_premium_time_extra_count = Guild().get_guild_premium_time_extra_count
+guild_premium_time_end = Guild().get_guild_premium_time_end
+guild_premium_time_remaining = Guild().get_guild_premium_time_remaining
 
 guild_show_id = Guild().get_guild_show_id
 
@@ -51,9 +64,11 @@ class Staff:
 
 	def get_staff_creator_id(self): return self.staff_config_data()["creator"]["id"]
 	def get_staff_ada_id(self): return self.staff_config_data()["administrators"]["admin1"]["id"]
+	def get_staff_staffList_SpecialPerms(self): return self.staff_config_data()["staffList_SpecialPerms"]
 
 staff_creator_id = Staff().get_staff_creator_id
 staff_ada_id = Staff().get_staff_ada_id
+staff_staffList_SpecialPerms = Staff().get_staff_staffList_SpecialPerms
 
 
 class Doc:
