@@ -20,7 +20,7 @@ from botConfig import (
 # Импорты всех данных с dbVars:
 from dbVars import (
 	# Параметры бота
-	bot_activity, bot_delete_after,
+	bot_activity, bot_tasks_loop_premium_check_premiumtime, bot_tasks_loop_premium_change_premiumtimeremaining,
 	# Параметры гильдий
 	guild_name, guild_prefix, guild_language,
 	guild_premium, guild_premium_uuid, guild_premium_time_start, guild_premium_time_set, guild_premium_time_extra_history, guild_premium_time_end, guild_premium_time_remaining,
@@ -369,6 +369,10 @@ class BotEvents(commands.Cog):
 			f"\x1b[30;47m{datetime.now()}\x1b[0m {self.bot.user} успешно запустился!"
 			# \x1b[30;47m                \x1b[0m
 		]))
+	
+		#channel = self.bot.get_channel(817101575289176064) # Аудит-лог
+		#await channel.send("я запустился Мася")
+
 
 
 async def setup(bot):

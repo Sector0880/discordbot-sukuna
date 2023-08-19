@@ -7,11 +7,12 @@ class Bot:
 		with open("./botConfiguration/.db/bot/botConfiguration/botConfig.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 	
 	def get_bot_activity(self): return self.bot_config_data()["presence"]["activity"]
-	def get_bot_message_output_delete_after(self): return self.bot_config_data()["message-output"]["delete_after"]
+	def get_bot_tasks_loop_premium_check_premiumtime(self): return self.bot_config_data()["tasks.loop.premium_check_premiumtime"]
+	def get_bot_tasks_loop_premium_change_premiumtimeremaining(self): return self.bot_config_data()["tasks.loop.premium_change_premiumtimeremaining"]
 
 bot_activity = Bot().get_bot_activity
-bot_delete_after = Bot().get_bot_message_output_delete_after
-
+bot_tasks_loop_premium_check_premiumtime = Bot().get_bot_tasks_loop_premium_check_premiumtime
+bot_tasks_loop_premium_change_premiumtimeremaining = Bot().get_bot_tasks_loop_premium_change_premiumtimeremaining
 
 class Guild:
 	def guilds_config_data(self):

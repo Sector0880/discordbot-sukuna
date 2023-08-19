@@ -21,7 +21,7 @@ from botConfig import (
 # Импорты всех данных с dbVars:
 from dbVars import (
 	# Параметры бота
-	bot_activity, bot_delete_after,
+	bot_activity, bot_tasks_loop_premium_check_premiumtime, bot_tasks_loop_premium_change_premiumtimeremaining,
 	# Параметры гильдий
 	guild_name, guild_prefix, guild_language,
 	guild_premium, guild_premium_uuid, guild_premium_time_start, guild_premium_time_set, guild_premium_time_extra_history, guild_premium_time_end, guild_premium_time_remaining,

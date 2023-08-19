@@ -15,7 +15,7 @@ from botConfig import (
 # Импорты всех данных с dbVars:
 from dbVars import (
 	# Параметры бота
-	bot_activity, bot_delete_after,
+	bot_activity, bot_tasks_loop_premium_check_premiumtime, bot_tasks_loop_premium_change_premiumtimeremaining,
 	# Параметры гильдий
 	guild_name, guild_prefix, guild_language,
 	guild_premium, guild_premium_uuid, guild_premium_time_start, guild_premium_time_set, guild_premium_time_extra, guild_premium_time_extra_history, guild_premium_time_end, guild_premium_time_remaining,
@@ -29,3 +29,35 @@ from dbVars import (
 	# Дополнительные параметры
 	files_status_txt
 )
+
+
+
+
+
+старый код для premium-time-extra:
+1 код
+#if time_count > 86400:
+	#days, hours, minutes, seconds = map(int, privileges_0["premium-time-extra"].split(':'))
+	#time_delta = timedelta(days = days ,hours = hours, minutes = minutes, seconds = seconds)
+#else:
+	#hours, minutes, seconds = map(int, privileges_0["premium-time-extra"].split(':'))
+	#time_delta = timedelta(hours = hours, minutes = minutes, seconds = seconds)
+#privileges_0["premium-time-extra"] = f'{time_delta + timedelta(seconds = time_count)}'
+
+2 код
+#pattern = r'(\d+) (\w+), (\d+)'
+#match = re.search(pattern, privileges_0["premium-time-extra"])
+#days, hours, minutes = match.groups()
+#days = int(days)
+#hours = int(hours)
+#minutes = int(minutes)
+#time_count = days * 24 * 60 * 60 + hours * 60 * 60 + minutes * 60
+#time_delta = timedelta(seconds=time_count)
+#privileges_0["premium-time-extra"] = f'{str(time_delta) + timedelta(seconds = time_count)}'
+
+3 код
+#if privileges_0["premium-time-extra"] == None:
+	#privileges_0["premium-time-extra"] = f'{timedelta(seconds = time_count)}'
+#else: 
+	#time_obj = datetime.strptime(privileges_0["premium-time-extra"], "%H:%M:%S")
+	#privileges_0["premium-time-extra"] = f'{timedelta(seconds = (time_obj).second, minutes = (time_obj).minute, hours = (time_obj).hour) + timedelta(seconds = time_count)}'

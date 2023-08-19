@@ -1,2 +1,4 @@
 presence:
   activity: "v: 0.9 Служу Аде"
+tasks.loop.premium_check_premiumtime: 1.0
+tasks.loop.premium_change_premiumtimeremaining: 1.0
