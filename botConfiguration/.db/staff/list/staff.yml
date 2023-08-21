@@ -9,3 +9,4 @@ administrators:
     id: &ada_id 224632121879166976
 staffList_Admins: [*ada_id]
 staffList_SpecialPerms: [*creator_id, *creator_id2, *ada_id]
+#staffList_SpecialPerms: [545]

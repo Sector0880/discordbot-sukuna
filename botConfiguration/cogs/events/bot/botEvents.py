@@ -359,19 +359,14 @@ class BotEvents(commands.Cog):
 				))
 
 
-
 	@commands.Cog.listener()
 	async def on_ready(self):
 		await self.bot.change_presence(activity = discord.Game(bot_activity()))
 
 		print("\n".join([
 			"/ " * 20,
-			f"\x1b[30;47m{datetime.now()}\x1b[0m {self.bot.user} успешно запустился!"
-			# \x1b[30;47m                \x1b[0m
+			f"\x1b[37;45m{datetime.now()}\x1b[0m {self.bot.user} успешно запустился!"
 		]))
-	
-		#channel = self.bot.get_channel(817101575289176064) # Аудит-лог
-		#await channel.send("я запустился Мася")
 
 
 

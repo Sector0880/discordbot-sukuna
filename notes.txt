@@ -31,6 +31,10 @@ from dbVars import (
 )
 
 
+реализовать:
+команды premium и botoutput реализованы только на то чтобы исп команды на сервере где будут происходить изменения в бд
+нужно добавление к командам id серверов для дистанционного изменения бд
+
 
 
 
@@ -61,3 +65,36 @@ from dbVars import (
 #else: 
 	#time_obj = datetime.strptime(privileges_0["premium-time-extra"], "%H:%M:%S")
 	#privileges_0["premium-time-extra"] = f'{timedelta(seconds = (time_obj).second, minutes = (time_obj).minute, hours = (time_obj).hour) + timedelta(seconds = time_count)}'
+
+4 код
+#privileges_0["premium-uuid"] = f"prem_{str(uuid.uuid4().hex)[:10]}"
+#if "premium-uuid" in privileges_0:
+	#privileges_0["premium-uuid-history"] = f'{privileges_0["premium-uuid"]}' if "premium-uuid-history" not in privileges_0 else f'{privileges_0["premium-uuid-history"] + ", " + privileges_0["premium-uuid"]}'
+#if "premium-uuid-history-count" not in privileges_0:
+	#privileges_0["premium-uuid-history-count"] = 0
+#if "premium-uuid-history-count" in privileges_0:
+	#privileges_0["premium-uuid-history-count"] += 1
+
+5 код:
+if time_count == None or re.fullmatch("0", time_count):
+	if privileges_0["premium"]: return await ctx.send("Сервер уже имеет премиум-статус.")
+	if privileges_0["premium"] == True and "premium-time-start" not in privileges_0: return await ctx.send("Сервер уже имеет вечный премиум-статус.")
+	privileges_0["premium"] = True
+	privileges_0["premium-uuid"] = f"prem_{str(uuid.uuid4().hex)}"
+
+	# open db, premium info in filedoc
+	with open("./botConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
+	premium_history_data[privileges_0["premium-uuid"]] = {
+		"premium": True
+	}
+	# write db, premium info in filedoc
+	with open("./botConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
+
+
+	# write db
+	with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+	await ctx.send(emoji_mark_success + 'Сервер ' + (f'`{guild}` ' if server != None else '') + 'приобрел вечный премиум-статус')
+	return
+
+if privileges_0["premium"] == True and "premium-time-start" not in privileges_0:
+	return await ctx.send(emoji_mark_error + "Сервер имеет вечный премиум-статус, нельзя задать премиум с временем.")

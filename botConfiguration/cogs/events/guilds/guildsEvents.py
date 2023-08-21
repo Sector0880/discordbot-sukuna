@@ -30,9 +30,11 @@ class GuildsEvents(commands.Cog):
 				"show_id": False
 			},
 			"protection": {
-				"gateaway": {
-					"bot_output": True
-				}
+				"gateaway": [
+					{
+						"bot-output": True
+					}
+				]
 			}
 		}
 
@@ -73,9 +75,11 @@ class GuildsEvents(commands.Cog):
 						"show_id": False
 					},
 					"protection": {
-						"gateaway": {
-							"bot_output": True
-						}
+						"gateaway": [
+							{
+								"bot-output": True
+							}
+						]
 					}
 				}
 

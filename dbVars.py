@@ -36,7 +36,7 @@ class Guild:
 	
 	def get_guild_show_id(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["additional-features"]["show_id"]
 
-	def get_guild_bot_output(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["protection"]["gateaway"]["bot_output"]
+	def get_guild_bot_output(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["protection"]["gateaway"][0]["bot-output"]
 
 guild_owner_id = Guild().get_owner_id
 

@@ -164,7 +164,7 @@ class BotCommands(commands.Cog):
 		sleep(.1)
 		await ctx.send(content = "```Счетчик команд:```")
 		sleep(.2)
-		await ctx.send(f"```dts\n{cmd_Count.read()}```")
+		await ctx.send(f"```dts\n{cmd_Count.read()}\n```")
 
 
 async def setup(bot):

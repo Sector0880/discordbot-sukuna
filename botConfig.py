@@ -36,3 +36,5 @@ emoji_load_ok = "<a:load_ok:815125554553815080>"
 
 emoji_db_rework = "<:db_rework:815123566462107679>"
 emoji_db_ok = "<:db_ok:815122520411865119>"
+
+emoji_shield = "<:Mod_Shield:1142795808945745970>"
