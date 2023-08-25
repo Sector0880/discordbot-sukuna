@@ -1,0 +1,61 @@
+{
+    "815119789110198293": {
+        "overview": {
+            "guild_name": "Nexus Library Beta",
+            "owner-nick": "sectormain_",
+            "owner-id": 980175834373562439
+        },
+        "prefix": "s!",
+        "language": "ru",
+        "additional-features": {
+            "privileges": [
+                {
+                    "premium": false
+                }
+            ],
+            "show_id": false
+        },
+        "protection": {
+            "gateaway": [
+                {
+                    "bot-output": true
+                }
+            ]
+        }
+    },
+    "1130857157215146064": {
+        "overview": {
+            "guild_name": "Тестовый сервер бота Ады",
+            "owner-nick": "sectormain_",
+            "owner-id": 980175834373562439
+        },
+        "prefix": "s!",
+        "language": "ru",
+        "additional-features": {
+            "privileges": [
+                {
+                    "premium": true,
+                    "premium-uuid-history": "prem_efee2e9163164ea0b55e6be556a13894, prem_60b55fa4107e4220b7ce6afe2e1c64d1",
+                    "premium-uuid-history-count": 2,
+                    "premium-uuid": "prem_60b55fa4107e4220b7ce6afe2e1c64d1",
+                    "premium-time-start": "2023-08-25 20:55:56.169359",
+                    "premium-time-set": "0:00:50",
+                    "premium-time-extra": null,
+                    "premium-time-extra-count": 0,
+                    "premium-time-extra-history": null,
+                    "premium-time-total": "0:00:50",
+                    "premium-time-end": "2023-08-25 20:56:46.169359",
+                    "premium-time-remaining": "0:00:29"
+                }
+            ],
+            "show_id": false
+        },
+        "protection": {
+            "gateaway": [
+                {
+                    "bot-output": true
+                }
+            ]
+        }
+    }
+}

@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands, tasks
 from discord import app_commands
-
 # не юзай блять
 #from discord import Option
 
@@ -9,48 +8,14 @@ import yaml
 import json
 import re
 import asyncio
-
 import uuid
-
-from dateutil.parser import parse
-
 from time import sleep
-
 from datetime import datetime, timedelta
 
-
-# Импорты всех данных с botConfig:
-from botConfig import (
-	# базовые настройки бота
-	info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages,
-	# цветовая схема
-	colors_bot, color_success, color_error,
-	# эмодзи
-	emoji_mark_none, emoji_mark_error, emoji_mark_success,
-	emoji_switch_off, emoji_switch_on,
-	emoji_lock_lock, emoji_lock_unlock,
-	emoji_load_none, emoji_load_lag, emoji_load_partial_lag, emoji_load_ok,
-	emoji_db_rework, emoji_db_ok
-)
-
-# Импорты всех данных с dbVars:
-from dbVars import (
-	# Параметры бота
-	bot_activity, bot_tasks_loop_premium_check_premiumtime, bot_tasks_loop_premium_change_premiumtimeremaining,
-	# Параметры гильдий
-	guild_name, guild_prefix, guild_language, guild_owner_id,
-	guild_premium, guild_premium_uuid, guild_premium_time_start, guild_premium_time_set, guild_premium_time_extra, guild_premium_time_extra_history, guild_premium_time_extra_count, guild_premium_time_end, guild_premium_time_remaining,
-	guild_show_id,
-	guild_bot_output,
-	# Параметры сотрудников
-	staff_creator_id, staff_ada_id, staff_staffList_SpecialPerms,
-	# Параметры ошибок
-	error_terminal_command_error, error_terminal_traceback_error,
-	error_command_not_found, error_server_blocked, error_invalid_language,
-	# Дополнительные параметры
-	files_status_txt
-)
+from botConfig import *; from botConfig import (info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages)
+from dbVars import *
 import botFunctions
+
 
 class Premium(commands.Cog):
 	def __init__(self, bot):
@@ -60,26 +25,10 @@ class Premium(commands.Cog):
 	# [ПРОВЕРКА] добавление и прибавление премиума на сервер где написана команда
 	# [ПРОВЕРКА] добавление и прибавление премиума другим серверам дистанционно
 	# [ПРОВЕРКА] 
-	@commands.hybrid_command(
-		name = "get_premium",
-		description = "Присвоить премиум-статус серверу",
-		aliases = ["gtpr", "pr1"],
-		with_app_command = True
-	)
-	@app_commands.describe(
-		time_count = "Указанное кол-во секунд задаваемого премиума.",
-		server_id = "При указании сервера премиум начисляется указанному серверу."
-	)
-	@app_commands.rename(
-		time_count = "time",
-		server_id = "server"
-	)
+	@commands.hybrid_command(name = "get_premium", description = "Присвоить премиум-статус серверу.", aliases = ["gtpr", "pr1"], with_app_command = True)
+	@app_commands.describe(time_count = "Указанное кол-во секунд задаваемого премиума.", server_id = "При указании сервера премиум начисляется указанному серверу.")
+	@app_commands.rename(time_count = "time", server_id = "server")
 	async def get_premium(self, ctx, time_count: int, *, server_id = None):
-		# code
-		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
-		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
 		
 		# open db
 		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
@@ -419,21 +368,63 @@ class Premium(commands.Cog):
 		if not str(uuid) in premium_history_data: return await ctx.send("Неверный `premium-uuid`.")
 		await ctx.send(f'```json\n{json.dumps(premium_history_data[str(uuid)], ensure_ascii = False, indent = 4)}\n```')
 	
-	#@commands.hybrid_command(
-		#name = "help_premium",
-		#description = "Получить информацию по использованию команд, входящих в линейку Premium-подписки",
-		#aliases = ["hp", "pr0"],
-		#with_app_command = True
-	#)
-	#async def help_premium(self, ctx):
-		#await ctx.defer(ephemeral = True)
+	def is_staff_with_special_permissions():
+		async def predicate(interaction: discord.Interaction):
+			# Check if the user is in the staff list with special permissions
+			if interaction.user.id not in staff_staffList_SpecialPerms():
+				await botFunctions.command_for_staff(interaction)  # Execute the command_for_staff function
+				return False
+			return True
+		return app_commands.check(predicate)
+	@app_commands.command(
+		name = "help_premium",
+		description = "Получить информацию по использованию команд, входящих в линейку Premium-подписки"
+	)
+	@app_commands.choices(command = [
+		app_commands.Choice(name = "get_premium", value = 1),
+		app_commands.Choice(name = "delete_premium(NOTSUPPORTED)", value = 2),
+		app_commands.Choice(name = "delete_premium_allservers(NOTSUPPORTED)", value = 3),
+		app_commands.Choice(name = "delete_premium_uuid_history(NOTSUPPORTED)", value = 4),
+		app_commands.Choice(name = "check_premium(NOTSUPPORTED)", value = 5),
+		app_commands.Choice(name = "delete_premium_history_file(NOTSUPPORTED)", value = 6),
+		app_commands.Choice(name = "check_premium_history_file(NOTSUPPORTED)", value = 7)
+	])
+	@is_staff_with_special_permissions()  # Apply the check function
+	async def help_premium(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
+		# если сервер заблокирован то staff игнорируют это ограничение
+		#if interaction.user.id not in staff_staffList_SpecialPerms() and not guild_bot_output(interaction): return await botFunctions.bot_output_blocked(interaction)
+		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
 
-		#emb = discord.Embed(
-			#title = "Команды Premium",
-			#description = "Информация о командах Premium еще разрабатывается, дайте время)",
-			#color = 0x2b2d31
-		#)
-		#await ctx.send(embed = emb)
+		if command == None:
+			emb = discord.Embed(
+				title = "Команды Premium",
+				description = ", ".join([
+					'`get_premium`',
+					'`delete_premium`',
+					'`delete_premium_allservers`',
+					'`delete_premium_uuid_history`',
+					'`check_premium`',
+					'`delete_premium_history_file`',
+					'`check_premium_history_file`'
+				]),
+				color = 0x2b2d31
+			)
+		elif command.name == "get_premium":
+			emb = discord.Embed(
+				title = "Команда get_premium",
+				description = "\n".join([
+					f'**Информация:** Присвоить премиум-статус серверу.',
+					'\n```ansi\nget_premium \u001b[0;31m[time*]\u001b[0;0m [server]```',
+					f'**Параметры:**',
+					'`time*`: Указанное кол-во секунд задаваемого премиума.',
+					'`server`: При указании сервера премиум начисляется указанному серверу.'
+				]),
+				color = 0x2b2d31
+			)
+			emb.set_footer(text = "* — обязательный параметр")
+		else:
+			return await interaction.response.send_message("Команда не найдена.", ephemeral = True)
+		await interaction.response.send_message(embed = emb, ephemeral = True)
 
 
 	# запись проверок
@@ -499,7 +490,6 @@ class Premium(commands.Cog):
 	@commands.Cog.listener()
 	async def on_ready(self):
 		await self.bot.wait_until_ready()
-
 		self.premium_check_premiumtime.start()
 		self.premium_change_premiumtimeremaining.start()
 

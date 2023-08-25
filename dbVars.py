@@ -4,7 +4,7 @@ import yaml
 
 class Bot:
 	def bot_config_data(self):
-		with open("./botConfiguration/.db/bot/botConfiguration/botConfig.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+		with open("./botSukunaConfiguration/.db/bot/botConfiguration/botConfig.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 	
 	def get_bot_activity(self): return self.bot_config_data()["presence"]["activity"]
 	def get_bot_tasks_loop_premium_check_premiumtime(self): return self.bot_config_data()["tasks.loop.premium_check_premiumtime"]
@@ -16,7 +16,7 @@ bot_tasks_loop_premium_change_premiumtimeremaining = Bot().get_bot_tasks_loop_pr
 
 class Guild:
 	def guilds_config_data(self):
-		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: return json.load(read_file)
+		with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: return json.load(read_file)
 
 	def get_guild_name(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["overview"]["guild_name"]
 	def get_owner_id(self, ctx): return self.guilds_config_data()[str(ctx.guild.id)]["overview"]["owner-id"]
@@ -61,7 +61,7 @@ guild_bot_output = Guild().get_guild_bot_output
 
 class Staff:
 	def staff_config_data(self):
-		with open("./botConfiguration/.db/staff/list/staff.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+		with open("./botSukunaConfiguration/.db/staff/list/staff.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 	def get_staff_creator_id(self): return self.staff_config_data()["creator"]["id"]
 	def get_staff_ada_id(self): return self.staff_config_data()["administrators"]["admin1"]["id"]
@@ -75,22 +75,22 @@ staff_staffList_SpecialPerms = Staff().get_staff_staffList_SpecialPerms
 class Doc:
 	class Commands:
 		def get_get_premium(self):
-			with open("./botConfiguration/.db/doc/commands/get_premium.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+			with open("./botSukunaConfiguration/.db/doc/commands/get_premium.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 	class Errors:
 		class Terminal:
 			def get_error_terminal_command_error(self):
-				with open("./botConfiguration/.db/doc/errors/terminal/terminalCommandError.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+				with open("./botSukunaConfiguration/.db/doc/errors/terminal/terminalCommandError.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 			def get_error_terminal_traceback_error(self):
-				with open("./botConfiguration/.db/doc/errors/terminal/terminalTracebackError.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+				with open("./botSukunaConfiguration/.db/doc/errors/terminal/terminalTracebackError.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 		def get_error_command_not_found(self):
-			with open("./botConfiguration/.db/doc/errors/commandNotFound.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+			with open("./botSukunaConfiguration/.db/doc/errors/commandNotFound.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		def get_error_server_blocked(self):
-			with open("./botConfiguration/.db/doc/errors/serverBlocked.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+			with open("./botSukunaConfiguration/.db/doc/errors/serverBlocked.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		def get_error_invalid_language(self):
-			with open("./botConfiguration/.db/doc/errors/invalidLanguage.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+			with open("./botSukunaConfiguration/.db/doc/errors/invalidLanguage.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
-command_get_premium = Doc().Commands().get_get_premium
+#command_get_premium = Doc().Commands().get_get_premium
 
 error_terminal_command_error = Doc().Errors().Terminal().get_error_terminal_command_error
 error_terminal_traceback_error = Doc().Errors().Terminal().get_error_terminal_traceback_error
@@ -102,4 +102,4 @@ error_invalid_language = Doc().Errors().get_error_invalid_language
 
 
 # другое
-files_status_txt = open("./botConfiguration/.db/files_status.txt", encoding="utf-8")
+files_status_txt = open("./botSukunaConfiguration/.db/files_status.txt", encoding="utf-8")

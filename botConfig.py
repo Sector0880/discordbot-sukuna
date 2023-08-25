@@ -1,4 +1,5 @@
-token = "MTEzMDkwNDE3MDExNTkwNzcxNw.GxNjxy.ZK8TOkncBQGb7bzyIPXEwPB1HuHZ4amhdp7W8E"
+token_sukuna = "MTEzMDkwNDE3MDExNTkwNzcxNw.GxNjxy.ZK8TOkncBQGb7bzyIPXEwPB1HuHZ4amhdp7W8E"
+token_udjiro = "MTE0NDY4NzI3MzI4MDAyNDU4Ng.GJIANE.koIiI74wOnn9Zz85yTJ-kOttNDkjoBaBdFqTVI"
 info = {
     "creator": "Пашков Максим (Sectormain)",
     "admin": "Ада"

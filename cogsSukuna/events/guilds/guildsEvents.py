@@ -52,6 +52,8 @@ class GuildsEvents(commands.Cog):
 		for channel in guild.text_channels: await channel.set_permissions(role_mute, send_messages = False)
 		for channel in guild.voice_channels: await channel.set_permissions(role_mute, connect = False)
 
+		self.bot.tree.copy_global_to(guild=discord.Object(id=guild.id))
+
 
 	@tasks.loop(minutes = 1.0)
 	async def check_guilds_config(self):

@@ -1,5 +1,7 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
+from discord import app_commands
+
 import yaml
 from datetime import datetime
 import sys
@@ -59,5 +61,5 @@ async def bot_output_blocked(ctx):
 	emb.set_footer(text = ctx.author.name, icon_url = ctx.author.avatar)
 	await ctx.send(embed = emb)
 
-async def command_for_staff(ctx):
-	await ctx.send(f"{emoji_mark_error} Команда предназначена только для определенных лиц, относящихся к разработке бота.")
+async def command_for_staff(interaction: discord.Interaction):
+	await interaction.response.send_message(f"{emoji_mark_error} Команда предназначена только для определенных лиц, относящихся к разработке бота.", ephemeral = True)
