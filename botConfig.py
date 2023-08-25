@@ -1,3 +1,4 @@
+token = "MTEzMDkwNDE3MDExNTkwNzcxNw.GxNjxy.ZK8TOkncBQGb7bzyIPXEwPB1HuHZ4amhdp7W8E"
 info = {
     "creator": "Пашков Максим (Sectormain)",
     "admin": "Ада"
@@ -38,3 +39,8 @@ emoji_db_rework = "<:db_rework:815123566462107679>"
 emoji_db_ok = "<:db_ok:815122520411865119>"
 
 emoji_shield = "<:Mod_Shield:1142795808945745970>"
+
+# сайт с цветами для красивого вывода в терминал
+ansi_color_codes = "https://talyian.github.io/ansicolors/"
+#guide Option
+"https://github.com/denisnumb/discord-py-guide/blob/main/slash-commands.md?ysclid=llo427nqw450582834"

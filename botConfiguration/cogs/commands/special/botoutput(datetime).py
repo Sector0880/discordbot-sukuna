@@ -5,6 +5,7 @@ from discord.ext import commands, tasks
 import yaml
 import json
 import re
+import asyncio
 
 import uuid
 
@@ -84,6 +85,7 @@ class BotOutput(commands.Cog):
 			prot_gateaway_bo["bot-output-block-time-extra"] = None
 			prot_gateaway_bo["bot-output-block-time-extra-count"] = 0
 			prot_gateaway_bo["bot-output-block-time-extra-history"] = None
+			prot_gateaway_bo["bot-output-block-time-total"] = f"{timedelta(seconds = time_count)}"
 			prot_gateaway_bo["bot-output-block-time-end"] = f"{datetime.now() + timedelta(seconds = time_count)}"
 			prot_gateaway_bo["bot-output-block-time-remaining"] = f"{timedelta(seconds = time_count)}"
 
@@ -117,6 +119,19 @@ class BotOutput(commands.Cog):
 				prot_gateaway_bo["bot-output-block-time-extra"] = f'{time_delta + timedelta(seconds=time_count)}'
 			prot_gateaway_bo["bot-output-block-time-extra-count"] += 1
 			prot_gateaway_bo["bot-output-block-time-extra-history"] = f'{timedelta(seconds = time_count)}' if prot_gateaway_bo["bot-output-block-time-extra-history"] == None else f'{str(prot_gateaway_bo["bot-output-block-time-extra-history"]) + " | " + str(timedelta(seconds = time_count))}'
+			def time_total_arifm():
+				time_parts = prot_gateaway_bo["bot-output-block-time-total"].split(',')
+				days = 0  # Изначально количество дней равно 0
+				# Проверяем, есть ли дни в значении
+				if len(time_parts) == 2:
+					days = int(time_parts[0].split()[0])
+				# Получить оставшуюся часть времени
+				time_remaining = time_parts[-1].strip()
+				# Разделить время на часы, минуты и секунды
+				hours, minutes, seconds = map(int, time_remaining.split(':'))
+				# Создать timedelta объект
+				return timedelta(days=days, hours=hours, minutes=minutes, seconds=seconds)
+			prot_gateaway_bo["bot-output-block-time-total"] = f'{time_total_arifm() + timedelta(seconds=time_count)}'
 			prot_gateaway_bo["bot-output-block-time-end"] = f'{datetime.fromisoformat(prot_gateaway_bo["bot-output-block-time-end"]) + timedelta(seconds = time_count)}'
 			prot_gateaway_bo["bot-output-block-time-remaining"] = f'{str(datetime.fromisoformat(prot_gateaway_bo["bot-output-block-time-end"]) - datetime.now())[:-7]}'
 
@@ -158,6 +173,7 @@ class BotOutput(commands.Cog):
 		del prot_gateaway_bo["bot-output-block-time-extra"]
 		del prot_gateaway_bo["bot-output-block-time-extra-count"]
 		del prot_gateaway_bo["bot-output-block-time-extra-history"]
+		del prot_gateaway_bo["bot-output-block-time-total"]
 		del prot_gateaway_bo["bot-output-block-time-end"]
 		del prot_gateaway_bo["bot-output-block-time-remaining"]
 
@@ -230,6 +246,7 @@ class BotOutput(commands.Cog):
 					del prot_gateaway_bo["bot-output-block-time-extra"]
 					del prot_gateaway_bo["bot-output-block-time-extra-count"]
 					del prot_gateaway_bo["bot-output-block-time-extra-history"]
+					del prot_gateaway_bo["bot-output-block-time-total"]
 					del prot_gateaway_bo["bot-output-block-time-end"]
 					del prot_gateaway_bo["bot-output-block-time-remaining"]
 

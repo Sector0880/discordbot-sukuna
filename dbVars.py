@@ -73,6 +73,9 @@ staff_staffList_SpecialPerms = Staff().get_staff_staffList_SpecialPerms
 
 
 class Doc:
+	class Commands:
+		def get_get_premium(self):
+			with open("./botConfiguration/.db/doc/commands/get_premium.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 	class Errors:
 		class Terminal:
 			def get_error_terminal_command_error(self):
@@ -87,6 +90,8 @@ class Doc:
 		def get_error_invalid_language(self):
 			with open("./botConfiguration/.db/doc/errors/invalidLanguage.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
+command_get_premium = Doc().Commands().get_get_premium
+
 error_terminal_command_error = Doc().Errors().Terminal().get_error_terminal_command_error
 error_terminal_traceback_error = Doc().Errors().Terminal().get_error_terminal_traceback_error
 
@@ -95,4 +100,6 @@ error_server_blocked = Doc().Errors().get_error_server_blocked
 error_invalid_language = Doc().Errors().get_error_invalid_language
 
 
+
+# другое
 files_status_txt = open("./botConfiguration/.db/files_status.txt", encoding="utf-8")

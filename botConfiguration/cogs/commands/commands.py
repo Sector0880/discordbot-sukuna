@@ -79,7 +79,7 @@ class BotCommands(commands.Cog):
 		#await command_counter(ctx = ctx)
 
 	@commands.command()
-	async def botinfo_used_reset(self, ctx):
+	async def botinfo_reset_used(self, ctx):
 		with open("./botConfiguration/.db/bot/botConfiguration/botInfo.yml", "r") as read_file: botInfo = yaml.safe_load(read_file)
 		botInfo["used"]["commands"]["all"] = 0
 		botInfo["used"]["commands"]["mention"] = 0
@@ -165,6 +165,23 @@ class BotCommands(commands.Cog):
 		await ctx.send(content = "```Счетчик команд:```")
 		sleep(.2)
 		await ctx.send(f"```dts\n{cmd_Count.read()}\n```")
+	
+	@commands.command()
+	async def spam_ada(self, ctx):
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await ctx.send("Нету прав.") # на автора сообщения
+		
+		user_id = self.bot.get_user(int(224632121879166976))
+		user_id_maks = self.bot.get_user(int(980175834373562439))
+		await ctx.send(user_id)
+		await ctx.send("спамлю")
+		num = 0
+		nim_chat = await user_id_maks.send(f'Отправлено сообщений: {num}')
+		while True:
+			await user_id.send("тебе пиздец")
+			num +=1
+			await nim_chat.edit(content = f'Отправлено сообщений: {num}')
+			sleep(.5)
 
 
 async def setup(bot):
