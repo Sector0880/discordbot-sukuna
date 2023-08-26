@@ -7,7 +7,7 @@ import asyncio
 import traceback
 
 # Импорты всех данных с botConfig:
-from botConfig import (
+from botsConfig import (
 	info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages,
 	colors_bot, color_success, color_error,
 	emoji_mark_none, emoji_mark_error, emoji_mark_success,

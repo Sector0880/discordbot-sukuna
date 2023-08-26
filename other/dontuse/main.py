@@ -8,7 +8,7 @@ import asyncio
 import yaml
 
 # Импорты всех данных с botConfig:
-from botConfig import (
+from botsConfig import (
 	# базовые настройки бота
 	info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages,
 	# цветовая схема

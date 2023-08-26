@@ -12,9 +12,9 @@ import uuid
 from time import sleep
 from datetime import datetime, timedelta
 
-from botConfig import *; from botConfig import (info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages)
+from botsConfig import *; from botsConfig import (info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages)
 from dbVars import *
-import botFunctions
+import botsFunctions
 
 
 class Premium(commands.Cog):
@@ -31,7 +31,7 @@ class Premium(commands.Cog):
 	async def get_premium(self, ctx, time_count: int, *, server_id = None):
 		
 		# open db
-		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
+		with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
 		
 		if isinstance(time_count, commands.MissingRequiredArgument): return await ctx.send("Введите кол-во секунд.")
 		
@@ -63,7 +63,7 @@ class Premium(commands.Cog):
 			privileges_0["premium-time-remaining"] = f"{timedelta(seconds = time_count)}"
 
 			# open db, premium info in filedoc
-			with open("./botConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
+			with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
 			premium_history_data[privileges_0["premium-uuid"]] = {
 				"premium": privileges_0["premium"],
 				"premium-time-start": privileges_0["premium-time-start"],
@@ -75,10 +75,10 @@ class Premium(commands.Cog):
 				"premium-time-end": privileges_0["premium-time-end"]
 			}
 			# write db, premium info in filedoc
-			with open("./botConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
+			with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
 
 			# write db
-			with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+			with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 			#sleep(0.1)
 			await ctx.send(
@@ -140,10 +140,10 @@ class Premium(commands.Cog):
 			premium_history_data[privileges_0["premium-uuid"]]["premium-time-total"] = privileges_0["premium-time-total"]
 			premium_history_data[privileges_0["premium-uuid"]]["premium-time-end"] = privileges_0["premium-time-end"]
 			# write db, premium info in filedoc
-			with open("./botConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
+			with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
 
 			# write db
-			with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+			with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 			#sleep(0.1)
 			await ctx.send(
@@ -161,12 +161,12 @@ class Premium(commands.Cog):
 	)
 	async def delete_premium(self, ctx):
 		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
 		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		# open db
-		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
+		with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
 		privileges_0 = guilds_config_data[str(ctx.guild.id)]["additional-features"]["privileges"][0]  # path to privileges in server
 
 		if "premium-uuid" not in privileges_0:
@@ -175,7 +175,7 @@ class Premium(commands.Cog):
 			privileges_0["premium"] = False
 
 			# write db
-			with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+			with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 			return await ctx.send("Сервер лишен вечного премиума.")
 
@@ -183,7 +183,7 @@ class Premium(commands.Cog):
 	
 		privileges_0["premium"] = False
 		# open db, premium info in filedoc
-		with open("./botConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
+		with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
 		if "premium-uuid" not in premium_history_data: 
 			premium_history_data[privileges_0["premium-uuid"]] = {
 				"premium": privileges_0["premium"],
@@ -198,7 +198,7 @@ class Premium(commands.Cog):
 		premium_history_data[privileges_0["premium-uuid"]]["premium"] = False
 		premium_history_data[privileges_0["premium-uuid"]]["premium-time-end"] += " /!/ Премиум-подписка лишена"
 		# write db, premium info in filedoc
-		with open("./botConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
+		with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
 
 		del privileges_0["premium-uuid"]
 		del privileges_0["premium-time-start"]
@@ -211,7 +211,7 @@ class Premium(commands.Cog):
 		del privileges_0["premium-time-remaining"]
 
 		# write db
-		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+		with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 		user_dmchannel = self.bot.get_user(guild_owner_id(ctx))
 		await user_dmchannel.send(f'премиум подписка на сервере `{guild_name(ctx)}` закончилась')
@@ -226,18 +226,18 @@ class Premium(commands.Cog):
 	)
 	async def delete_premium_allservers(self, ctx):
 		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
 		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		for guild in self.bot.guilds:
 			# open db
-			with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
+			with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
 			privileges_0 = guilds_config_data[str(guild.id)]["additional-features"]["privileges"][0]  # path to privileges in server
 
 			privileges_0["premium"] = False
 			# open db, premium info in filedoc
-			with open("./botConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
+			with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
 			if "premium-uuid" not in premium_history_data: 
 				premium_history_data[privileges_0["premium-uuid"]] = {
 					"premium": privileges_0["premium"],
@@ -251,7 +251,7 @@ class Premium(commands.Cog):
 				}
 			if "premium-uuid" in privileges_0: premium_history_data[privileges_0["premium-uuid"]]["premium"] = False
 			# write db, premium info in filedoc
-			with open("./botConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
+			with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
 			if "premium-uuid" in privileges_0: del privileges_0["premium-uuid"]
 			if "premium-time-start" in privileges_0: del privileges_0["premium-time-start"]
 			if "premium-time-set" in privileges_0: del privileges_0["premium-time-set"]
@@ -263,7 +263,7 @@ class Premium(commands.Cog):
 			if "premium-time-remaining" in privileges_0: del privileges_0["premium-time-remaining"]
 
 			# write db
-			with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+			with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 			user_dmchannel = self.bot.get_user(guilds_config_data[str(guild.id)]["overview"]["owner-id"])
 			await user_dmchannel.send(f'премиум подписка на сервере `{guilds_config_data[str(guild.id)]["overview"]["guild_name"]}` закончилась')
@@ -278,12 +278,12 @@ class Premium(commands.Cog):
 	)
 	async def delete_premium_uuid_history(self, ctx):
 		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
 		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		# open db
-		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
+		with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
 		privileges_0 = guilds_config_data[str(ctx.guild.id)]["additional-features"]["privileges"][0]  # path to privileges in server
 
 		if "premium-uuid-history" in privileges_0:
@@ -291,14 +291,14 @@ class Premium(commands.Cog):
 			del privileges_0["premium-uuid-history-count"]
 
 			# write db
-			with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+			with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 			# не будет использоваться т.к. ["premium-uuid"] на этот момент не будет (если сервер уже без премиума)
 			# open db, premium info in filedoc
-			#with open("./botConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
+			#with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
 			#del premium_history_data[privileges_0["premium-uuid"]]
 			# write db, premium info in filedoc
-			#with open("./botConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
+			#with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
 
 			await ctx.send("Успешно")
 		else: await ctx.send("Истории приобретения премиум-подписки нету")
@@ -312,12 +312,12 @@ class Premium(commands.Cog):
 	)
 	async def check_premium(self, ctx):
 		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
 		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		# open db
-		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
+		with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
 		privileges_0 = guilds_config_data[str(ctx.guild.id)]["additional-features"]["privileges"][0]  # path to privileges in server
 
 		#await ctx.send(f'```json\n{json.dumps(guilds_config_data[str(ctx.guild.id)]["overview"], ensure_ascii = False, indent = 4)}\n```')
@@ -336,17 +336,17 @@ class Premium(commands.Cog):
 	)
 	async def delete_premium_history_file(self, ctx, premium_uuid):
 		# command work for staff with special permissions
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		if premium_uuid == None: return await ctx.send("Введите `premium-uuid`.")
 
 		# open db, premium info in filedoc
-		with open("./botConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
+		with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
 		if premium_uuid not in premium_history_data: return await ctx.send("`premium-uuid` не найден.")
 		del premium_history_data[str(premium_uuid)]
 		# write db, premium info in filedoc
-		with open("./botConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
+		with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
 		await ctx.send("Успешно")
 
 	# запись проверок
@@ -358,13 +358,13 @@ class Premium(commands.Cog):
 	)
 	async def check_premium_history_file(self, ctx, uuid):
 		# command work for staff with special permissions
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		if uuid == None: return await ctx.send("Введите `premium-uuid`.")
 
 		# open db, premium info in filedoc
-		with open("./botConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
+		with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
 		if not str(uuid) in premium_history_data: return await ctx.send("Неверный `premium-uuid`.")
 		await ctx.send(f'```json\n{json.dumps(premium_history_data[str(uuid)], ensure_ascii = False, indent = 4)}\n```')
 	
@@ -372,7 +372,7 @@ class Premium(commands.Cog):
 		async def predicate(interaction: discord.Interaction):
 			# Check if the user is in the staff list with special permissions
 			if interaction.user.id not in staff_staffList_SpecialPerms():
-				await botFunctions.command_for_staff(interaction)  # Execute the command_for_staff function
+				await botsFunctions.command_for_staff(interaction)  # Execute the command_for_staff function
 				return False
 			return True
 		return app_commands.check(predicate)
@@ -433,14 +433,14 @@ class Premium(commands.Cog):
 	async def premium_check_premiumtime(self):
 		for guild in self.bot.guilds:
 			# open db
-			with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
+			with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
 			privileges_0 = guilds_config_data[str(guild.id)]["additional-features"]["privileges"][0]  # path to privileges in server
 
 			if "premium-time-end" in privileges_0:
 				if datetime.fromisoformat(privileges_0["premium-time-end"]) < datetime.now():
 					privileges_0["premium"] = False
 					# open db, premium info in filedoc
-					with open("./botConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
+					with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
 					if "premium-uuid" not in premium_history_data: 
 						premium_history_data[privileges_0["premium-uuid"]] = {
 							"premium": privileges_0["premium"],
@@ -454,7 +454,7 @@ class Premium(commands.Cog):
 						}
 					premium_history_data[privileges_0["premium-uuid"]]["premium"] = False
 					# write db, premium info in filedoc
-					with open("./botConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
+					with open("./botSukunaConfiguration/.db/info/premiumHistory.json", "w", encoding="utf-8") as write_file: json.dump(premium_history_data, write_file, ensure_ascii = False, indent = 4)
 					del privileges_0["premium-uuid"]
 					del privileges_0["premium-time-start"]
 					del privileges_0["premium-time-set"]
@@ -466,7 +466,7 @@ class Premium(commands.Cog):
 					del privileges_0["premium-time-remaining"]
 
 					# write db
-					with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+					with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 					user_dmchannel = self.bot.get_user(guilds_config_data[str(guild.id)]["overview"]["owner-id"])
 					await user_dmchannel.send(f'Премиум подписка на сервере `{guilds_config_data[str(guild.id)]["overview"]["guild_name"]}` закончилась')
@@ -477,14 +477,14 @@ class Premium(commands.Cog):
 	async def premium_change_premiumtimeremaining(self):
 		for guild in self.bot.guilds:
 			# open db
-			with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
+			with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
 			privileges_0 = guilds_config_data[str(guild.id)]["additional-features"]["privileges"][0]  # path to privileges in server
 
 			if "premium-time-remaining" in privileges_0:
 				privileges_0["premium-time-remaining"] = f'{str(datetime.fromisoformat(privileges_0["premium-time-end"]) - datetime.now())[:-7]}'
 
 				# write db
-				with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+				with open("./botSukunaConfiguration/.db/guildsConfiguration/guildsConfig.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 	# готово
 	@commands.Cog.listener()

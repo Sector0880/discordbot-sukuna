@@ -5,7 +5,7 @@ import asyncio
 import re
 
 # Импорты всех данных с botConfig:
-from botConfig import (
+from botsConfig import (
 	# базовые настройки бота
 	info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages,
 	# цветовая схема
@@ -36,7 +36,7 @@ from dbVars import (
 	files_status_txt
 )
 
-from botFunctions import *
+from botsFunctions import *
 
 class ForADA(commands.Cog):
 	def __init__(self, bot):

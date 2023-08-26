@@ -7,14 +7,13 @@ import os
 import asyncio
 import yaml
 
-from botConfig import *; from botConfig import (info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages)
+from botConfig import *
 from dbVars import *
 import botFunctions
 
 
-# получаем префикс
-def get_prefix(bot, ctx):
-	with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as file: return json.load(file)[str(ctx.guild.id)]["prefix"]
+def get_prefix(ctx):
+	with open("./.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as file: return json.load(file)[str(ctx.guild.id)]["prefix"]
 
 bot = commands.Bot(
 	command_prefix = get_prefix,
@@ -25,12 +24,13 @@ bot = commands.Bot(
 
 @bot.event
 async def on_ready():
+	# await bot.change_presence(activity = discord.Game(sukuna["presence"])) включить потом
 	synced = await bot.tree.sync()
-	print(f"\x1b[43m{datetime.now()}\x1b[0m Успешно обновилось \x1b[43m{len(synced)}\x1b[0m команд!")
+	print(f"\x1b[43m{datetime.now()}\x1b[0m Успешно обновилось \x1b[35m{len(synced)}\x1b[0m команд!")
 
 
 @bot.command() 
-async def sync(ctx):
+async def sync_s(ctx):
 	synced = await bot.tree.sync()
 	await ctx.send(f"Успешно обновилось {len(synced)} команд!")
 
@@ -41,13 +41,11 @@ print("\n".join([
 	"███████ ██    ██ █████   ██    ██ ██ ██  ██ ███████ ",
 	"     ██ ██    ██ ██  ██  ██    ██ ██  ██ ██ ██   ██ ",
 	"███████  ██████  ██   ██  ██████  ██   ████ ██   ██ ",
-	f"\x1b[37;43mVERSION\x1b[0m: \x1b[31m{bot_version['number']}\x1b[0m \x1b[0m{bot_version['name']}\x1b[0m"
-	 #\x1b[37;43m       \x1b[0m  \x1b[31m                       \x1b[0m \x1b[0m                     \x1b[0m
+	f"\x1b[37;43mVERSION\x1b[0m: \x1b[31m{sukuna['version']['number']}\x1b[0m \x1b[0m{sukuna['version']['name']}\x1b[0m"
 	"\n"
 ]))
 
 print("\x1b[1;34mЗагрузка когов\x1b[0m:")
-#      \x1b[1;34m            \x1b[0m
 async def func_load_cogs():
 	for filename in os.listdir("./botSukunaConfiguration/cogs/events/guilds"):
 		if filename.endswith(".py"):
@@ -72,7 +70,7 @@ async def func_load_cogs():
 
 
 @bot.command(aliases = ["rlc"]) 
-async def reload_cogs(ctx):
+async def reload_cogs_s(ctx):
 	# если сервер заблокирован то staff игнорируют это ограничение
 	if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return
 	# команда работает только для staff с специальными правами (список staffList_SpecialPerms)

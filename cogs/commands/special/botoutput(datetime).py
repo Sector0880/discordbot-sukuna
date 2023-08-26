@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 
 
 # Импорты всех данных с botConfig:
-from botConfig import (
+from botsConfig import (
 	# базовые настройки бота
 	info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages,
 	# цветовая схема
@@ -48,7 +48,7 @@ from dbVars import (
 	# Дополнительные параметры
 	files_status_txt
 )
-import botFunctions
+import botsFunctions
 
 class BotOutput(commands.Cog):
 	def __init__(self, bot):
@@ -57,9 +57,9 @@ class BotOutput(commands.Cog):
 	@commands.command(aliases = ["bob", "bo1"])
 	async def botoutput_block(self, ctx, time_count: int = None, *, reason = None):
 		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
 		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		# open db
 		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
@@ -148,9 +148,9 @@ class BotOutput(commands.Cog):
 	@commands.command(aliases = ["boub", "bo2"])
 	async def botoutput_unblock(self, ctx):
 		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
 		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		# open db
 		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
@@ -189,9 +189,9 @@ class BotOutput(commands.Cog):
 		return await message.add_reaction(emoji_mark_error)
 
 		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
 		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		# open db
 		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
@@ -211,9 +211,9 @@ class BotOutput(commands.Cog):
 	@commands.command(aliases = ["chbo", "bo4"])
 	async def check_bot_output(self, ctx, code = None):
 		# если сервер заблокирован то staff игнорируют это ограничение
-		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botFunctions.bot_output_blocked(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return await botsFunctions.bot_output_blocked(ctx)
 		# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botFunctions.command_for_staff(ctx)
+		if ctx.author.id not in staff_staffList_SpecialPerms(): return await botsFunctions.command_for_staff(ctx)
 
 		# open db
 		with open("./botConfiguration/.db/guildsConfiguration/guildsConfig.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)

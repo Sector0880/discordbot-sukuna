@@ -1,3 +1,7 @@
+python sukuna.py
+python yujirou_helper.py
+
+
 from botConfig import *; from botConfig import (info as bot_info, version as bot_version, avatar as bot_avatar, languages as bot_languages)
 from dbVars import *
 import botFunctions
