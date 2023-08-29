@@ -1,29 +1,17 @@
-token_sukuna = "MTEzMDkwNDE3MDExNTkwNzcxNw.GxNjxy.ZK8TOkncBQGb7bzyIPXEwPB1HuHZ4amhdp7W8E"
-token_yujirou = "MTE0NDY4NzI3MzI4MDAyNDU4Ng.GJIANE.koIiI74wOnn9Zz85yTJ-kOttNDkjoBaBdFqTVI"
+token = "MTEzMDkwNDE3MDExNTkwNzcxNw.GxNjxy.ZK8TOkncBQGb7bzyIPXEwPB1HuHZ4amhdp7W8E"
 # -----------------------------------
 info = {
     "creator": "Пашков Максим (Sectormain)",
     "admin": "Ада"
 }
-sukuna = {
-    "version": {
-        "number": "0.9",
-        "name": "Ада хочет убрать карточку сервера но я против"
-	},
-	"presence": "v0.9 Ада хочет убрать карточку сервера но я против"
-}
-yujirou = {
-    "version": {
-        "number": "1",
-        "name": "Не недооценивай меня!"
-	},
-	"presence": "v1 Не недооценивай меня!"
+version =  {
+    "number": "0.9",
+    "name": "Ада хочет убрать карточку сервера но я против"
 }
 # -----------------------------------
 main_server = 1130857157215146064
 # -----------------------------------
-avatar_sukuna = "https://cdn.discordapp.com/attachments/817116435351863306/825447378105925672/avatarNexus.gif"
-avatar_yujirou = ""
+avatar = "https://cdn.discordapp.com/attachments/817116435351863306/825447378105925672/avatarNexus.gif"
 # -----------------------------------
 languages = ["ru", "en", "kz"]
 # -----------------------------------

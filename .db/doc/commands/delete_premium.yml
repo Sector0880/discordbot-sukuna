@@ -1,0 +1,5 @@
+# ПАТТЕРН
+name: delete_premium
+description: "loh"
+describe:
+  server!: "loh"
