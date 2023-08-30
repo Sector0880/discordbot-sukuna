@@ -27,8 +27,9 @@ class GuildsEvents(commands.Cog):
 				"modules": {
 					"fun": False,
 					"moderation": False,
-					"music": False,
-					"emoji": False
+					"economic": False,
+					"audit": False,
+					"music": False
 				},
 				"privileges": [
 					{
@@ -81,8 +82,9 @@ class GuildsEvents(commands.Cog):
 						"modules": {
 							"fun": False,
 							"moderation": False,
-							"music": False,
-							"emoji": False
+							"economic": False,
+							"audit": False,
+							"music": False
 						},
 						"privileges": [
 							{

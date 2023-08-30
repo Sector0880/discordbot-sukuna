@@ -76,6 +76,8 @@ class Doc:
 	class Commands:
 		def get_get_premium(self):
 			with open("./.db/doc/commands/get_premium.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
+		def get_delete_premium(self):
+			with open("./.db/doc/commands/delete_premium.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 	class Errors:
 		class Terminal:
 			def get_error_terminal_command_error(self):
@@ -91,6 +93,7 @@ class Doc:
 			with open("./.db/doc/errors/invalidLanguage.yml", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 
 command_get_premium = Doc().Commands().get_get_premium
+command_delete_premium = Doc().Commands().get_delete_premium
 
 error_terminal_command_error = Doc().Errors().Terminal().get_error_terminal_command_error
 error_terminal_traceback_error = Doc().Errors().Terminal().get_error_terminal_traceback_error

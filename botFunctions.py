@@ -33,6 +33,11 @@ def check_command_permissions():
 			emb.set_footer(text = interaction.user.name, icon_url = interaction.user.avatar)
 			await interaction.response.send_message(embed = emb, ephemeral = True)
 			return False
+		return True
+	return app_commands.check(predicate)
+
+def command_for_staff():
+	async def predicate(interaction: discord.Interaction):
 		if interaction.user.id not in staff_staffList_SpecialPerms():
 			await interaction.response.send_message(f"{emoji_mark_error} Команда предназначена только для определенных лиц, относящихся к разработке бота.", ephemeral = True)
 			return False

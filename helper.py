@@ -29,9 +29,9 @@ async def reload_exts(ctx):
 	# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
 	if ctx.author.id not in staff_staffList_SpecialPerms(): return
 
-	for filename in os.listdir("./ext/commands/for_helper"):
+	for filename in os.listdir("./ext/commands/helper"):
 		if filename.endswith(".py"):
-			await bot.reload_extension(f"ext.commands.for_helper.{filename[:-3]}")
+			await bot.reload_extension(f"ext.commands.helper.{filename[:-3]}")
 
 	await ctx.send(f"Успешно обновлены коги!")
 
@@ -43,10 +43,10 @@ async def on_ready():
 
 print("\x1b[1;34mЗагрузка когов\x1b[0m:")
 async def func_load_exts():
-	for filename in os.listdir("./ext/commands/for_helper"):
+	for filename in os.listdir("./ext/commands/helper"):
 		if filename.endswith(".py"):
-			await bot.load_extension(f"ext.commands.for_helper.{filename[:-3]}")
-			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файлы \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mcommands/for_helper\x1b[0m загружены!')
+			await bot.load_extension(f"ext.commands.helper.{filename[:-3]}")
+			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файлы \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mcommands/helper\x1b[0m загружены!')
 
 async def main():
 	async with bot:
