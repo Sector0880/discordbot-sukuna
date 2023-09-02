@@ -21,6 +21,7 @@ async def command_counter(ctx):
 def check_command_permissions():
 	async def predicate(interaction: discord.Interaction):
 		if interaction.user.id not in staff_staffList_SpecialPerms() and not guild_bot_output(interaction):
+			# переделать
 			emb = discord.Embed(
 			description = "\n".join([
 				error_server_blocked()[guild_language(interaction)]["error"]["description1"].format(emoji_mark_error),

@@ -14,45 +14,48 @@ class GuildsEvents(commands.Cog):
 	async def on_guild_join(self, guild):
 		with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
 
-		guilds_config_data[str(guild.id)] = {
-			"overview": {
-				"guild_name": guild.name,
-				"guild_id": guild.id,
-				"owner-name": guild.owner.name,
-				"owner-id": guild.owner.id
-			},
-			"prefix": "s!",
-			"language": "ru",
-			"additional-features": {
-				"modules": {
-					"fun": False,
-					"moderation": False,
-					"economic": False,
-					"audit": False,
-					"music": False
+		if str(guild.id) not in guilds_config_data.keys():
+			guilds_config_data[str(guild.id)] = {
+				"presence": True,
+				"overview": {
+					"guild_name": guild.name,
+					"guild_id": guild.id,
+					"owner-name": guild.owner.name,
+					"owner-id": guild.owner.id
 				},
-				"privileges": [
-					{
-						"premium": False
-	  				}
-				],
-				"show_id": False
-			},
-			"protection": {
-				"gateaway": [
-					{
-						"bot-output": True
-					}
-				]
+				"prefix": "s!",
+				"language": "ru",
+				"additional-features": {
+					"modules": {
+						"fun": False,
+						"moderation": False,
+						"economic": False,
+						"audit": False,
+						"music": False
+					},
+					"privileges": [
+						{
+							"premium": False
+						}
+					],
+					"show_id": False
+				},
+				"protection": {
+					"gateaway": [
+						{
+							"bot-output": True
+						}
+					]
+				}
 			}
-		}
+		else:
+			guilds_config_data[str(guild.id)]["presence"] = True
 
 		with open("./.db/multiplayer/guilds.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 
 		perms = discord.Permissions(connect = False, send_messages = False)
-
-		role_mute = await guild.create_role(name = "Muted", permissions = perms)
+		role_mute = await guild.create_role(name = "Muted_Sukuna", permissions = perms)
 
 
 		for category in guild.categories: await category.set_permissions(role_mute, connect = False, send_messages = False)
@@ -70,6 +73,7 @@ class GuildsEvents(commands.Cog):
 		for guild in self.bot.guilds:
 			if str(guild.id) not in guilds_config_data.keys():
 				guilds_config_data[str(guild.id)] = {
+					"presence": True,
 					"overview": {
 						"guild-name": guild.name,
 						"guild-id": guild.id,
@@ -109,17 +113,17 @@ class GuildsEvents(commands.Cog):
 		with open("./.db/multiplayer/guilds.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 
-	# а нахуя эта функция, если вся информация после ухода бота из гильдии нужна? и я о том же (не удалять)
-	#@commands.Cog.listener()
-	#async def on_guild_remove(self, guild):
-		#with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
-
+	
+	@commands.Cog.listener()
+	async def on_guild_remove(self, guild):
+		with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
+		guilds_config_data[str(guild.id)]["presence"] = False
 		#del guilds_config_data[str(guild.id)]["prefix"]
 		#del guilds_config_data[str(guild.id)]["language"]
 
 		#del guilds_config_data[str(guild.id)]["additional-features"]["show_id"]
 
-		#with open("./.db/multiplayer/guilds.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
+		with open("./.db/multiplayer/guilds.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 
 	@commands.Cog.listener()

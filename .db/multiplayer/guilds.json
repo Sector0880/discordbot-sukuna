@@ -1,1 +1,72 @@
-{}
+{
+    "815119789110198293": {
+        "presence": true,
+        "overview": {
+            "guild-name": "Nexus Library Beta",
+            "guild-id": 815119789110198293,
+            "owner-name": "sectormain",
+            "owner-id": 980175834373562439
+        },
+        "prefix": "s!",
+        "language": "ru",
+        "additional-features": {
+            "modules": {
+                "fun": false,
+                "moderation": false,
+                "economic": false,
+                "audit": false,
+                "music": false
+            },
+            "privileges": [
+                {
+                    "premium": false,
+                    "premium-uuid-history": "prem_4125e85272744731a4475d1e790927d6, prem_10c46967347f41d28902c95f703e9f26",
+                    "premium-uuid-history-count": 2
+                }
+            ],
+            "show_id": false
+        },
+        "protection": {
+            "gateaway": [
+                {
+                    "bot-output": true
+                }
+            ]
+        }
+    },
+    "1130857157215146064": {
+        "presence": true,
+        "overview": {
+            "guild-name": "Тестовый сервер бота Ады",
+            "guild-id": 1130857157215146064,
+            "owner-name": "sectormain",
+            "owner-id": 980175834373562439
+        },
+        "prefix": "s!",
+        "language": "ru",
+        "additional-features": {
+            "modules": {
+                "fun": false,
+                "moderation": false,
+                "economic": false,
+                "audit": false,
+                "music": false
+            },
+            "privileges": [
+                {
+                    "premium": false,
+                    "premium-uuid-history": "prem_6215c412fe604daa90c1e01dfea907da, prem_6595212eff30478eb9c311d47132f70c, prem_445ae970c41641c4bafdc30cb6a03d5a, prem_0ea48a33c6a24f40b85378cb087624af",
+                    "premium-uuid-history-count": 4
+                }
+            ],
+            "show_id": false
+        },
+        "protection": {
+            "gateaway": [
+                {
+                    "bot-output": true
+                }
+            ]
+        }
+    }
+}
