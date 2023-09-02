@@ -24,13 +24,13 @@ bot = commands.Bot(
 @bot.event
 async def on_ready():
 	synced = await bot.tree.sync()
-	print(f'\x1b[43m{datetime.now()}\x1b[0m Успешно обновилось \x1b[35m{len(synced)}\x1b[0m команд!')
+	print(f'\x1b[43m{datetime.now()}\x1b[0m Synced \x1b[35m{len(synced)}\x1b[0m commands!')
 
 
 @bot.command() 
 async def sync(ctx):
-	synced_all = await bot.tree.sync()
-	await ctx.send(f"Успешно обновилось {len(synced_all)} команд!")
+	synced = await bot.tree.sync()
+	await ctx.send(f"Synced {len(synced)} commands!")
 
 @bot.command(aliases = ["rlc"]) 
 async def reload_exts(ctx):

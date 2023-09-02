@@ -30,16 +30,15 @@ class Premium(commands.Cog):
 	@botFunctions.command_for_staff()
 	async def get_premium(self, interaction: discord.Interaction, server: str, *, time: int):
 		try:
-			# open db
-			with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)
-			# open db, premium info in filedoc
-			with open("./.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file)
-			
+			with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file) # сервера
+			with open("./.db/info/premiumHistory.json", "r", encoding="utf-8") as read_file: premium_history_data = json.load(read_file) # история премиума
 
-			if not isinstance(server, int) and not server.isdigit(): return await interaction.response.send_message("Я понимаю только id сервера.", ephemeral = True)
-			if str(server) not in guilds_config_data: return await interaction.response.send_message("Сервер не найден.", ephemeral = True) # проверка на наличие сервера
-
+			await interaction.response.defer(ephemeral = True, thinking = True)
 			
+			if not isinstance(server, int) and not server.isdigit():
+				return await interaction.edit_original_response(content = "Я понимаю только id сервера.") # 
+			if str(server) not in guilds_config_data: return await interaction.edit_original_response(content = "Сервер не найден.")
+
 			privileges_0 = guilds_config_data[str(server)]["additional-features"]["privileges"][0]
 
 			if privileges_0["premium"] == False:
@@ -73,7 +72,7 @@ class Premium(commands.Cog):
 				with open("./.db/multiplayer/guilds.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 				#sleep(0.1)
-				await interaction.response.send_message(
+				await interaction.edit_original_response(content = 
 					f'{emoji_mark_success} Успешно, сервер `{guilds_config_data[str(server)]["overview"]["guild-name"]}` получил премиум-статус на `{time} секунд`!'
 					+ f'\nДата окончания премиума: `{str(privileges_0["premium-time-end"])[:-7]}`'
 				)
@@ -136,13 +135,13 @@ class Premium(commands.Cog):
 				with open("./.db/multiplayer/guilds.json", "w", encoding="utf-8") as write_file: json.dump(guilds_config_data, write_file, ensure_ascii = False, indent = 4)
 
 				#sleep(0.1)
-				await interaction.response.send_message(
+				await interaction.edit_original_response(content = 
 					f'{emoji_mark_success} Успешно, сервер `{guilds_config_data[str(server)]["overview"]["guild-name"]}` получил продление премиум-статуса на `{time} секунд`!'
 					+ f'\nОсталось: `{str(datetime.fromisoformat(privileges_0["premium-time-end"]) - datetime.now())[:-7]}`'
 					+ f'\nДата окончания премиума: `{str(privileges_0["premium-time-end"])[:-7]}`'
 				)
 		except Exception as e:
-			await interaction.response.send_message(f'||{e}||')
+			await interaction.edit_original_response(content = f'||{e}||')
 	
 	#--------------------------------------------------------------------------------------
 	
@@ -235,60 +234,64 @@ class Premium(commands.Cog):
 	@botFunctions.check_command_permissions()
 	@botFunctions.command_for_staff()
 	async def help_premium(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
-		if command == None:
-			emb = discord.Embed(
-				title = "Команды Premium",
-				description = ", ".join([
-					'`get_premium`',
-					'`delete_premium`',
-					#'`delete_premium_allservers`',
-					#'`delete_premium_uuid_history`',
-					#'`check_premium`',
-					#'`delete_premium_history_file`',
-					#'`check_premium_history_file`'
-				]),
-				color = 0x2b2d31
-			)
-		elif command.name:
-			self.text_footer = False
-			with open(f"./.db/doc/commands/{command.name}.yml", encoding="utf-8") as read_file: command_name = yaml.safe_load(read_file)
-			
-			if "describe" in command_name:
-				keys = list(command_name["describe"].keys())
-				text = ' '.join(keys)
-				def add_color_markers(text):
-					words = text.split()  # Разделяем текст на отдельные слова
-					result = ""
-					for word in words:
-						if word.endswith("!"):
-							# Если слово заканчивается "*", добавляем закрашивающие маркеры
-							result += "\u001b[0;31m" + word + "\u001b[0;0m" + " "
-							self.text_footer = True
-						else:
-							result += word + " "
-					return result.strip()  # Удаляем лишний пробел в конце строки
-				formatted_text = add_color_markers(text)
+		try:
+			if command == None:
+				emb = discord.Embed(
+					title = "Команды Premium",
+					description = ", ".join([
+						'`get_premium`',
+						'`delete_premium`',
+						#'`delete_premium_allservers`',
+						#'`delete_premium_uuid_history`',
+						#'`check_premium`',
+						#'`delete_premium_history_file`',
+						#'`check_premium_history_file`'
+					]),
+					color = 0x2b2d31
+				)
+			elif command.name:
+				self.text_footer = False
+				with open(f"./.db/doc/commands/{command.name}.yml", encoding="utf-8") as read_file: command_name = yaml.safe_load(read_file)
 				
-				parameters = f'\n'.join([
-					f'**Параметры:**',
-					"\n".join([f"`{key}`: {value}" for key, value in command_name["describe"].items()])
-				])
+				if "describe" in command_name:
+					keys = list(command_name["describe"].keys())
+					text = ' '.join(keys)
+					def add_color_markers(text):
+						words = text.split()  # Разделяем текст на отдельные слова
+						result = ""
+						for word in words:
+							if word.endswith("!"):
+								# Если слово заканчивается "*", добавляем закрашивающие маркеры
+								result += "\u001b[0;31m" + word + "\u001b[0;0m" + " "
+								self.text_footer = True
+							else:
+								result += word + " "
+						return result.strip()  # Удаляем лишний пробел в конце строки
+					formatted_text = add_color_markers(text)
+				else:
+					formatted_text = ""
+				emb = discord.Embed(title = f'Команда {command.name}', color = 0x2b2d31)
+				emb.add_field(
+					name = "Информация",
+					value = command_name["description"],
+					inline=False
+				)
+				emb.add_field(
+					name = "Паттерн",
+					value = f'\n```ansi\n/{command.name} {formatted_text}\n```',
+					inline=False
+				)
+				if "describe" in command_name: emb.add_field(
+					name = "Параметры",
+					value = "\n".join([f"`{key}` — {value}" for key, value in command_name["describe"].items()]),
+					inline=False
+				)
+				if self.text_footer: emb.set_footer(text = "! — обязательный параметр")
 			else:
-				formatted_text = ""
-				parameters = ""
-			emb = discord.Embed(
-				title = f'Команда {command.name}',
-				description = "\n".join([
-					f'**Информация:** {command_name["description"]}', # ГОТОВО
-					f'\n```ansi\n/{command.name} {formatted_text}\n```', # ГОТОВО
-					parameters # ГОТОВО
-				]),
-				color = 0x2b2d31
-			)
-			if self.text_footer: emb.set_footer(text = "! — обязательный параметр")
-		else:
-			return await interaction.response.send_message("Команда не найдена.", ephemeral = True)
-		await interaction.response.send_message(embed = emb, ephemeral = True)
+				return await interaction.response.send_message("Команда не найдена.", ephemeral = True)
+			await interaction.response.send_message(embed = emb, ephemeral = True)
+		except Exception as e:
+			await interaction.response.send_message(f'||{e}||')
 	
 	#--------------------------------------------------------------------------------------
 

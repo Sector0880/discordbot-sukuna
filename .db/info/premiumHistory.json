@@ -58,5 +58,25 @@
         "premium-time-extra-history": null,
         "premium-time-total": "0:08:20",
         "premium-time-end": "2023-09-02 12:48:20.010341 /!/ Премиум-подписка лишена"
+    },
+    "prem_9fdc9a9b2c3a47baa6d6c2a602d29202": {
+        "premium": false,
+        "premium-time-start": "2023-09-02 14:20:22.596284",
+        "premium-time-set": "1:23:20",
+        "premium-time-extra": null,
+        "premium-time-extra-count": 0,
+        "premium-time-extra-history": null,
+        "premium-time-total": "1:23:20",
+        "premium-time-end": "2023-09-02 15:43:42.596284 /!/ Премиум-подписка лишена"
+    },
+    "prem_a28869c8c3444840bbbd6ce972d6fbdb": {
+        "premium": true,
+        "premium-time-start": "2023-09-02 14:26:39.274230",
+        "premium-time-set": "0:00:05",
+        "premium-time-extra": "0:00:50",
+        "premium-time-extra-count": 1,
+        "premium-time-extra-history": "0:00:50",
+        "premium-time-total": "0:00:55",
+        "premium-time-end": "2023-09-02 14:27:34.274230"
     }
 }
