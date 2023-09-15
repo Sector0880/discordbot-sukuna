@@ -19,9 +19,7 @@
             },
             "privileges": [
                 {
-                    "premium": false,
-                    "premium-uuid-history": "prem_4125e85272744731a4475d1e790927d6, prem_10c46967347f41d28902c95f703e9f26",
-                    "premium-uuid-history-count": 2
+                    "premium": false
                 }
             ],
             "show_id": false
@@ -54,18 +52,9 @@
             },
             "privileges": [
                 {
-                    "premium": true,
-                    "premium-uuid-history": "prem_6215c412fe604daa90c1e01dfea907da, prem_6595212eff30478eb9c311d47132f70c, prem_445ae970c41641c4bafdc30cb6a03d5a, prem_0ea48a33c6a24f40b85378cb087624af, prem_9fdc9a9b2c3a47baa6d6c2a602d29202, prem_a28869c8c3444840bbbd6ce972d6fbdb",
-                    "premium-uuid-history-count": 6,
-                    "premium-uuid": "prem_a28869c8c3444840bbbd6ce972d6fbdb",
-                    "premium-time-start": "2023-09-02 14:26:39.274230",
-                    "premium-time-set": "0:00:05",
-                    "premium-time-extra": "0:00:50",
-                    "premium-time-extra-count": 1,
-                    "premium-time-extra-history": "0:00:50",
-                    "premium-time-total": "0:00:55",
-                    "premium-time-end": "2023-09-02 14:27:34.274230",
-                    "premium-time-remaining": "-1 day, 23:59:30"
+                    "premium": false,
+                    "premium-uuid-history": "prem_c7e4833dbc6040009519e5a259be98ef, prem_bf0b3c1154d041d8980eb3031721856c, prem_a99fa72023e74a6ab0d47a74db14d014",
+                    "premium-uuid-history-count": 3
                 }
             ],
             "show_id": false
