@@ -16,7 +16,7 @@ from botConfig import *
 from dbVars import *
 import botFunctions
 
-class Profile(commands.Cog):
+class ProfileCommands(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 	
@@ -34,8 +34,7 @@ class Profile(commands.Cog):
 				if role != interaction.guild.default_role:
 					role_list += f'<@&{role.id}> '
 					role_list_number += 1
-
-
+				
 			if profile.status == discord.Status.online:
 				status = '<:online:748149457396433016> В сети'
 			elif profile.status == discord.Status.idle:
@@ -44,7 +43,7 @@ class Profile(commands.Cog):
 				status = '<:dnd:748149518167441411> Не беспокоить'
 			else:
 				status = '<:offline:748149539915038731> Не в сети'
-
+			
 			emb = discord.Embed(colour = color_success)
 			emb.set_author(name = f'{profile}', icon_url = profile.avatar)
 			emb.set_thumbnail(url = profile.avatar)
@@ -55,9 +54,9 @@ class Profile(commands.Cog):
 			#emb.set_footer(text = f'ID: {profile.id}')
 			emb.timestamp = datetime.utcnow()
 
-			await interaction.response.send_message(embed = emb,ephemeral=True)
+			await interaction.response.send_message(embed = emb, ephemeral=True)
 		except Exception as e:
 			await interaction.response.send_message(e, ephemeral=True)
 
 async def setup(bot: commands.Bot):
-	await bot.add_cog(Profile(bot))
+	await bot.add_cog(ProfileCommands(bot))

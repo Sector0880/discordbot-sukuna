@@ -16,7 +16,7 @@ import botFunctions
 	#with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as file: return json.load(file)[str(ctx.guild.id)]["prefix"]
 
 bot = commands.Bot(
-	command_prefix = "*",
+	command_prefix = "!",
 	intents = discord.Intents.all()
 )
 #bot.remove_command("help")

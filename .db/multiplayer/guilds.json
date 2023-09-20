@@ -52,9 +52,7 @@
             },
             "privileges": [
                 {
-                    "premium": false,
-                    "premium-uuid-history": "prem_c7e4833dbc6040009519e5a259be98ef, prem_bf0b3c1154d041d8980eb3031721856c, prem_a99fa72023e74a6ab0d47a74db14d014",
-                    "premium-uuid-history-count": 3
+                    "premium": false
                 }
             ],
             "show_id": false

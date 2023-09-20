@@ -74,3 +74,14 @@ if time_count == None or re.fullmatch("0", time_count):
 
 if privileges_0["premium"] == True and "premium-time-start" not in privileges_0:
 	return await ctx.send(emoji_mark_error + "Сервер имеет вечный премиум-статус, нельзя задать премиум с временем.")
+
+"""
+if member.status == discord.Status.online:
+	status = '<:online:748149457396433016> В сети'
+elif member.status == discord.Status.idle:
+	status = '<:idle:748149485707984907> Не активен'
+elif member.status == discord.Status.dnd:
+	status = '<:dnd:748149518167441411> Не беспокоить'
+else:
+	status = '<:offline:748149539915038731> Не в сети'
+"""
