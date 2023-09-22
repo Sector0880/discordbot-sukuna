@@ -8,7 +8,7 @@ import asyncio
 import yaml
 
 from botConfig import *
-from dbVars import *
+#from dbVars import *
 import botFunctions
 
 
@@ -35,9 +35,9 @@ async def sync(ctx):
 @bot.command(aliases = ["rlc"]) 
 async def reload_exts(ctx):
 	# если сервер заблокирован то staff игнорируют это ограничение
-	if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return
+	#if ctx.author.id not in staff_staffList_SpecialPerms() and not guild_bot_output(ctx): return
 	# команда работает только для staff с специальными правами (список staffList_SpecialPerms)
-	if ctx.author.id not in staff_staffList_SpecialPerms(): return
+	#if ctx.author.id not in staff_staffList_SpecialPerms(): return
 
 	for filename in os.listdir("./ext/events"):
 		if filename.endswith(".py"):
@@ -65,10 +65,10 @@ async def func_load_cogs():
 		if filename.endswith(".py"):
 			await bot.load_extension(f"ext.events.{filename[:-3]}")
 			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файлы \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mevents\x1b[0m загружены!')
-	for filename in os.listdir("./ext/commands/main"):
-		if filename.endswith(".py"):
-			await bot.load_extension(f"ext.commands.main.{filename[:-3]}")
-			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файлы \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mcommands/main\x1b[0m загружены!')
+	#for filename in os.listdir("./ext/commands/main"):
+		#if filename.endswith(".py"):
+			#await bot.load_extension(f"ext.commands.main.{filename[:-3]}")
+			#print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файлы \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mcommands/main\x1b[0m загружены!')
 
 async def get_all_guilds():
 	guilds = [guild.id for guild in bot.guilds]

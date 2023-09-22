@@ -5,7 +5,7 @@ import json
 import asyncio
 
 
-class GuildsEvents(commands.Cog):
+class MultiplayerEvents(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
@@ -130,11 +130,7 @@ class GuildsEvents(commands.Cog):
 	async def on_ready(self):
 		await self.bot.wait_until_ready()
 		self.check_guilds_config.start()
-		#for seconds in range(60, 0, -1):
-			#print(f"Секунд осталось:{seconds}", end = ' \r')
-			#time.sleep(1)
-			#seconds -= 1
 
 
 async def setup(bot):
-	await bot.add_cog(GuildsEvents(bot))
+	await bot.add_cog(MultiplayerEvents(bot))
