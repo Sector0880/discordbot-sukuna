@@ -12,14 +12,11 @@ class MultiplayerEvents(commands.Cog):
 	@commands.Cog.listener()
 	async def on_guild_join(self, guild):
 		# open db
-		#with open("./.db/multiplayer/economic.json", "r", encoding="utf-8") as read_file: data_economic = json.load(read_file) # not used for guilds
 		with open("./.db/multiplayer/gateaway.json", "r", encoding="utf-8") as read_file: data_gateaway = json.load(read_file) # success
 		with open("./.db/multiplayer/main.json", "r", encoding="utf-8") as read_file: data_main = json.load(read_file) # success
-		#with open("./.db/multiplayer/marriage.json", "r", encoding="utf-8") as read_file: data_marriage = json.load(read_file) # not used for guilds
 		with open("./.db/multiplayer/modules.json", "r", encoding="utf-8") as read_file: data_modules = json.load(read_file) # success
 		with open("./.db/multiplayer/_serversinfo.json", "r", encoding="utf-8") as read_file: data__serversinfo = json.load(read_file) # success
 		with open("./.db/multiplayer/premium.json", "r", encoding="utf-8") as read_file: data_premium = json.load(read_file) # success
-		#with open("./.db/multiplayer/profiles.json", "r", encoding="utf-8") as read_file: data_profiles = json.load(read_file) # not used for guilds
 
 		if str(guild.id) not in data_main.keys():
 			data_main[str(guild.id)] = {
@@ -61,14 +58,11 @@ class MultiplayerEvents(commands.Cog):
 			}
 		
 		# write db
-		#with open("./.db/multiplayer/economic.json", "r", encoding="utf-8") as write_file: json.dump(data_economic, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/gateaway.json", "w", encoding="utf-8") as write_file: json.dump(data_gateaway, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/main.json", "w", encoding="utf-8") as write_file: json.dump(data_main, write_file, ensure_ascii = False, indent = 4)
-		#with open("./.db/multiplayer/marriage.json", "r", encoding="utf-8") as write_file: json.dump(data_marriage, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/modules.json", "w", encoding="utf-8") as write_file: json.dump(data_modules, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/_serversinfo.json", "w", encoding="utf-8") as write_file: json.dump(data__serversinfo, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/premium.json", "w", encoding="utf-8") as write_file: json.dump(data_premium, write_file, ensure_ascii = False, indent = 4)
-		#with open("./.db/multiplayer/profiles.json", "r", encoding="utf-8") as write_file: json.dump(data_profiles, write_file, ensure_ascii = False, indent = 4)
 
 
 		# create role muted
@@ -95,14 +89,11 @@ class MultiplayerEvents(commands.Cog):
 	@tasks.loop(minutes = 10)
 	async def check_multiplayer_correct(self):
 		# open db
-		#with open("./.db/multiplayer/economic.json", "r", encoding="utf-8") as read_file: data_economic = json.load(read_file)
 		with open("./.db/multiplayer/gateaway.json", "r", encoding="utf-8") as read_file: data_gateaway = json.load(read_file)
 		with open("./.db/multiplayer/main.json", "r", encoding="utf-8") as read_file: data_main = json.load(read_file)
-		#with open("./.db/multiplayer/marriage.json", "r", encoding="utf-8") as read_file: data_marriage = json.load(read_file)
 		with open("./.db/multiplayer/modules.json", "r", encoding="utf-8") as read_file: data_modules = json.load(read_file)
 		with open("./.db/multiplayer/_serversinfo.json", "r", encoding="utf-8") as read_file: data__serversinfo = json.load(read_file)
 		with open("./.db/multiplayer/premium.json", "r", encoding="utf-8") as read_file: data_premium = json.load(read_file)
-		#with open("./.db/multiplayer/profiles.json", "r", encoding="utf-8") as read_file: data_profiles = json.load(read_file)
 
 		for guild in self.bot.guilds:
 			if str(guild.id) not in data_main.keys():
@@ -149,14 +140,11 @@ class MultiplayerEvents(commands.Cog):
 			data__serversinfo[str(guild.id)]["owner-id"] = guild.owner.id
 
 		# write db
-		#with open("./.db/multiplayer/economic.json", "r", encoding="utf-8") as write_file: json.dump(data_economic, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/gateaway.json", "w", encoding="utf-8") as write_file: json.dump(data_gateaway, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/main.json", "w", encoding="utf-8") as write_file: json.dump(data_main, write_file, ensure_ascii = False, indent = 4)
-		#with open("./.db/multiplayer/marriage.json", "r", encoding="utf-8") as write_file: json.dump(data_marriage, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/modules.json", "w", encoding="utf-8") as write_file: json.dump(data_modules, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/_serversinfo.json", "w", encoding="utf-8") as write_file: json.dump(data__serversinfo, write_file, ensure_ascii = False, indent = 4)
 		with open("./.db/multiplayer/premium.json", "w", encoding="utf-8") as write_file: json.dump(data_premium, write_file, ensure_ascii = False, indent = 4)
-		#with open("./.db/multiplayer/profiles.json", "r", encoding="utf-8") as write_file: json.dump(data_profiles, write_file, ensure_ascii = False, indent = 4)
 	
 	@commands.Cog.listener()
 	async def on_ready(self):
