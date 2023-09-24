@@ -1,0 +1,56 @@
+{
+    "815119789110198293": {
+        "overview": {
+            "guild-name": "Nexus Library Beta",
+            "guild-id": 815119789110198293,
+            "owner-name": "sectormain",
+            "owner-id": 980175834373562439
+        },
+        "portal": {
+            "presence": true,
+            "gateaway": {
+                "?open": true
+            }
+        },
+        "prefix": "s!",
+        "language": "ru",
+        "modules": {
+            "audit": false,
+            "economic": false,
+            "fun": false,
+            "moderation": false,
+            "music": false,
+            "profiles": false
+        },
+        "premium": {
+            "?work": false
+        }
+    },
+    "1130857157215146064": {
+        "overview": {
+            "guild-name": "Тестовый сервер бота Ады",
+            "guild-id": 1130857157215146064,
+            "owner-name": "sectormain",
+            "owner-id": 980175834373562439
+        },
+        "portal": {
+            "presence": true,
+            "gateaway": {
+                "?open": true
+            }
+        },
+        "prefix": "s!",
+        "language": "ru",
+        "modules": {
+            "audit": false,
+            "economic": false,
+            "fun": false,
+            "moderation": false,
+            "music": false,
+            "profiles": false
+        },
+        "premium": {
+            "?work": false
+        }
+    }
+}
