@@ -32,7 +32,7 @@ class RoleMute(commands.Cog):
 			print(e)
 	
 	@commands.command()
-	async def files_status(self, ctx):
+	async def f(self, ctx):
 		await ctx.send("lol")
 
 async def setup(bot):

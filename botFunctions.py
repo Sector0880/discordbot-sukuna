@@ -9,6 +9,14 @@ import sys
 from botConfig import *
 from dbVars import *
 
+def get_prefix(bot, ctx):
+	with open("./.db/multipresence/guilds/config.json", "r", encoding="utf-8") as file: db_guild_data = json.load(file)
+	if str(ctx.guild.id) not in db_guild_data.keys():
+		with open("./.db/multipresence/guilds/config.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)["prefix"]
+	else:
+		with open("./.db/multipresence/guilds/config.json", "r", encoding="utf-8") as file: return json.load(file)[str(ctx.guild.id)]["prefix"]
+
+
 # rework
 async def command_counter(ctx):
 	#command = ctx.invoked_with
