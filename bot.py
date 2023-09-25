@@ -8,15 +8,17 @@ import asyncio
 import yaml
 
 from botConfig import *
-#from dbVars import *
+from dbVars import *
 import botFunctions
 
 
-#def get_prefix(bot, ctx):
-	#with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as file: return json.load(file)[str(ctx.guild.id)]["prefix"]
+def get_prefix_base(bot, ctx):
+	with open("./.db/multipresence/guilds/config.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)["prefix"]
+def get_prefix(bot, ctx):
+	with open("./.db/multipresence/guilds/config.json", "r", encoding="utf-8") as file: return json.load(file)[str(ctx.guild.id)]["prefix"]
 
 bot = commands.Bot(
-	command_prefix = "!",
+	command_prefix = get_prefix_base,
 	intents = discord.Intents.all()
 )
 #bot.remove_command("help")

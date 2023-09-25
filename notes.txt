@@ -1,4 +1,0 @@
-Задачи:
-1. - Обновить переменные в dbVars.py и botConfig.py
-2. - Обновить функции в botFunctions.py
-3. - Обновить bot.py
