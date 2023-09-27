@@ -1,9 +1,6 @@
 import discord
-from discord.ext import commands, tasks
-from discord import app_commands
+from discord.ext import commands
 
-import json
-import asyncio
 from dbVars import *
 
 class RoleMute(commands.Cog):
@@ -22,18 +19,6 @@ class RoleMute(commands.Cog):
 		for channel in guild.voice_channels: await channel.set_permissions(role_mute, connect = False)
 
 		self.bot.tree.copy_global_to(guild=discord.Object(id=guild.id))
-	
-	@app_commands.command()
-	async def example(self, interaction: discord.Interaction):
-		try:
-			await interaction.response.defer(ephemeral = True, thinking = True)
-			await interaction.edit_original_response(content = guild_config_json_prefix(interaction))
-		except Exception as e:
-			print(e)
-	
-	@commands.command()
-	async def f(self, ctx):
-		await ctx.send("lol")
 
 async def setup(bot):
 	await bot.add_cog(RoleMute(bot))

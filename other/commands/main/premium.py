@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 
 from botConfig import *
 from dbVars import *
-import botFunctions
+import botDecorators
 	
 class PremiumCommands(commands.Cog):
 	def __init__(self, bot: commands.Bot):
@@ -24,7 +24,7 @@ class PremiumCommands(commands.Cog):
 		name = "check_premium",
 		description = "Проверить премиум-статус у сервера (показывает данные с базы данных)"
 	)
-	@botFunctions.check_command_permissions()
+	@botDecorators.check_command_permissions()
 	async def check_premium(self, interaction: discord.Interaction):
 		# open db
 		with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file)

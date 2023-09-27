@@ -9,12 +9,12 @@ import yaml
 
 from botConfig import *
 from dbVars import *
-import botFunctions
+import botDecorators
 
 
 
 bot = commands.Bot(
-	command_prefix = botFunctions.get_prefix,
+	command_prefix = botDecorators.get_prefix,
 	intents = discord.Intents.all()
 )
 #bot.remove_command("help")

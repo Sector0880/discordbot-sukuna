@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 
 from botConfig import *
 from dbVars import *
-import botFunctions
+import botDecorators
 
 class Premium(commands.Cog):
 	def __init__(self, bot: commands.Bot):
@@ -26,8 +26,8 @@ class Premium(commands.Cog):
 		server = command_get_premium()["describe"]["server!"], 
 		time = command_get_premium()["describe"]["time!"]
 	)
-	@botFunctions.check_command_permissions()
-	@botFunctions.command_for_staff()
+	@botDecorators.check_command_permissions()
+	@botDecorators.command_for_staff()
 	async def get_premium(self, interaction: discord.Interaction, server: str, *, time: int):
 		try:
 			with open("./.db/multiplayer/guilds.json", "r", encoding="utf-8") as read_file: guilds_config_data = json.load(read_file) # сервера
@@ -150,7 +150,7 @@ class Premium(commands.Cog):
 		description = command_delete_premium()["description"]
 	)
 	@app_commands.describe(server = command_delete_premium()["describe"]["server!"])
-	@botFunctions.check_command_permissions()
+	@botDecorators.check_command_permissions()
 	async def delete_premium(self, interaction: discord.Interaction, server: str):
 		try:
 			# open db
@@ -231,8 +231,8 @@ class Premium(commands.Cog):
 		#app_commands.Choice(name = "delete_premium_history_file", value = 6),
 		#app_commands.Choice(name = "check_premium_history_file", value = 7)
 	])
-	@botFunctions.check_command_permissions()
-	@botFunctions.command_for_staff()
+	@botDecorators.check_command_permissions()
+	@botDecorators.command_for_staff()
 	async def help_premium(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
 		try:
 			if command == None:

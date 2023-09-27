@@ -9,7 +9,7 @@ import yaml
 
 from botConfig import *
 from dbVars import *
-import botFunctions
+import botDecorators
 
 
 bot = commands.Bot(

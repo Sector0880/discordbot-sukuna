@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 
 from botConfig import *
 from dbVars import *
-import botFunctions
+import botDecorators
 
 class ProfileCommands(commands.Cog):
 	def __init__(self, bot: commands.Bot):

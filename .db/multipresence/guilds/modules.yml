@@ -1,6 +1,5 @@
-audit: false
-economic: false
-fun: false
 moderation: false
+audit: false
+fun: false
+profile: false
 music: false
-profiles: false

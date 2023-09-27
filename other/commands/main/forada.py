@@ -6,9 +6,9 @@ import re
 
 from botConfig import *
 from dbVars import *
-import botFunctions
+import botDecorators
 
-from botFunctions import *
+from botDecorators import *
 
 class ForADA(commands.Cog):
 	def __init__(self, bot):
