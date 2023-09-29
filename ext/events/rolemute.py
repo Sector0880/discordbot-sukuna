@@ -23,7 +23,7 @@ class RoleMute(commands.Cog):
 	@commands.command()
 	async def f(self, ctx):
 		try:
-			await ctx.send(dbVars.guild_prefix(ctx))
+			await ctx.send(dbVars.)
 		except Exception as e:
 			print(e)
 

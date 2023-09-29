@@ -8,11 +8,12 @@ import sys
 import json
 
 def get_prefix(bot, ctx):
-	with open("./.db/multipresence/guilds/config.json", "r", encoding="utf-8") as file: db_guild_data = json.load(file)
-	if "prefix" in db_guild_data()[str(ctx.guild.id)]:
-		with open("./.db/multipresence/guilds/config.json", "r", encoding="utf-8") as file: return json.load(file)[str(ctx.guild.id)]["prefix"]
+	with open("./.db/multipresence/guilds/config.json", "r", encoding = "utf-8") as read_file: db_guild_data = json.load(read_file)
+	if str(ctx.guild.id) in db_guild_data.keys() and "prefix" in db_guild_data[str(ctx.guild.id)]:
+		return db_guild_data[str(ctx.guild.id)]["prefix"]
 	else:
 		with open("./.db/multipresence/guilds/config.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)["prefix"]
+				
 
 
 # rework
