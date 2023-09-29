@@ -7,14 +7,13 @@ import os
 import asyncio
 import yaml
 
-from botConfig import *
-from dbVars import *
-import botDecorators
-
+import botConfig
+import dbVars
+from botFunctions import *
 
 
 bot = commands.Bot(
-	command_prefix = botDecorators.get_prefix,
+	command_prefix = "f",
 	intents = discord.Intents.all()
 )
 #bot.remove_command("help")
@@ -53,7 +52,7 @@ print("\n".join([
 	"███████ ██    ██ █████   ██    ██ ██ ██  ██ ███████ ",
 	"     ██ ██    ██ ██  ██  ██    ██ ██  ██ ██ ██   ██ ",
 	"███████  ██████  ██   ██  ██████  ██   ████ ██   ██ ",
-	f'\x1b[37;43mVERSION\x1b[0m: \x1b[31m{version["number"]}\x1b[0m \x1b[0m{version["name"]}\x1b[0m'
+	f'\x1b[37;43mVERSION\x1b[0m: \x1b[31m{botConfig.version["number"]}\x1b[0m \x1b[0m{botConfig.version["name"]}\x1b[0m'
 	"\n"
 ]))
 
@@ -78,5 +77,5 @@ async def main():
 		guild_ids = await get_all_guilds()
 		for guild_id in guild_ids: bot.tree.copy_global_to(guild = discord.Object(id = guild_id))
 
-		await bot.start(token)
+		await bot.start(botConfig.token)
 asyncio.run(main())

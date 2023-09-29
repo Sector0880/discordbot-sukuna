@@ -2,7 +2,7 @@
 import yaml
 import json
 
-# ✓
+# 
 class Bot:
 	def read_bot(self):
 		with open("./.db/bot/bot.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
@@ -11,95 +11,98 @@ bot_presence = Bot().get_bot_presence
 
 class Multipresence:
 	class Guilds:
-		# config ✓
+		# config 
 		# -----------------------------------------
-		# imports ✓
+		# imports 
 		def read_guilds_config_yml(self):
 			with open("./.db/multipresence/guilds/config.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		def read_guilds_config_json(self):
 			with open("./.db/multipresence/guilds/config.json", "r", encoding="utf-8") as read_file: return json.load(read_file)
 		
-		# gets ✓
+		# gets 
 		def get_guild_prefix(self, ctx): 
-			if str(ctx.guild.id) not in self.read_guilds_config_json().keys(): 
-				return self.read_guilds_config_yml()["prefix"] 
+			if str(ctx.guild.id) in self.read_guilds_config_json().keys():
+				if "prefix" not in self.read_guilds_config_json()[str(ctx.guild.id)]:
+					return self.read_guilds_config_yml()["prefix"] 
+				else:
+					return self.read_guilds_config_json()[str(ctx.guild.id)]["prefix"] 
 			else:
-				return self.read_guilds_config_json()[str(ctx.guild.id)]["prefix"] 
+				return self.read_guilds_config_yml()["prefix"] 
 		def get_guild_language(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_config_json().keys():
+			if "language" not in self.read_guilds_config_json()[str(ctx.guild.id)]:
 				return self.read_guilds_config_yml()["language"]
 			else:
 				return self.read_guilds_config_json()[str(ctx.guild.id)]["language"]
 		# -----------------------------------------
 		
-		# modules ✓
+		# modules 
 		# -----------------------------------------
-		# imports ✓
+		# imports 
 		def read_guilds_modules_yml(self):
 			with open("./.db/multipresence/guilds/modules.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		def read_guilds_modules_json(self):
 			with open("./.db/multipresence/guilds/modules.json", "r", encoding="utf-8") as read_file: return json.load(read_file)
 		
-		# gets ✓
+		# gets 
 		def get_guild_module_moderation(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_modules_json().keys():
+			if "moderation" not in self.read_guilds_modules_json()[str(ctx.guild.id)]:
 				return self.read_guilds_modules_yml()["moderation"]
 			else:
 				return self.read_guilds_modules_json()[str(ctx.guild.id)]["moderation"]
 		def get_guild_module_audit(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_modules_json().keys():
+			if "audit" not in self.read_guilds_modules_json()[str(ctx.guild.id)]:
 				return self.read_guilds_modules_yml()["audit"]
 			else:
 				return self.read_guilds_modules_json()[str(ctx.guild.id)]["audit"]
 		def get_guild_module_fun(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_modules_json().keys():
+			if "fun" not in self.read_guilds_modules_json()[str(ctx.guild.id)]:
 				return self.read_guilds_modules_yml()["fun"]
 			else:
 				return self.read_guilds_modules_json()[str(ctx.guild.id)]["fun"]
 		def get_guild_module_profile(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_modules_json().keys():
+			if "profile" not in self.read_guilds_modules_json()[str(ctx.guild.id)]:
 				return self.read_guilds_modules_yml()["profile"]
 			else:
 				return self.read_guilds_modules_json()[str(ctx.guild.id)]["profile"]
 		def get_guild_module_music(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_modules_json().keys():
+			if "music" not in self.read_guilds_modules_json()[str(ctx.guild.id)]:
 				return self.read_guilds_modules_yml()["music"]
 			else:
 				return self.read_guilds_modules_json()[str(ctx.guild.id)]["music"]
 		# -----------------------------------------
 
-		# portal ✓
+		# portal 
 		# -----------------------------------------
-		# imports ✓
+		# imports 
 		def read_guilds_portal_yml(self):
 			with open("./.db/multipresence/guilds/portal.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		def read_guilds_portal_json(self):
 			with open("./.db/multipresence/guilds/portal.json", "r", encoding="utf-8") as read_file: return json.load(read_file)
 		
-		# gets ✓
+		# gets 
 		def get_guild_presence(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_portal_json().keys():
+			if "presence" not in self.read_guilds_portal_json()[str(ctx.guild.id)]:
 				return self.read_guilds_portal_yml()["presence"]
 			else:
 				return self.read_guilds_portal_json()[str(ctx.guild.id)]["presence"]
 		def get_guild_gateaway_open(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_portal_json().keys():
+			if "open" not in self.read_guilds_portal_json()[str(ctx.guild.id)]["gateaway"]:
 				return self.read_guilds_portal_yml()["gateaway"]["open"]
 			else:
 				return self.read_guilds_portal_json()[str(ctx.guild.id)]["gateaway"]["open"]
 		# -----------------------------------------
 
-		# premium ✓
+		# premium 
 		# -----------------------------------------
-		# imports ✓
+		# imports 
 		def read_guilds_premium_yml(self):
 			with open("./.db/multipresence/guilds/premium.yml", "r", encoding="utf-8") as read_file: return yaml.safe_load(read_file)
 		def read_guilds_premium_json(self):
 			with open("./.db/multipresence/guilds/premium.json", "r", encoding="utf-8") as read_file: return json.load(read_file)
 		
-		# gets ✓
+		# gets 
 		def get_guild_premium_work(self, ctx):
-			if str(ctx.guild.id) not in self.read_guilds_premium_json().keys():
+			if "work" not in self.read_guilds_premium_json()[str(ctx.guild.id)]["premium"]:
 				return self.read_guilds_premium_yml()["premium"]["work"]
 			else:
 				return self.read_guilds_premium_json()[str(ctx.guild.id)]["premium"]["work"]
