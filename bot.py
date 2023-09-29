@@ -13,7 +13,7 @@ from botFunctions import *
 
 
 bot = commands.Bot(
-	command_prefix = "f",
+	command_prefix = "!",
 	intents = discord.Intents.all()
 )
 #bot.remove_command("help")

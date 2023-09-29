@@ -21,13 +21,10 @@ class Multipresence:
 		
 		# gets 
 		def get_guild_prefix(self, ctx): 
-			if str(ctx.guild.id) in self.read_guilds_config_json().keys():
-				if "prefix" not in self.read_guilds_config_json()[str(ctx.guild.id)]:
-					return self.read_guilds_config_yml()["prefix"] 
-				else:
-					return self.read_guilds_config_json()[str(ctx.guild.id)]["prefix"] 
+			if str(ctx.guild.id) in self.read_guilds_config_json().keys() and "prefix" in self.read_guilds_config_json()[str(ctx.guild.id)]:
+				return self.read_guilds_config_json()[str(ctx.guild.id)]["prefix"] 
 			else:
-				return self.read_guilds_config_yml()["prefix"] 
+				return self.read_guilds_config_yml()["prefix"]
 		def get_guild_language(self, ctx):
 			if "language" not in self.read_guilds_config_json()[str(ctx.guild.id)]:
 				return self.read_guilds_config_yml()["language"]
