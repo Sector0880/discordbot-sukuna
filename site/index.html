@@ -1,60 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sukuna bot | Board</title>
+    <title>Sukuna | Панель управления</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <form action="">
         <header>
-            <h1><span>Sukuna</span> | Панель управления</h1>
+            <h2><span id="sukuna-text">Sukuna</span> | Панель управления</h2>
             <p id="clock">Javascript Часы</p>
         </header> 
         <hr>
         <div id="select-server-box">
             <div class="section-header">
                 <img class = "section-header-icon" src="img/server.gif" alt="">
-                <h2>Server</h2>
+                <h3>Guild</h3>
             </div>
-            <select id="guildsList">
-                <option value="YML" selected>Base instructions from YML</option>
-            </select>
+            <div id="verify-server">
+                <p>Guild-check_system</p>
+                <input type="search" name="" id="select-server-box" placeholder="123456789">
+            </div>
+            <button>Загрузить</button>
         </div>
         <fieldset>
             <section>
                 <div class="section-header">
                     <img src="img/cog.png" alt="">
-                    <h2>Config</h2>
+                    <h3>Config</h3>
                 </div>
                 <p>Скоро...</p>
             </section>
             <section>
                 <div class="section-header">
                     <img src="img/modules.png" alt="">
-                    <h2>Modules</h2>
+                    <h3>Modules</h3>
                 </div>
                 <p>Скоро...</p>
             </section>
             <section>
                 <div class="section-header">
                     <img src="img/portal.png" alt="">
-                    <h2>Portal</h2>
+                    <h3>Portal</h3>
                 </div>
                 <p>Скоро...</p>
             </section>
             <section>
                 <div class="section-header">
                     <img src="img/premium.png" alt="">
-                    <h2>Premium</h2>
+                    <h3>Premium</h3>
                 </div>
                 <p>Скоро...</p>
             </section>
         </fieldset>
     </form>
     <footer>
-        <p id="siteinfo">&#169; 2023 Разработчик <a id="vklink" href="https://vk.com/sectormain" target="_blank">Пашков Максим</a> | Актуальная версия от 2023-09-30</p>
+        <p id="siteinfo">&#169; 2023 Разработчик <a id="vklink" href="https://vk.com/sectormain" target="_blank">Пашков Максим</a> | v0.9.002 | Актуальная версия от 2023-09-30</p>
     </footer>
     <script src="js/script.js"></script>
 </body>

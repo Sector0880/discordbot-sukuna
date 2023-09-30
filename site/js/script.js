@@ -44,35 +44,9 @@ function addEvent(elm, evType, fn, useCapture) {
         elm['on' + evType] = fn;
     }
 }
-
 addEvent(window, "load", function () {
     if (document.getElementById("clock")) {
         var clock = new Clock("clock");
         clock.updateClock();
     }
 });
-
-
-fetch("C:/Users/1/Документы/GitHub/discordbot-sukuna/.db/multipresence/guildsCount.json") // Укажите правильный путь к файлу guildsCount.json
-  .then(response => response.json())
-  .then(data => {
-    const select = document.getElementById("guildsList");
-
-    // Проверяем, существует ли массив с именем 'guilds-list' в структуре JSON файла
-    if (data.hasOwnProperty('guilds-list')) {
-      // Итерируемся по элементам массива и создаем <option> для каждого элемента
-      data['guilds-list'].forEach(guildId => {
-        const option = document.createElement("option");
-        option.text = guildId;
-        option.value = guildId;
-        select.add(option);
-      });
-    } else {
-      // Если массив 'guilds-list' не найден, выводим сообщение об ошибке в консоль
-      console.error("Массив 'guilds-list' не найден в файле guildsCount.json");
-    }
-  })
-  .catch(error => {
-    // Если произошла ошибка при загрузке или разборе JSON файла, выводим сообщение об ошибке в консоль
-    console.error("Ошибка:", error);
-  });
