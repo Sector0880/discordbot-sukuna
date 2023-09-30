@@ -60,6 +60,12 @@ fieldset section {
     padding: 15px;
     height: 370px;
 }
+fieldset section {
+    width: 250px;
+    box-shadow: 10px 5px 10px rgba(0, 0, 0, .2);
+    padding: 15px;
+    height: 370px;
+}
 
 fieldset section:not(:hover) {
     opacity: .3;
@@ -80,6 +86,12 @@ fieldset section:hover {
 .section-header img {
     width: 40px;
     padding-right: 10px;
+}
+.section1-header {
+    display: flex;
+    align-items: center;
+    cursor: default;
+    font-size: 16px;
 }
 
 
@@ -133,6 +145,7 @@ footer {
     width: 100px;
     font-weight: bold;
     cursor: pointer;
+    font-size: 18px;
 }
 
 section input {
