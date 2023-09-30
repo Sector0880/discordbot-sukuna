@@ -8,7 +8,7 @@ body {
     height: 100vh;
     display: flex;
     width: 100%;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
     flex-direction: column;
@@ -57,8 +57,8 @@ fieldset {
 fieldset section {
     width: 250px;
     box-shadow: 10px 5px 10px rgba(0, 0, 0, .2);
-    
     padding: 15px;
+    height: 370px;
 }
 
 fieldset section:not(:hover) {
@@ -75,6 +75,7 @@ fieldset section:hover {
     align-items: center;
     cursor: default;
     font-size: 16px;
+    margin-bottom: 15px;
 }
 .section-header img {
     width: 40px;
@@ -123,7 +124,8 @@ footer {
 #verify-server p {
     position: absolute;
     opacity: .3;
-    display: none;
+    display: inherit;
+    cursor: default;
 }
 #select-server-box button {
     height: 40px;
@@ -131,4 +133,25 @@ footer {
     width: 100px;
     font-weight: bold;
     cursor: pointer;
+}
+
+section input {
+    width: 100%;
+    text-indent: 15px;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    height: 30px;
+    font-size: 14px;
+}
+section {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+}
+.section-place {
+    margin-top: 10px;
+}
+.section-place legend {
+    font-weight: bold;
 }

@@ -10,7 +10,8 @@
     <form action="">
         <header>
             <h2><span id="sukuna-text">Sukuna</span> | Панель управления</h2>
-            <p id="clock">Javascript Часы</p>
+            <p>Статус: offline | Серверов: 0</p>
+            <p id="clock">Текущая дата: ..., 00 ... 00:00:00 0000</p>
         </header> 
         <hr>
         <div id="select-server-box">
@@ -19,7 +20,7 @@
                 <h3>Guild</h3>
             </div>
             <div id="verify-server">
-                <p>Guild-check_system</p>
+                <p>Проверка невозможна: ошибка связи с базой данных.</p>
                 <input type="search" name="" id="select-server-box" placeholder="123456789">
             </div>
             <button>Загрузить</button>
@@ -30,28 +31,64 @@
                     <img src="img/cog.png" alt="">
                     <h3>Config</h3>
                 </div>
-                <p>Скоро...</p>
+                <div class="section-place">
+                    <legend>Префикс:</legend>
+                <input type="text" placeholder="s!">
+                </div>
+                <div class="section-place">
+                    <legend>Язык:</legend>
+                    <input type="text" placeholder="ru">
+                </div>
             </section>
             <section>
                 <div class="section-header">
                     <img src="img/modules.png" alt="">
                     <h3>Modules</h3>
                 </div>
-                <p>Скоро...</p>
+                <div class="section-place">
+                    <legend>Модерация:</legend>
+                <input type="text" placeholder="false">
+                </div>
+                <div class="section-place">
+                    <legend>Аудит:</legend>
+                <input type="text" placeholder="false">
+                </div>
+                <div class="section-place">
+                    <legend>Развлечения:</legend>
+                    <input type="text" placeholder="false">
+                </div>
+                <div class="section-place">
+                    <legend>Профиль:</legend>
+                <input type="text" placeholder="false">
+                </div>
+                <div class="section-place">
+                    <legend>Музыка:</legend>
+                    <input type="text" placeholder="false">
+                </div>
             </section>
             <section>
                 <div class="section-header">
                     <img src="img/portal.png" alt="">
                     <h3>Portal</h3>
                 </div>
-                <p>Скоро...</p>
+                <div class="section-place">
+                    <legend>Присутствие:</legend>
+                    <input type="text" placeholder="true">
+                </div>
+                <div class="section-place">
+                    <legend>Шлюз:</legend>
+                    <input type="text" placeholder="true">
+                </div>
             </section>
             <section>
                 <div class="section-header">
                     <img src="img/premium.png" alt="">
                     <h3>Premium</h3>
                 </div>
-                <p>Скоро...</p>
+                <div class="section-place">
+                    <legend>Премиум:</legend>
+                    <input type="text" placeholder="true">
+                </div>
             </section>
         </fieldset>
     </form>
