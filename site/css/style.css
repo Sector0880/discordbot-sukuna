@@ -1,0 +1,84 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family:'Courier New', Courier, monospace;
+}
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+form {
+    width: 1200px;
+}
+form header {
+    text-align: center;
+    cursor: default;
+}
+hr {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+fieldset {
+    border: none;
+    display: flex;
+    justify-content: space-between;
+}
+fieldset section {
+    width: 280px;
+}
+
+fieldset section:not(:hover) {
+    opacity: .3;
+    transition: .3s;
+}
+fieldset section:hover {
+    opacity: 1;
+    transition: .3s;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    cursor: default;
+    font-size: 16px;
+}
+.section-header img {
+    width: 30px;
+    padding-right: 10px;
+}
+
+
+footer {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 50px;
+}
+#siteinfo {
+    color: rgb(184, 184, 184);
+    width: 900px;
+    font-size: 14px;
+    cursor: default;
+}
+#vklink{
+    text-decoration: none;
+    color: rgb(33, 105, 212);
+}
+
+#select-server-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+#select-server-box select {
+    width: 500px;
+    height: 40px;
+    font-size: 16px;
+    margin-left: 20px;
+    text-indent: 15px;
+}
