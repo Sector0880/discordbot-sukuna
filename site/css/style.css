@@ -2,31 +2,34 @@
     margin: 0;
     padding: 0;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    border-radius: 15px;
 }
 body {
-    height: 100vh;
+    margin-top: 14px;
+    /*overflow-y: hidden;*/
+    /*height: 100vh;*/
     display: flex;
-    width: 100%;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
     flex-direction: column;
 }
-form {
-    width: 1200px;
-}
-form header {
-    text-align: center;
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     cursor: default;
 }
+form {
+    width: 1100px;
+}
+/* --------------------------------------------- */
 
 #sukuna-text {
     font-weight: bold;
     font-family: arial;
     display: inline-block;
     position: relative;
-    -webkit-mask-image: linear-gradient(-75deg, rgba(0, 0, 0, .6) 30%, #000 50%, rgba(0, 0, 0, .6) 70%);
+    -webkit-mask-image: linear-gradient(-75deg, rgba(0, 0, 0, 0.6) 30%, #000000 50%, rgba(0, 0, 0, 0.6) 70%);
     -webkit-mask-size: 200%;
     animation: wave 2s infinite;
 }
@@ -45,9 +48,7 @@ hr {
     border: none;
     border-bottom: 1px solid #1f1209;
     box-shadow: 0 20px 20px -20px #333;
-    width: 95%;
     opacity: .5;
-    border-radius: 15px;
 }
 fieldset {
     border: none;
@@ -57,14 +58,9 @@ fieldset {
 fieldset section {
     width: 250px;
     box-shadow: 10px 5px 10px rgba(0, 0, 0, .2);
-    padding: 15px;
     height: 370px;
-}
-fieldset section {
-    width: 250px;
-    box-shadow: 10px 5px 10px rgba(0, 0, 0, .2);
-    padding: 15px;
-    height: 370px;
+    padding-right: 10px;
+    border: 1px solid black;
 }
 
 fieldset section:not(:hover) {
@@ -82,6 +78,8 @@ fieldset section:hover {
     cursor: default;
     font-size: 16px;
     margin-bottom: 15px;
+    padding-left: 15px;
+    padding-top: 15px;
 }
 .section-header img {
     width: 40px;
@@ -106,6 +104,7 @@ footer {
     width: 900px;
     font-size: 14px;
     cursor: default;
+    margin-bottom: 14px;
 }
 #vklink{
     text-decoration: none;
@@ -120,7 +119,7 @@ footer {
     margin-bottom: 20px;
     box-shadow: 10px 5px 10px rgba(0, 0, 0, .2);
     padding: 15px;
-    
+    border: 1px solid black;
 }
 
 #select-server-box input {
@@ -142,7 +141,7 @@ footer {
 #select-server-box button {
     height: 40px;
     margin-left: 30px;
-    width: 100px;
+    width: 150px;
     font-weight: bold;
     cursor: pointer;
     font-size: 18px;
@@ -164,6 +163,7 @@ section {
 }
 .section-place {
     margin-top: 10px;
+    padding-left: 15px;
 }
 .section-place legend {
     font-weight: bold;
