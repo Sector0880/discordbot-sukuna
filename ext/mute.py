@@ -3,7 +3,7 @@ from discord.ext import commands
 
 import dbVars
 
-class RoleMute(commands.Cog):
+class Mute(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 	
@@ -18,7 +18,7 @@ class RoleMute(commands.Cog):
 		for channel in guild.text_channels: await channel.set_permissions(role_mute, send_messages = False)
 		for channel in guild.voice_channels: await channel.set_permissions(role_mute, connect = False)
 
-		self.bot.tree.copy_global_to(guild=discord.Object(id=guild.id))
+		self.bot.tree.copy_global_to(guild = discord.Object(id = guild.id))
 
 async def setup(bot):
-	await bot.add_cog(RoleMute(bot))
+	await bot.add_cog(Mute(bot))

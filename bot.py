@@ -32,12 +32,9 @@ async def sync(ctx):
 @bot.command(aliases = ["rlc"]) 
 async def reload_exts(ctx):
 
-	for filename in os.listdir("./ext/events"):
+	for filename in os.listdir("./ext"):
 		if filename.endswith(".py"):
-			await bot.reload_extension(f"ext.events.{filename[:-3]}")
-	for filename in os.listdir("./ext/commands/main"):
-		if filename.endswith(".py"):
-			await bot.reload_extension(f"ext.commands.main.{filename[:-3]}")
+			await bot.reload_extension(f"ext.{filename[:-3]}")
 
 	await ctx.send(f"Успешно обновлены коги!")
 
@@ -54,14 +51,11 @@ print("\n".join([
 
 print("\x1b[1;34mЗагрузка когов\x1b[0m:")
 async def func_load_cogs():
-	for filename in os.listdir("./ext/events"):
+	for filename in os.listdir("./ext"):
 		if filename.endswith(".py"):
-			await bot.load_extension(f"ext.events.{filename[:-3]}")
-			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файлы \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mevents\x1b[0m загружены!')
-	#for filename in os.listdir("./ext/commands/main"):
-		#if filename.endswith(".py"):
-			#await bot.load_extension(f"ext.commands.main.{filename[:-3]}")
-			#print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файлы \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mcommands/main\x1b[0m загружены!')
+			await bot.load_extension(f"ext.{filename[:-3]}")
+			#print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mevents\x1b[0m загружен!') старая версия вывода
+			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
 
 async def get_all_guilds():
 	guilds = [guild.id for guild in bot.guilds]
