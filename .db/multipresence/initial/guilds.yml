@@ -1,0 +1,12 @@
+gateaway:
+  status: true
+prefix: "s!"
+language: "ru"
+modules:
+  profile: false
+  fun: false
+  moderation: false
+  audit: false
+  #music: false
+premium:
+  status: true

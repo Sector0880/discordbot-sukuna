@@ -19,13 +19,6 @@ class RoleMute(commands.Cog):
 		for channel in guild.voice_channels: await channel.set_permissions(role_mute, connect = False)
 
 		self.bot.tree.copy_global_to(guild=discord.Object(id=guild.id))
-	
-	@commands.command()
-	async def f(self, ctx):
-		try:
-			await ctx.send(dbVars.)
-		except Exception as e:
-			print(e)
 
 async def setup(bot):
 	await bot.add_cog(RoleMute(bot))
