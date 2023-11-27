@@ -48,19 +48,19 @@ hr {
     border: none;
     border-bottom: 1px solid #1f1209;
     box-shadow: 0 20px 20px -20px #333;
-    opacity: .5;
 }
 fieldset {
     border: none;
+    
     display: flex;
     justify-content: space-between;
 }
 fieldset section {
     width: 250px;
-    box-shadow: 10px 5px 10px rgba(0, 0, 0, .2);
+    box-shadow: 0 15px 20px -20px #333;
     height: 370px;
     padding-right: 10px;
-    border: 1px solid black;
+    border: 1px solid rgba(30, 30, 30, 0.3);
 }
 
 fieldset section:not(:hover) {
@@ -117,9 +117,9 @@ footer {
     align-items: center;
     margin-top: 20px;
     margin-bottom: 20px;
-    box-shadow: 10px 5px 10px rgba(0, 0, 0, .2);
+    box-shadow: 0 15px 20px -20px #333;
     padding: 15px;
-    border: 1px solid black;
+    border: 1px solid rgba(30, 30, 30, 0.3);
 }
 
 #select-server-box input {
