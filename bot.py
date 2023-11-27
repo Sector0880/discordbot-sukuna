@@ -8,7 +8,7 @@ import asyncio
 import yaml
 
 import botConfig
-import dbVars
+from dbVars import *
 from botFunctions import *
 
 
@@ -32,7 +32,12 @@ async def on_ready():
 @bot.command() 
 async def sync(ctx):
 	try:
-		return await ctx.send(dbVars.guild_prefix(ctx))
+		def get_guild_id(ctx):
+			guild_id = ctx.guild.id
+			return guild_id
+		modify_guild_prefix(get_guild_id(ctx), 'ffпf')
+		await ctx.send(guild_prefix(ctx))
+		return
 	except Exception as e:
 		print(e)
 	return
