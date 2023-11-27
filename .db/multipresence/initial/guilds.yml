@@ -3,10 +3,10 @@ gateaway:
 prefix: "s!"
 language: "ru"
 modules:
+  moderation: true
   profile: false
   fun: false
-  moderation: false
   audit: false
-  #music: false
+  music: false
 premium:
   status: true

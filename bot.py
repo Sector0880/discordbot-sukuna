@@ -19,6 +19,10 @@ bot = commands.Bot(
 )
 #bot.remove_command("help")
 
+async def get_all_guilds():
+	guilds = [guild.id for guild in bot.guilds]
+	return guilds
+
 @bot.event
 async def on_ready():
 	synced = await bot.tree.sync()
@@ -27,8 +31,18 @@ async def on_ready():
 
 @bot.command() 
 async def sync(ctx):
+	try:
+		return await ctx.send(dbVars.guild_prefix(ctx))
+	except Exception as e:
+		print(e)
+	return
 	synced = await bot.tree.sync()
 	await ctx.send(f"Synced {len(synced)} commands!")
+
+	guild_ids = await get_all_guilds()
+	for guild_id in guild_ids: 
+		copied = bot.tree.copy_global_to(guild = discord.Object(id = guild_id))
+	await ctx.send(f'Copied {len(copied)} global to!')
 
 @bot.command(aliases = ["rlc"]) 
 async def reload_exts(ctx):
@@ -36,6 +50,9 @@ async def reload_exts(ctx):
 	for filename in os.listdir("./ext"):
 		if filename.endswith(".py"):
 			await bot.reload_extension(f"ext.{filename[:-3]}")
+	for filename in os.listdir("./ext/modules"):
+		if filename.endswith(".py"):
+			await bot.reload_extension(f"ext.modules.{filename[:-3]}")
 
 	await ctx.send(f"Успешно обновлены коги!")
 
@@ -57,10 +74,13 @@ async def func_load_cogs():
 			await bot.load_extension(f"ext.{filename[:-3]}")
 			#print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mevents\x1b[0m загружен!') старая версия вывода
 			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
+	for filename in os.listdir("./ext/modules"):
+		if filename.endswith(".py"):
+			await bot.load_extension(f"ext.modules.{filename[:-3]}")
+			#print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mevents\x1b[0m загружен!') старая версия вывода
+			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
 
-async def get_all_guilds():
-	guilds = [guild.id for guild in bot.guilds]
-	return guilds
+
 async def main():
 	async with bot:
 		await func_load_cogs()
