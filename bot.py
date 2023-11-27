@@ -32,7 +32,7 @@ async def sync(ctx):
 
 @bot.command(aliases = ["rlc"]) 
 async def reload_exts(ctx):
-
+	if ctx.author.id not in [980175834373562439, 522136072151367691, 224632121879166976]: return await ctx.send("Нету прав.") # на автора сообщения
 	for filename in os.listdir("./ext"):
 		if filename.endswith(".py"):
 			await bot.reload_extension(f"ext.{filename[:-3]}")

@@ -4,11 +4,6 @@ from discord.ext import commands
 import asyncio
 import re
 
-from botConfig import *
-from dbVars import *
-import botDecorators
-
-from botDecorators import *
 
 class ForADA(commands.Cog):
 	def __init__(self, bot):
@@ -27,7 +22,7 @@ class ForADA(commands.Cog):
 		else: channel = int(channel)
 		channel_id = self.bot.get_channel(channel) # получаем id канала
 		if not channel_id: return await ctx.send(f"Чат не найден → <#{channel}>") # если id канала не найден
-		await ctx.send(f"Напиши сообщение, я его продублирую\nСервер: `{channel_id.guild.name}`\nЧат: <#{channel}>\nОжидание: `60 секунд`")
+		await ctx.send(f"Напиши сообщение, я его продублирую. Я буду ожидать твоего сообщения `60 секунд`.\nДля отмены команды напиши текст ОТМЕНА (обязательно большим курсивом).\n\nСервер: `{channel_id.guild.name}`\nЧат: <#{channel}>")
 		time_waiting = 60.0 # время ожидания
 		try:
 			message = await self.bot.wait_for("message", check = lambda ctx: ctx.author == ctx.author and ctx.channel == ctx.channel, timeout = time_waiting)
@@ -37,6 +32,16 @@ class ForADA(commands.Cog):
 			await ctx.send(f"Успешно, сообщение: {message_output.jump_url}")
 		except asyncio.TimeoutError:
 			await ctx.send(f"Время ожидания истекло ({time_waiting} секунд)")
+	
+	@commands.Cog.listener()
+	async def on_member_join(self, member):
+		channel_id = 817101575289176064  # ID канала, в который бот будет отправлять сообщение
+		channel = self.bot.get_channel(channel_id)
+
+		if channel:
+			await channel.send(f'Пользователь {member.name} присоединился к серверу!')
+		else:
+			print(f'Канал с ID {channel_id} не найден.')
 			
 async def setup(bot):
 	await bot.add_cog(ForADA(bot))
