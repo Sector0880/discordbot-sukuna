@@ -31,12 +31,6 @@ async def on_ready():
 
 @bot.command() 
 async def sync(ctx):
-	try:
-		await ctx.send(get_guild_prefix(ctx))
-		return
-	except Exception as e:
-		print(e)
-	return
 	synced = await bot.tree.sync()
 	await ctx.send(f"Synced {len(synced)} commands!")
 
@@ -44,6 +38,15 @@ async def sync(ctx):
 	for guild_id in guild_ids: 
 		copied = bot.tree.copy_global_to(guild = discord.Object(id = guild_id))
 	await ctx.send(f'Copied {len(copied)} global to!')
+
+# ------------------------------------
+@bot.command()
+async def h(ctx):
+	try:
+		await ctx.send(get_guild_prefix(ctx))
+	except Exception as e:
+		print(e)
+# ------------------------------------
 
 @bot.command(aliases = ["rlc"]) 
 async def reload_exts(ctx):
