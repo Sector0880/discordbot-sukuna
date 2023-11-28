@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-import dbVars
-
 class Moderation(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot

@@ -13,11 +13,10 @@ from botFunctions import *
 
 
 bot = commands.Bot(
-	#command_prefix = get_prefix,
-	command_prefix = "s!",
+	command_prefix = bot_prefix,
 	intents = discord.Intents.all()
 )
-#bot.remove_command("help")
+bot.remove_command("help")
 
 async def get_all_guilds():
 	guilds = [guild.id for guild in bot.guilds]
@@ -43,7 +42,7 @@ async def sync(ctx):
 @bot.command()
 async def h(ctx):
 	try:
-		await ctx.send(get_guild_prefix(ctx))
+		await ctx.send(guild_prefix(ctx))
 	except Exception as e:
 		print(e)
 # ------------------------------------
