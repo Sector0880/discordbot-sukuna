@@ -38,15 +38,6 @@ async def sync(ctx):
 		copied = bot.tree.copy_global_to(guild = discord.Object(id = guild_id))
 	await ctx.send(f'Copied {len(copied)} global to!')
 
-# ------------------------------------
-@bot.command()
-async def h(ctx):
-	try:
-		await ctx.send(guild_prefix(ctx))
-	except Exception as e:
-		print(e)
-# ------------------------------------
-
 @bot.command(aliases = ["rlc"]) 
 async def reload_exts(ctx):
 	if ctx.author.id not in [980175834373562439, 522136072151367691, 224632121879166976]: return await ctx.send("Нету прав.") # на автора сообщения
