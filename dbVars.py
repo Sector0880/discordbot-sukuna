@@ -10,7 +10,7 @@ crsp_initial_guilds = lambda: yaml.safe_load(open('./.db/crossparams/initial/gui
 crsp_initial_users = lambda: yaml.safe_load(open('./.db/crossparams/initial/users.yml', 'r', encoding='utf-8'))
 
 # надо поизучать, все работает правильно но путь имба!
-def crsp_item(ctx, initial, item):
+def crsp_item(ctx, initial, item): # надо сделать так чтобы не только guild параметры передавал, но и users
     guild_id = str(ctx.guild.id)
     allowed_items = [ # Допустимые значения для аргумента item
         'cluster',
