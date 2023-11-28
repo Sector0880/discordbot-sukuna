@@ -32,11 +32,7 @@ async def on_ready():
 @bot.command() 
 async def sync(ctx):
 	try:
-		def get_guild_id(ctx):
-			guild_id = ctx.guild.id
-			return guild_id
-		modify_guild_prefix(get_guild_id(ctx), 'ffпf')
-		await ctx.send(guild_prefix(ctx))
+		await ctx.send(get_guild_prefix(ctx))
 		return
 	except Exception as e:
 		print(e)
