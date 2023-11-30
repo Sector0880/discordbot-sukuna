@@ -13,10 +13,10 @@ class Test(commands.Cog):
 		self.bot = bot
 		
 	@commands.command()
-	async def h(self, ctx, item):
+	async def h(self, ctx, param, item):
 		try:
 			if ctx.author.id not in [980175834373562439, 522136072151367691, 224632121879166976]: return await ctx.send("Нету прав.") # на автора сообщения
-			await ctx.send(guild_item(ctx, item))
+			await ctx.send(crsp_item(ctx, param, item))
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:
