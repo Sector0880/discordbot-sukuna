@@ -52,34 +52,40 @@ def crsp_item(ctx, param, item):
 		valid_item = "\n".join(allowed[param])
 		raise ValueError(f'Недопустимое значение для аргумента item. Допустимые значения:```\n{valid_item}```')
 
-	guild_id = str(ctx.guild.id)
+	if param == 'guilds': param_id = str(ctx.guild.id)
+	else: param_id = str(ctx.author.id)
 
 	with open(f'./.db/crossparams/custom/clusters-{param}.json', 'r', encoding='utf-8') as read_file:
 		clusters_param = json.load(read_file)
 
-	if param == 'guilds':
-		for key, value in clusters_param.items():
-			if guild_id in value['guilds']:
-				guild_cluster = key
-				with open(f'./.db/crossparams/custom/clusters/{guild_cluster}/{param}.json', 'r', encoding='utf-8') as read_file:
-					cluster_param = json.load(read_file)
+	# проблема users в том что если нету id автора команды в clusters-users.json то выводит ошибку 400 Bad Request (error code: 50006): Cannot send an empty message
+	for key, value in clusters_param.items():
+		if param_id in value[param]:
+			guild_cluster = key
+			with open(f'./.db/crossparams/custom/clusters/{guild_cluster}/{param}.json', 'r', encoding='utf-8') as read_file:
+				cluster_param = json.load(read_file)
 
-				if guild_id in cluster_param:
-					result = cluster_param[guild_id]
-					for p in path[param][item]:
-						result = result.get(p)
-						if result is None:
-							# Если значения в пути отсутствуют, используем данные из yml
-							param_yaml = yaml.safe_load(open(f'./.db/crossparams/initial/{param}.yml', 'r', encoding='utf-8'))
-							for p in path[param][item]:
-								param_yaml = param_yaml.get(p)
-							return param_yaml
-					return result
-
-				else:
-					param_yaml = yaml.safe_load(open(f'./.db/crossparams/initial/{param}.yml', 'r', encoding='utf-8'))
-					for p in path[param][item]:
-						param_yaml = param_yaml.get(p)
-					return param_yaml
-	elif param == 'users':
-		raise ValueError('Users скоро будут доступны...')
+			if param_id in cluster_param:
+				result = cluster_param[param_id]
+				for p in path[param][item]:
+					result = result.get(p)
+					if result is None:
+						# Если значения в пути отсутствуют, используем данные из yml
+						param_yaml = yaml.safe_load(open(f'./.db/crossparams/initial/{param}.yml', 'r', encoding='utf-8'))
+						for p in path[param][item]:
+							param_yaml = param_yaml.get(p)
+						return param_yaml
+				return result
+			else:
+				param_yaml = yaml.safe_load(open(f'./.db/crossparams/initial/{param}.yml', 'r', encoding='utf-8'))
+				for p in path[param][item]:
+					param_yaml = param_yaml.get(p)
+				return param_yaml
+		else:
+			# Если значения в пути отсутствуют, используем данные из yml
+			param_yaml = yaml.safe_load(open(f'./.db/crossparams/initial/{param}.yml', 'r', encoding='utf-8'))
+			for p in path[param][item]:
+				param_yaml = param_yaml.get(p)
+			return param_yaml
+	
+	print("чтото пошло не так")
