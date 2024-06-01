@@ -11,7 +11,7 @@ from botFunctions import *
 
 # инициализация бота
 bot = commands.Bot(
-	command_prefix = '!',
+	command_prefix = bot_prefix,
 	intents = discord.Intents.all()
 )
 bot.remove_command("help")

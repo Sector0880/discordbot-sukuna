@@ -1,6 +1,6 @@
 gateaway:
   status: true
-prefix: "s!"
+prefix: "!"
 language: "ru"
 modules:
   moderation: true

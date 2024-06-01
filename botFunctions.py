@@ -8,6 +8,15 @@ import sys
 import json
 
 def bot_prefix(bot, ctx):
+	cspl_custom_guilds = lambda ctx: json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))
+
+	if str(ctx.guild.id) in cspl_custom_guilds(ctx).keys() and 'prefix' in cspl_custom_guilds(ctx)[str(ctx.guild.id)]:
+		return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))['prefix']
+	else:
+		return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))['prefix']
+
+
+def bot_prefix_old(bot, ctx):
 	with open('./.db/crossparams/custom/clusters-guilds.json', 'r', encoding='utf-8') as read_file: clusters_guilds = json.load(read_file)
 	
 	guild_id = str(ctx.guild.id)
