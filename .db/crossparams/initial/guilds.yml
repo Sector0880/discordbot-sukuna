@@ -1,4 +1,3 @@
-cluster: "none"
 gateaway:
   status: true
 prefix: "s!"

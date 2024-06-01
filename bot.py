@@ -19,7 +19,7 @@ bot.remove_command("help")
 @bot.event
 async def on_ready():
 	synced = await bot.tree.sync()
-	print(f'\x1b[43m{datetime.now()}\x1b[0m Добавилась(-ись) \x1b[35m{len(synced)}\x1b[0m команд!')
+	print(f'\x1b[43m{datetime.now()}\x1b[0m Добавилась(-ись) \x1b[35m{len(synced)}\x1b[0m команд(-ы)!')
 
 
 async def get_all_guilds():
