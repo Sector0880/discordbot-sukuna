@@ -23,7 +23,7 @@ class ForADA(commands.Cog):
 		channel_id = self.bot.get_channel(channel) # получаем id канала
 		if not channel_id: return await ctx.send(f"Чат не найден → <#{channel}>") # если id канала не найден
 		await ctx.send(f"Напиши сообщение, я его продублирую. Я буду ожидать твоего сообщения `60 секунд`.\nДля отмены команды напиши текст ОТМЕНА (обязательно большим курсивом).\n\nСервер: `{channel_id.guild.name}`\nЧат: <#{channel}>")
-		time_waiting = 60.0 # время ожидания
+		time_waiting = 60 # время ожидания
 		try:
 			message = await self.bot.wait_for("message", check = lambda ctx: ctx.author == ctx.author and ctx.channel == ctx.channel, timeout = time_waiting)
 			#if message.content == "ОТМЕНА" or "ОТ": return await ctx.send("Команда отменена принужденно.")

@@ -37,6 +37,16 @@ class Test(commands.Cog):
 				valid_item = "\n".join(allowed[param])
 				raise ValueError(f'Недопустимое значение для аргумента item. Допустимые значения:```\n{valid_item}```')
 			
+			
+			with open(f'./.db/crossparams/initial/{param}.yml', 'r', encoding='utf-8') as read_file:
+				initial_param = yaml.safe_load(read_file)
+			with open(f'./.db/crossparams/custom/{param}.json', 'r', encoding='utf-8') as read_file:
+				custom_param = json.load(read_file)
+
+
+			if param == 'guilds': param_id = str(ctx.guild.id)
+			elif param == 'users': param_id = str(ctx.author.id)
+
 			path = {
 				'guilds': {
 					'cluster': ['cluster'],
@@ -57,22 +67,15 @@ class Test(commands.Cog):
 				}
 			}
 
-			if param == 'guilds': param_id = str(ctx.guild.id)
-			elif param == 'users': param_id = str(ctx.author.id)
 
-			with open(f'./.db/crossparams/initial/{param}.yml', 'r', encoding='utf-8') as read_file:
-				initial_param = yaml.safe_load(read_file)
-			with open(f'./.db/crossparams/custom/{param}.json', 'r', encoding='utf-8') as read_file:
-				custom_param = json.load(read_file)
-
-			item_path = path[param][item][0]
+			item_path = path[param][item]
 			if param_id in list(custom_param.keys()):
 				if item in custom_param[param_id].keys():
-					await ctx.send(custom_param[param_id][item])
+					await ctx.send(custom_param[param_id][item_path])
 				else:
-					await ctx.send(initial_param[item])
+					await ctx.send(initial_param[item_path])
 			else:
-				await ctx.send(initial_param[item])
+				await ctx.send(initial_param[item_path])
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:

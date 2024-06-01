@@ -6,12 +6,12 @@ info = {
 }
 version =  {
     "number": "0.9",
-    "name": "Ада хочет убрать карточку сервера но я против"
+    "name": "Расширение территории"
 }
 # -----------------------------------
-main_server = 1130857157215146064
+server_main_id = 1130857157215146064
 # -----------------------------------
-avatar = "https://cdn.discordapp.com/attachments/817116435351863306/825447378105925672/avatarNexus.gif"
+avatar = "https://cdn.discordapp.com/attachments/817116435351863306/825447378105925672/avatarNexus.gif" # not worked
 # -----------------------------------
 languages = ["ru", "en", "kz"]
 # -----------------------------------
@@ -43,4 +43,4 @@ emoji_shield = "<:Mod_Shield:1142795808945745970>"
 # сайт с цветами для красивого вывода в терминал
 ansi_color_codes = "https://talyian.github.io/ansicolors/"
 #guide Option
-"https://github.com/denisnumb/discord-py-guide/blob/main/slash-commands.md?ysclid=llo427nqw450582834"
+# https://github.com/denisnumb/discord-py-guide/blob/main/slash-commands.md?ysclid=llo427nqw450582834

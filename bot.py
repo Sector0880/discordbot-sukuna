@@ -1,37 +1,35 @@
 import discord
 from discord.ext import commands
-
 from datetime import datetime
 import json
 import os
 import asyncio
 import yaml
-
 import botConfig
 from dbVars import *
 from botFunctions import *
 
-
+# инициализация бота
 bot = commands.Bot(
 	command_prefix = '!',
 	intents = discord.Intents.all()
 )
 bot.remove_command("help")
 
+@bot.event
+async def on_ready():
+	synced = await bot.tree.sync()
+	print(f'\x1b[43m{datetime.now()}\x1b[0m Добавилась(-ись) \x1b[35m{len(synced)}\x1b[0m команд!')
+
+
 async def get_all_guilds():
 	guilds = [guild.id for guild in bot.guilds]
 	return guilds
 
-@bot.event
-async def on_ready():
-	synced = await bot.tree.sync()
-	print(f'\x1b[43m{datetime.now()}\x1b[0m Synced \x1b[35m{len(synced)}\x1b[0m commands!')
-
-
 @bot.command() 
 async def sync(ctx):
 	synced = await bot.tree.sync()
-	await ctx.send(f"Synced {len(synced)} commands!")
+	await ctx.send(f"Добавилась(-ись) {len(synced)} команд(-ы)!")
 
 	guild_ids = await get_all_guilds()
 	for guild_id in guild_ids: 
@@ -50,7 +48,6 @@ async def reload_exts(ctx):
 
 	await ctx.send(f"Успешно обновлены коги!")
 
-
 print("\n".join([
 	"███████ ██    ██ ██   ██ ██    ██ ███    ██  █████  ",
 	"██      ██    ██ ██  ██  ██    ██ ████   ██ ██   ██ ",
@@ -61,22 +58,19 @@ print("\n".join([
 	"\n"
 ]))
 
-print("\x1b[1;34mЗагрузка когов\x1b[0m:")
 async def func_load_cogs():
 	for filename in os.listdir("./ext"):
 		if filename.endswith(".py"):
 			await bot.load_extension(f"ext.{filename[:-3]}")
-			#print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mevents\x1b[0m загружен!') старая версия вывода
 			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
 	for filename in os.listdir("./ext/modules"):
 		if filename.endswith(".py"):
 			await bot.load_extension(f"ext.modules.{filename[:-3]}")
-			#print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m в коге \x1b[1;34mevents\x1b[0m загружен!') старая версия вывода
 			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
-
 
 async def main():
 	async with bot:
+		print("\x1b[1;34mЗагрузка когов\x1b[0m:")
 		await func_load_cogs()
 
 		guild_ids = await get_all_guilds()
