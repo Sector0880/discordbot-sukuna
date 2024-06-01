@@ -16,6 +16,8 @@ def bot_prefix(bot, ctx):
 		return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))['prefix']
 
 
+
+# удалить
 def bot_prefix_old(bot, ctx):
 	with open('./.db/crossparams/custom/clusters-guilds.json', 'r', encoding='utf-8') as read_file: clusters_guilds = json.load(read_file)
 	
