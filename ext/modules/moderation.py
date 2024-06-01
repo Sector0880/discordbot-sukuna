@@ -23,12 +23,13 @@ class Moderation(commands.Cog):
 	
 	@app_commands.command(
 		name = 'mute', 
-		description = 'Блокировка пользователя на определенное время.'
+		description = 'Заблокировать юзеру возможность писать в чат.'
 	)
 	async def mute(self, interaction: discord.Interaction):
 		await interaction.response.defer(ephemeral = True, thinking = True)
 		await interaction.edit_original_response(content = 'Скоро...')
 	
+	# я не знаю зачем я хотел его создать ну ладно пусть остается
 	@commands.command(aliases = ["mvc"])
 	async def mute_visiblecorrect(self, ctx, guild: discord.Guild = None):
 		await ctx.send('скоро')
