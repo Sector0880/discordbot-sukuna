@@ -4,6 +4,7 @@ from discord.ext import commands
 import asyncio
 import re
 from dbVars import *
+from botFunctions import *
 
 
 class ForADA(commands.Cog):
@@ -14,8 +15,9 @@ class ForADA(commands.Cog):
 	@commands.command(aliases = ["скажи", "с", "s"])
 	async def say(self, ctx, channel = None):
 		try:
+			add_command_usage_counter(ctx, 'use')
 			# проверки
-			if ctx.author.id not in sf_sp(ctx): return await ctx.send("Нету прав.") # на автора сообщения
+			if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения
 			if channel is None: 
 				await ctx.message.add_reaction('❌')
 				return await ctx.send("Напиши id чата вместе с командой.") # на наличие channel_id
@@ -34,8 +36,10 @@ class ForADA(commands.Cog):
 				await ctx.send(f"Успешно, сообщение: {message_output.jump_url}")
 			except asyncio.TimeoutError:
 				await ctx.send(f"Время ожидания истекло ({time_waiting} секунд)")
+			add_command_usage_counter(ctx, 'success')
 		except Exception as e:
 			await ctx.send(e)
+			add_command_usage_counter(ctx, 'lose')
 	
 	@commands.Cog.listener()
 	async def on_member_join(self, member):

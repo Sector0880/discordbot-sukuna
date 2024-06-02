@@ -21,6 +21,7 @@ class Moderation(commands.Cog):
 
 		self.bot.tree.copy_global_to(guild = discord.Object(id = guild.id))
 	
+	"""
 	@app_commands.command(
 		name = 'mute', 
 		description = 'Заблокировать юзеру возможность писать в чат.'
@@ -28,6 +29,7 @@ class Moderation(commands.Cog):
 	async def mute(self, interaction: discord.Interaction):
 		await interaction.response.defer(ephemeral = True, thinking = True)
 		await interaction.edit_original_response(content = 'Скоро...')
+	"""
 	
 	# я не знаю зачем я хотел его создать ну ладно пусть остается
 	@commands.command(aliases = ["mvc"])

@@ -9,6 +9,8 @@ import sys
 from botConfig import *
 from dbVars import *
 
+
+"""
 def check_command_permissions():
 	async def predicate(interaction: discord.Interaction):
 		if interaction.user.id not in staff_staffList_SpecialPerms() and not guild_bot_output(interaction):
@@ -35,3 +37,4 @@ def command_for_staff():
 			return False
 		return True
 	return app_commands.check(predicate)
+"""

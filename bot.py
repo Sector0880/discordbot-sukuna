@@ -11,13 +11,14 @@ from botFunctions import *
 
 # инициализация бота
 bot = commands.Bot(
-	command_prefix = bot_prefix,
+	command_prefix = get_bot_prefix,
 	intents = discord.Intents.all()
 )
 bot.remove_command("help")
 
 @bot.event
 async def on_ready():
+	await bot.change_presence(status = discord.Status.online, activity=discord.Game(bot_presence()))
 	synced = await bot.tree.sync()
 	print(f'\x1b[43m{datetime.now()}\x1b[0m Добавилась(-ись) \x1b[35m{len(synced)}\x1b[0m команд(-ы)!')
 
@@ -66,6 +67,10 @@ async def func_load_cogs():
 	for filename in os.listdir("./ext/modules"):
 		if filename.endswith(".py"):
 			await bot.load_extension(f"ext.modules.{filename[:-3]}")
+			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
+	for filename in os.listdir("./ext/modules/special"):
+		if filename.endswith(".py"):
+			await bot.load_extension(f"ext.modules.special.{filename[:-3]}")
 			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
 
 async def main():
