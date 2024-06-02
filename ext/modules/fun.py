@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-import datetime
+from datetime import *
 from botFunctions import *
 
 class Fun(commands.Cog):
@@ -17,7 +17,13 @@ class Fun(commands.Cog):
 	async def time(self, ctx):
 		try:
 			add_command_usage_counter(ctx, 1)
-			await ctx.send(datetime.now(), ephemeral=True)
+
+			emb = discord.Embed()
+			emb.add_field(name = 'UTC  🌐', value = datetime.utcnow().strftime('**Дата:** %Y.%m.%d\n**Время:** %H:%M:%S'))
+			emb.add_field(name = 'МСК  🇷🇺', value = (datetime.utcnow() + timedelta(hours = 3)).strftime('**Дата:** %Y.%m.%d\n**Время:** %H:%M:%S'))
+			#emb.set_footer(text = ctx.author, icon_url = ctx.author.avatar.url)
+
+			await ctx.send(embed = emb)
 			add_command_usage_counter(ctx, 2)
 		except Exception as e:
 			await ctx.send(e)
