@@ -2,7 +2,11 @@ all:
   use: 0
   success: 0
   lose: 0
-say:
+repeat:
+  use: 0
+  success: 0
+  lose: 0
+time:
   use: 0
   success: 0
   lose: 0

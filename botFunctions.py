@@ -18,6 +18,11 @@ def get_bot_prefix(bot, ctx):
 def add_command_usage_counter(ctx, _phase):
 	command = ctx.command.name # работает лучше
 	with open("./.db/logs/commandsUsageCounter.yml", "r") as read_file: commandsUsageCounter = yaml.safe_load(read_file)
-	commandsUsageCounter["all"][_phase] += 1 # все команды
-	commandsUsageCounter[command][_phase]  += 1 # вызываемая команда
+	phase = ''
+	match _phase:
+		case 1: phase = 'use'
+		case 2: phase = 'success'
+		case 3: phase = 'lose'
+	commandsUsageCounter["all"][phase] += 1 # все команды
+	commandsUsageCounter[command][phase]  += 1 # вызываемая команда
 	with open("./.db/logs/commandsUsageCounter.yml", "w") as write_file: yaml.safe_dump(commandsUsageCounter, write_file, sort_keys = False, allow_unicode = True)

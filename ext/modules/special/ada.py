@@ -12,10 +12,10 @@ class ForADA(commands.Cog):
 		self.bot = bot
 	
 	# готово
-	@commands.command(aliases = ["скажи", "с", "s"])
-	async def say(self, ctx, channel = None):
+	@commands.command(aliases = ["повтори", "п", "rp"])
+	async def repeat(self, ctx, channel = None):
 		try:
-			add_command_usage_counter(ctx, 'use')
+			add_command_usage_counter(ctx, 1)
 			# проверки
 			if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения
 			if channel is None: 
@@ -26,7 +26,7 @@ class ForADA(commands.Cog):
 			else: channel = int(channel)
 			channel_id = self.bot.get_channel(channel) # получаем id канала
 			if not channel_id: return await ctx.send(f"Чат не найден → <#{channel}>") # если id канала не найден
-			await ctx.send(f"Напиши сообщение, я его продублирую. Я буду ожидать твоего сообщения `60 секунд`.\nДля отмены команды напиши текст ОТМЕНА (обязательно большим курсивом).\n\nСервер: `{channel_id.guild.name}`\nЧат: <#{channel}>")
+			await ctx.send(f"Напиши сообщение, я его повторю. Я буду ожидать твоего сообщения `60 секунд`.\nДля отмены команды напиши текст ОТМЕНА (обязательно большим курсивом).\n\nСервер: `{channel_id.guild.name}`\nЧат: <#{channel}>")
 			time_waiting = 60 # время ожидания
 			try:
 				message = await self.bot.wait_for("message", check = lambda ctx: ctx.author == ctx.author and ctx.channel == ctx.channel, timeout = time_waiting)
@@ -36,10 +36,10 @@ class ForADA(commands.Cog):
 				await ctx.send(f"Успешно, сообщение: {message_output.jump_url}")
 			except asyncio.TimeoutError:
 				await ctx.send(f"Время ожидания истекло ({time_waiting} секунд)")
-			add_command_usage_counter(ctx, 'success')
+			add_command_usage_counter(ctx, 2)
 		except Exception as e:
 			await ctx.send(e)
-			add_command_usage_counter(ctx, 'lose')
+			add_command_usage_counter(ctx, 3)
 	
 	@commands.Cog.listener()
 	async def on_member_join(self, member):
