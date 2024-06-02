@@ -1,0 +1,4 @@
+# ПАТТЕРН
+name: time
+description: "Получить информацию о времени"
+type: hybrid # commands, app_commands, hybrid

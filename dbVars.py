@@ -24,8 +24,8 @@ def cspl_get_param(ctx, _branch, _param, _path1 = None):
 	match _branch:
 		case 'guilds':
 			if str(ctx.guild.id) in cspl_custom_guilds(ctx).keys() and _param in cspl_custom_guilds(ctx)[str(ctx.guild.id)]:
-				if _path1: return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[_path1][_param]
-				else: return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[_param]
+				if _path1: return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(ctx.guild.id)][_path1][_param]
+				else: return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(ctx.guild.id)][_param]
 			else:
 				if _path1: return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))[_path1][_param]
 				else: return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))[_param]

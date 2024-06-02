@@ -1,12 +1,12 @@
 all:
-  use: 12
-  success: 10
+  use: 14
+  success: 12
   lose: 2
 repeat:
   use: 0
   success: 0
   lose: 0
 time:
-  use: 12
-  success: 10
+  use: 14
+  success: 12
   lose: 2

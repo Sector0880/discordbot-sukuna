@@ -12,7 +12,7 @@ class Fun(commands.Cog):
 	@commands.hybrid_command(
 		name = 'time', 
 		description = 'Узнать время.',
-		aliases = ['datetime']
+		aliases = ['datetime', 'время']
 	)
 	async def time(self, ctx):
 		try:

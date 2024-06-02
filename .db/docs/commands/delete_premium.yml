@@ -3,3 +3,4 @@ name: delete_premium
 description: "Лишить сервер премиум."
 describe: # <--- если нету параметров - УДАЛИТЬ
   server!: "Сервер, который лишается премиума."
+type: commands # commands, app_commands, hybrid

@@ -12,7 +12,8 @@ from botFunctions import *
 # инициализация бота
 bot = commands.Bot(
 	command_prefix = get_bot_prefix,
-	intents = discord.Intents.all()
+	intents = discord.Intents.all(),
+	help_command=None
 )
 
 @bot.event
@@ -36,17 +37,26 @@ async def sync(ctx):
 		copied = bot.tree.copy_global_to(guild = discord.Object(id = guild_id))
 	await ctx.send(f'Copied {len(copied)} global to!')
 
-@bot.command(aliases = ["rlc"]) 
+@bot.command(aliases = ["rlc", 'рлк']) 
 async def reload_exts(ctx):
-	if ctx.author.id not in [980175834373562439, 522136072151367691, 224632121879166976]: return await ctx.send("Нету прав.") # на автора сообщения
-	for filename in os.listdir("./ext"):
-		if filename.endswith(".py"):
-			await bot.reload_extension(f"ext.{filename[:-3]}")
-	for filename in os.listdir("./ext/modules"):
-		if filename.endswith(".py"):
-			await bot.reload_extension(f"ext.modules.{filename[:-3]}")
+	try:
+		if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения сообщения
+		for filename in os.listdir("./ext"):
+			if filename.endswith(".py"):
+				await bot.reload_extension(f"ext.{filename[:-3]}")
+				print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m перезагружен.')
+		for filename in os.listdir("./ext/modules"):
+			if filename.endswith(".py"):
+				await bot.reload_extension(f"ext.modules.{filename[:-3]}")
+				print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m перезагружен.')
+		for filename in os.listdir("./ext/modules/special"):
+			if filename.endswith(".py"):
+				await bot.reload_extension(f"ext.modules.special.{filename[:-3]}")
+				print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m перезагружен.')
 
-	await ctx.send(f"Успешно обновлены коги!")
+		await ctx.send(f"Успешно обновлены коги!")
+	except Exception as e:
+		print(e)
 
 print("\n".join([
 	"███████ ██    ██ ██   ██ ██    ██ ███    ██  █████  ",
