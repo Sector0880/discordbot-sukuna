@@ -14,35 +14,31 @@ class Info(commands.Cog):
 	
 	@app_commands.command(
 		name = "help",
-		description = "Информация по командам"
+		description = "Получить информацию о командах бота"
 	)
 	@app_commands.choices(command = [
-		app_commands.Choice(name = "get_premium", value = 1),
-		app_commands.Choice(name = "delete_premium", value = 2),
-		app_commands.Choice(name = "time", value = 3),
-		#app_commands.Choice(name = "delete_premium_allservers", value = 3),
-		#app_commands.Choice(name = "delete_premium_uuid_history", value = 4),
-		#app_commands.Choice(name = "check_premium", value = 5),
-		#app_commands.Choice(name = "delete_premium_history_file", value = 6),
-		#app_commands.Choice(name = "check_premium_history_file", value = 7)
+		app_commands.Choice(name = "help", value = 1),
+		app_commands.Choice(name = "about", value = 1),
+		app_commands.Choice(name = "ping", value = 1),
+		app_commands.Choice(name = "profile", value = 1),
+		app_commands.Choice(name = "avatar", value = 1)
 	])
 	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
 		try:
 			if command == None:
 				emb = discord.Embed(
-					title = f"Команды [{len(self.bot.commands)}|3]",
-					description = ", ".join([
-						'`get_premium`',
-						'`delete_premium`',
-						'`time`',
-						#'`delete_premium_allservers`',
-						#'`delete_premium_uuid_history`',
-						#'`check_premium`',
-						#'`delete_premium_history_file`',
-						#'`check_premium_history_file`'
+					description = '\n'.join([
+						"Есть сложности использования моих команд? Прочитай все, иначе убью :3",
+						"Я разделил свои команды на несколько модулей, по необходимости их можно выключать"
 					]),
 					color = 0x2b2d31
 				)
+				emb.add_field(
+					name = 'Информация [5]', 
+					value = ', '.join(['`help`', '`about`', '`ping`', '`profile`', '`avatar`']),
+					inline=True
+				)
+				emb.set_author(name = "Sukuna рассказывает о себе", icon_url = self.bot.user.avatar)
 			elif command.name:
 				self.text_footer = False
 				with open(f"./.db/docs/commands/{command.name}.yml", encoding="utf-8") as read_file: cmd = yaml.safe_load(read_file)
@@ -148,7 +144,7 @@ class Info(commands.Cog):
 				if role != ctx.guild.default_role:
 					role_list += f'<@&{role.id}> '
 					role_list_number += 1
-				
+			
 			if profile.status == discord.Status.online:
 				status = '<:online:748149457396433016> В сети'
 			elif profile.status == discord.Status.idle:
@@ -158,7 +154,7 @@ class Info(commands.Cog):
 			else:
 				status = '<:offline:748149539915038731> Не в сети'
 			
-			emb = discord.Embed(colour = color_success)
+			emb = discord.Embed(colour = 0x2b2d31)
 			emb.set_author(name = f'{profile}', icon_url = profile.avatar)
 			emb.set_thumbnail(url = profile.avatar)
 			emb.add_field(name = 'В Discord', value = profile.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))

@@ -23,6 +23,7 @@ def add_command_usage_counter(ctx, _phase):
 		case 1: phase = 'use'
 		case 2: phase = 'success'
 		case 3: phase = 'lose'
+		case 4: phase = 'error'
 	commandsUsageCounter["all"][phase] += 1 # все команды
 	commandsUsageCounter[command][phase]  += 1 # вызываемая команда
 	with open("./.db/logs/commandsUsageCounter.yml", "w") as write_file: yaml.safe_dump(commandsUsageCounter, write_file, sort_keys = False, allow_unicode = True)

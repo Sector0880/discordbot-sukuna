@@ -37,7 +37,7 @@ async def sync(ctx):
 		copied = bot.tree.copy_global_to(guild = discord.Object(id = guild_id))
 	await ctx.send(f'Copied {len(copied)} global to!')
 
-@bot.command(aliases = ["rlc", 'рлк']) 
+@bot.command(aliases = ["rle", 'рле']) 
 async def reload_exts(ctx):
 	try:
 		if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения сообщения

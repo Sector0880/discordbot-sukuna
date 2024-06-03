@@ -18,7 +18,7 @@ class Fun(commands.Cog):
 		try:
 			add_command_usage_counter(ctx, 1)
 
-			emb = discord.Embed()
+			emb = discord.Embed(color=0x2b2d31)
 			emb.add_field(name = 'UTC  🌐', value = datetime.utcnow().strftime('**Дата:** %Y.%m.%d\n**Время:** %H:%M:%S'))
 			emb.add_field(name = 'МСК  🇷🇺', value = (datetime.utcnow() + timedelta(hours = 3)).strftime('**Дата:** %Y.%m.%d\n**Время:** %H:%M:%S'))
 			#emb.set_footer(text = ctx.author, icon_url = ctx.author.avatar.url)
