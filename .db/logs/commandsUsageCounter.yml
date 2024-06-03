@@ -1,11 +1,11 @@
 all:
-  use: 16
-  success: 14
+  use: 17
+  success: 15
   lose: 2
   error: 0
 repeat:
-  use: 0
-  success: 0
+  use: 1
+  success: 1
   lose: 0
   error: 0
 time:

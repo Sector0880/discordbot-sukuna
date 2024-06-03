@@ -12,8 +12,7 @@ from botFunctions import *
 # инициализация бота
 bot = commands.Bot(
 	command_prefix = get_bot_prefix,
-	intents = discord.Intents.all(),
-	help_command=None
+	intents = discord.Intents.all()
 )
 
 @bot.event

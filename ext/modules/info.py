@@ -177,7 +177,7 @@ class Info(commands.Cog):
 		try:
 			user = ctx.author if not user else user
 
-			emb = discord.Embed(colour = color_success)
+			emb = discord.Embed(colour = 0x2b2d31)
 			emb.set_author(name = user, icon_url = user.avatar)
 			emb.set_image(url = user.avatar)
 

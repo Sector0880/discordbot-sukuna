@@ -1,4 +1,4 @@
-token = "MTEzMDkwNDE3MDExNTkwNzcxNw.GxNjxy.ZK8TOkncBQGb7bzyIPXEwPB1HuHZ4amhdp7W8E"
+token = "MTE0NDY4NzI3MzI4MDAyNDU4Ng.Ga9Gv6.WbrNBHEm75Zulg4F7e52t4ZRAOWt3M9roKn-o0"
 # -----------------------------------
 info = {
     "creator": "Пашков Максим (Sectormain)",
