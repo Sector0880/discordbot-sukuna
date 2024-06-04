@@ -3,10 +3,14 @@ from discord.ext import commands
 from discord import app_commands
 import yaml
 
+import datetime, time
+from time import *
 from botConfig import *
 from datetime import *
 from dbVars import *
 from botFunctions import *
+
+
 
 class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
@@ -184,6 +188,60 @@ class Info(commands.Cog):
 			await ctx.send(embed = emb, ephemeral=True)
 		except Exception as e:
 			await ctx.send(e, ephemeral=True)
+	
+	# Получить детальную информацию о боте
+	@commands.command(aliases = ['об'])
+	async def about(self, ctx):
+		try:
+			guilds = ''
+			for guild in self.bot.guilds:
+				guilds += '1'
+
+			members = len(list(self.bot.get_all_members()))
+
+			emb = discord.Embed()
+			emb.set_author(name = f'{self.bot.user} | ID: {self.bot.user.id}', icon_url = self.bot.user.avatar)
+
+			maks = self.bot.get_user(980175834373562439)
+			emb.add_field(name = 'Разработчик', value = f'<@980175834373562439>', inline=False)
+			emb.add_field(name = 'Библиотека', value = f'discord.py {discord.__version__}', inline=False)
+
+			emb.add_field(name = 'Кол-во серверов', value = f'{str(len(guilds))}', inline=True)
+			emb.add_field(name = 'Кол-во юзеров', value = f'{members}', inline=True)
+
+			ping = self.bot.latency
+			ping_emoji = '🟩🔳🔳🔳🔳'
+
+			if ping > 0.10000000000000000:
+				ping_emoji = '🟧🟩🔳🔳🔳'
+
+			if ping > 0.15000000000000000:
+				ping_emoji = '🟥🟧🟩🔳🔳'
+
+			if ping > 0.20000000000000000:
+				ping_emoji = '🟥🟥🟧🟩🔳'
+
+			if ping > 0.25000000000000000:
+				ping_emoji = '🟥🟥🟥🟧🟩'
+
+			if ping > 0.30000000000000000:
+				ping_emoji = '🟥🟥🟥🟥🟧'
+
+			if ping > 0.35000000000000000:
+				ping_emoji = '🟥🟥🟥🟥🟥'
+
+			# Переменная с пингом бота до текущего шарда
+			shard_ping = f'{ping_emoji} `{round(self.bot.latency * 1000)}ms`'
+
+			TimeFromStart = datetime.now() - start_time
+
+			emb.set_footer(text = f'Длительность работы: {str(TimeFromStart)[:-7]}')
+
+			emb.add_field(name = 'Пинг', value = shard_ping, inline = False)
+
+			await ctx.send(embed = emb)
+		except Exception as e:
+			print(e)
 
 async def setup(bot):
 	await bot.add_cog(Info(bot))

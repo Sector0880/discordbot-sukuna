@@ -7,6 +7,8 @@ from datetime import datetime
 import sys
 import json
 
+start_time = datetime.now()
+
 def get_bot_prefix(bot, ctx):
 	cspl_custom_guilds = lambda ctx: json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))
 
