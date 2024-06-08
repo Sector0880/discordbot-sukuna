@@ -43,7 +43,7 @@ class ForADA(commands.Cog):
 	
 	@commands.Cog.listener()
 	async def on_member_join(self, member):
-		channel_id = 817101575289176064  # ID канала, в который бот будет отправлять сообщение
+		channel_id = 1051768599930482728  # ID канала, в который бот будет отправлять сообщение
 		channel = self.bot.get_channel(channel_id)
 
 		if channel:

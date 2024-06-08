@@ -1,5 +1,4 @@
 token = "MTE0NDY4NzI3MzI4MDAyNDU4Ng.Ga9Gv6.WbrNBHEm75Zulg4F7e52t4ZRAOWt3M9roKn-o0"
-OPENAI_API_KEY = "sk-proj-eB8WoM71wjcPwhzVtGc2T3BlbkFJDuoGsAUHjAZMeOXWB25X"
 # -----------------------------------
 info = {
     "creator": "Пашков Максим (Sectormain)",
