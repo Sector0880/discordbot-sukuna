@@ -9,6 +9,16 @@ import sys
 from botConfig import *
 from dbVars import *
 
+def set_use_cmd_only_sfsp():
+    async def predicate(ctx):
+        if ctx.author.id not in sf_sp(): 
+            await ctx.send("Нету прав.") # на автора сообщения сообщения
+            return False
+        else:
+            return True
+    return commands.check(predicate)
+
+
 
 """
 def check_command_permissions():

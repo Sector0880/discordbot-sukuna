@@ -10,8 +10,6 @@ from datetime import *
 from dbVars import *
 from botFunctions import *
 
-
-
 class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
@@ -21,28 +19,47 @@ class Info(commands.Cog):
 		description = "Получить информацию о командах бота"
 	)
 	@app_commands.choices(command = [
-		app_commands.Choice(name = "help", value = 1),
-		app_commands.Choice(name = "about", value = 1),
-		app_commands.Choice(name = "ping", value = 1),
-		app_commands.Choice(name = "profile", value = 1),
-		app_commands.Choice(name = "avatar", value = 1)
+		app_commands.Choice(name = "time", value = 1)
 	])
 	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
 		try:
 			if command == None:
+				list_cmds_info = ['`help`', '`about`', '`ping`', '`profile`', '`avatar`']
+				list_cmds_fun = ['`time`']
+				list_cmds_settings = [
+					'`set_profile_about`',
+					'`set_profile_age`',
+					'`set_profile_city`',
+					'`del_profile_about`',
+					'`del_profile_age`',
+					'`del_profile_city`',
+				]
+
 				emb = discord.Embed(
 					description = '\n'.join([
-						"Есть сложности использования моих команд? Прочитай все, иначе убью :3",
-						"Я разделил свои команды на несколько модулей, по необходимости их можно выключать"
+						"Есть сложности использования моих техник? Не расстраивайся, постарайся все запомнить."
+						#"Я разделил свои команды на несколько модулей"
 					]),
 					color = 0x2b2d31
 				)
 				emb.add_field(
-					name = 'Информация [5]', 
-					value = ', '.join(['`help`', '`about`', '`ping`', '`profile`', '`avatar`']),
+					name = f'Информация [{len(list_cmds_info)}]', 
+					value = ', '.join(list_cmds_info),
 					inline=True
 				)
-				emb.set_author(name = "Sukuna рассказывает о себе", icon_url = self.bot.user.avatar)
+				emb.add_field(
+					name = f'Веселье [{len(list_cmds_fun)}]', 
+					value = ', '.join(list_cmds_fun),
+					inline=True
+				)
+				emb.add_field(
+					name = f'Настройки [{len(list_cmds_settings)}]', 
+					value = ', '.join(list_cmds_settings),
+					inline=False
+				)
+				lists_len = len(list_cmds_info) + len(list_cmds_fun) + len(list_cmds_settings)
+				emb.set_footer(text = f"Доступно {lists_len} техник")
+				emb.set_author(name = "Sukuna рассказывает о себе, читай внимательно", icon_url = self.bot.user.avatar)
 			elif command.name:
 				self.text_footer = False
 				with open(f"./.db/docs/commands/{command.name}.yml", encoding="utf-8") as read_file: cmd = yaml.safe_load(read_file)
@@ -71,11 +88,11 @@ class Info(commands.Cog):
 					inline=False
 				)
 				if "prefix" in cmd["type"]:
-					pattern_value = f'\n```ansi\n{cspl_get_param(interaction, "guilds", "prefix")}{command.name} {formatted_text}\n```'
+					pattern_value = f'\n```ansi\n{cspl_get_param(interaction, "g", "prefix")}{command.name} {formatted_text}\n```'
 				elif "hybrid" in cmd["type"]:
 					pattern_value = '\n'.join([
 						f'\n```ansi\n/{command.name} {formatted_text}',
-						f'{cspl_get_param(interaction, "guilds", "prefix")}{command.name} {formatted_text}\n```'
+						f'{cspl_get_param(interaction, "g", "prefix")}{command.name} {formatted_text}\n```'
 					])
 				else:
 					pattern_value = f'\n```ansi\n/{command.name} {formatted_text}\n```'
