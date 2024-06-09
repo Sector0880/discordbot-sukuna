@@ -1,2 +1,6 @@
 mute:
   status: false
+profile:
+  about: false
+  age: false
+  city: false

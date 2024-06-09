@@ -25,7 +25,7 @@ async def get_all_guilds():
 	guilds = [guild.id for guild in bot.guilds]
 	return guilds
 
-@bot.command() 
+@bot.command()
 async def sync(ctx):
 	synced = await bot.tree.sync()
 	await ctx.send(f"Добавилась(-ись) {len(synced)} команд(-ы)!")

@@ -30,12 +30,6 @@ class Moderation(commands.Cog):
 		await interaction.response.defer(ephemeral = True, thinking = True)
 		await interaction.edit_original_response(content = 'Скоро...')
 	"""
-	
-	# я не знаю зачем я хотел его создать ну ладно пусть остается
-	@commands.command(aliases = ["mvc"])
-	async def mute_visiblecorrect(self, ctx, guild: discord.Guild = None):
-		await ctx.send('скоро')
-	# — — — — — — — — — — — — — — — — — — — — — — — — — 
 
 async def setup(bot):
 	await bot.add_cog(Moderation(bot))
