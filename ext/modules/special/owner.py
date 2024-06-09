@@ -21,6 +21,16 @@ class Owner(commands.Cog):
 			await ctx.send(str(e))
 		except Exception as e:
 			print(e)
+	
+	@commands.command(aliases = ['sgp'])
+	@commands.is_owner()
+	async def set_guild_params(self, ctx):
+		try:
+			await ctx.send("скоро")
+		except ValueError as e:
+			await ctx.send(str(e))
+		except Exception as e:
+			print(e)
 
 async def setup(bot):
 	await bot.add_cog(Owner(bot))
