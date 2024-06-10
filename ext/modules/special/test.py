@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import app_commands
 
 import asyncio
 import re
@@ -13,6 +14,8 @@ import botDecorators
 class Test(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+	
+	group = app_commands.Group(name = 'test', description = 'lol')
 		
 	@commands.command()
 	@commands.is_owner()
@@ -33,6 +36,11 @@ class Test(commands.Cog):
 			await ctx.send(str(e))
 		except Exception as e:
 			print(repr(e))
+	
+	
+	@group.command(name="ggg", description="...")
+	async def _ping(self, interaction: discord.Interaction, server_id: discord.Member):
+		await interaction.response.send_message("pong!")
 
 async def setup(bot):
 	await bot.add_cog(Test(bot))

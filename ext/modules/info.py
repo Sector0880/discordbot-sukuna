@@ -14,7 +14,9 @@ class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 	
-	@app_commands.command(
+	app_commands_group_info = app_commands.Group(name = "инфо", description="Информационные команды")
+	
+	@app_commands_group_info.command(
 		name = "help",
 		description = "Получить информацию о командах бота"
 	)
