@@ -178,17 +178,17 @@ class Info(commands.Cog):
 			emb = discord.Embed(colour = 0x2b2d31)
 			emb.set_author(name = f'{profile}', icon_url = profile.avatar)
 			emb.set_thumbnail(url = profile.avatar)
-			emb.add_field(name = 'В Discord', value = profile.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.add_field(name = 'На сервере', value = profile.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.add_field(name = 'Статус', value = status, inline = False)
 			#if len(cspl_get_param(ctx, 'u', 'profile')) > 0:
 			emb.add_field(name = 'Профиль', value = '\n'.join([
 				f"**О себе:** {cspl_get_param(ctx, 'u', 'about', 'profile', user if user else None)}" if cspl_get_param(ctx, 'u', 'about', 'profile', user if user else None) else "**О себе:** `нету`",
 				f"**Возраст:** {cspl_get_param(ctx, 'u', 'age', 'profile', user if user else None)}" if cspl_get_param(ctx, 'u', 'age', 'profile', user if user else None) else "**Возраст:** `нету`",
 				f"**Город:** {cspl_get_param(ctx, 'u', 'city', 'profile', user if user else None)}" if cspl_get_param(ctx, 'u', 'city', 'profile', user if user else None) else "**Город:** `нету`",
 			]), inline = False)
+			emb.add_field(name = 'Статус', value = status, inline = False)
 			emb.add_field(name = f'Роли [{role_list_number}]', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
-			#emb.set_footer(text = f'ID: {profile.id}')
+			emb.add_field(name = 'В Discord', value = profile.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
+			emb.add_field(name = 'На сервере', value = profile.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
+			emb.set_footer(text = f'ID: {profile.id}')
 			emb.timestamp = datetime.utcnow()
 
 			await ctx.send(embed = emb, ephemeral=True)
