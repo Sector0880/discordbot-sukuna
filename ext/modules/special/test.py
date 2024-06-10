@@ -31,6 +31,7 @@ class Test(commands.Cog):
 							value=slash_command.description if slash_command.description else slash_command.name, 
 							inline=False) 
 			#await ctx.send(embed = em)
+			await ctx.send("/help")
 			await ctx.send(dbVars.cspl_get_param(ctx, 'u', 'profile'))
 		except ValueError as e:
 			await ctx.send(str(e))
@@ -39,8 +40,8 @@ class Test(commands.Cog):
 	
 	
 	@group.command(name="ggg", description="...")
-	async def _ping(self, interaction: discord.Interaction, server_id: discord.Member):
-		await interaction.response.send_message("pong!")
+	async def _ping(self, interaction: discord.Interaction):
+		await interaction.response.send_message(dbVars.cspl_get_param(interaction, 'g', 'prefix'))
 
 async def setup(bot):
 	await bot.add_cog(Test(bot))

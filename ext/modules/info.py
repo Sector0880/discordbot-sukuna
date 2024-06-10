@@ -14,7 +14,7 @@ class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 	
-	app_commands_group_info = app_commands.Group(name = "инфо", description="Информационные команды")
+	app_commands_group_info = app_commands.Group(name = "info", description="Информационные команды")
 	
 	@app_commands_group_info.command(
 		name = "help",
@@ -26,8 +26,8 @@ class Info(commands.Cog):
 	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
 		try:
 			if command == None:
-				list_cmds_info = ['`help`', '`about`', '`ping`', '`profile`', '`avatar`']
-				list_cmds_fun = ['`time`']
+				list_cmds_info = []
+				list_cmds_fun = []
 				list_cmds_settings = [
 					'`set_profile_about`',
 					'`set_profile_age`',
@@ -36,6 +36,9 @@ class Info(commands.Cog):
 					'`del_profile_age`',
 					'`del_profile_city`',
 				]
+				# https://stackoverflow.com/questions/75372569/how-to-get-a-list-of-slash-commands-discord-py ПОЧИТАТЬ
+				for slash_command in self.bot.tree.walk_commands():
+					list_cmds_info.append(f"</{slash_command.name}:> ")
 
 				emb = discord.Embed(
 					description = '\n'.join([

@@ -17,8 +17,8 @@ def get_bot_prefix(bot, ctx):
 	else:
 		return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))['prefix']			
 
-def add_command_usage_counter(ctx, _phase):
-	command = ctx.command.name # работает лучше
+def add_command_usage_counter(interaction, _phase):
+	command = interaction.command.name # работает лучше
 	with open("./.db/logs/commandsUsageCounter.yml", "r") as read_file: commandsUsageCounter = yaml.safe_load(read_file)
 	phase = ''
 	match _phase:

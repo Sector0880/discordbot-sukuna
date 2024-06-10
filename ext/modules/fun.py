@@ -2,32 +2,50 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
+import nekos
+from googletrans import Translator
+
 from datetime import *
-from botFunctions import *
+import botFunctions
 
 class Fun(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 	
-	@commands.hybrid_command(
+	app_commands_group = app_commands.Group(name = "fun", description = "Команды, приванные поднять Вам настроение :3")
+	
+	@app_commands_group.command(
 		name = 'time', 
-		description = 'Узнать время.',
-		aliases = ['datetime', 'время']
+		description = 'Узнать время.'
 	)
-	async def time(self, ctx):
+	async def time(self, interaction: discord.Interaction):
 		try:
-			add_command_usage_counter(ctx, 1)
+			botFunctions.add_command_usage_counter(interaction, 1)
 
 			emb = discord.Embed(color=0x2b2d31)
 			emb.add_field(name = 'UTC  🌐', value = datetime.utcnow().strftime('**Дата:** %Y.%m.%d\n**Время:** %H:%M:%S'))
 			emb.add_field(name = 'МСК  🇷🇺', value = (datetime.utcnow() + timedelta(hours = 3)).strftime('**Дата:** %Y.%m.%d\n**Время:** %H:%M:%S'))
 			#emb.set_footer(text = ctx.author, icon_url = ctx.author.avatar.url)
 
-			await ctx.send(embed = emb)
-			add_command_usage_counter(ctx, 2)
+			await interaction.response.send_message(embed = emb, ephemeral=False)
+			botFunctions.add_command_usage_counter(interaction, 2)
 		except Exception as e:
-			await ctx.send(e)
-			add_command_usage_counter(ctx, 3)
+			await interaction.response.send_message(e)
+			botFunctions.add_command_usage_counter(interaction, 3)
+	
+	# Факт
+	@app_commands_group.command(
+		name = "fact",
+		description="Узнать рандомный факт."
+	)
+	async def fact(self, interaction: discord.Interaction):
+		facts = nekos.fact()
+
+		tra = Translator()
+
+		result = tra.translate(facts, dest = 'ru')
+
+		await interaction.response.send_message(embed = discord.Embed(description = f'{result.text}.', color = 0xffff6c))
 
 async def setup(bot):
 	await bot.add_cog(Fun(bot))
