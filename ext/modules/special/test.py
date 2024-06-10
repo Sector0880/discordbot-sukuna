@@ -27,11 +27,12 @@ class Test(commands.Cog):
 				em.add_field(name=slash_command.name, 
 							value=slash_command.description if slash_command.description else slash_command.name, 
 							inline=False) 
-			await ctx.send(embed = em)
+			#await ctx.send(embed = em)
+			await ctx.send(dbVars.cspl_get_param(ctx, 'u', 'profile'))
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:
-			print(e)
+			print(repr(e))
 
 async def setup(bot):
 	await bot.add_cog(Test(bot))

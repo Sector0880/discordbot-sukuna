@@ -96,7 +96,7 @@ class Settings(commands.Cog):
 	async def del_profile_about(self, ctx):
 		try:
 			await self.del_profile_param(ctx, "about")
-			await ctx.send(f"```json\n{cspl_custom_users(ctx)[str(ctx.author.id)][str(ctx.guild.id)]["profile"]}\n```", ephemeral = True)
+			await ctx.send("Успешно удалена биография.")
 		except Exception as e:
 			print(repr(e))
 	
@@ -108,7 +108,7 @@ class Settings(commands.Cog):
 	async def del_profile_age(self, ctx):
 		try:
 			await self.del_profile_param(ctx, "age")
-			await ctx.send(f"```json\n{cspl_custom_users(ctx)[str(ctx.author.id)][str(ctx.guild.id)]["profile"]}\n```", ephemeral = True)
+			await ctx.send("Успешно удален возраст.")
 		except Exception as e:
 			print(repr(e))
 	
@@ -120,7 +120,7 @@ class Settings(commands.Cog):
 	async def del_profile_city(self, ctx):
 		try:
 			await self.del_profile_param(ctx, "city")
-			await ctx.send(f"```json\n{cspl_custom_users(ctx)[str(ctx.author.id)][str(ctx.guild.id)]["profile"]}\n```", ephemeral = True)
+			await ctx.send("Успешно удален город.")
 		except Exception as e:
 			print(repr(e))
 
