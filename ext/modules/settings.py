@@ -12,7 +12,7 @@ class Settings(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	app_commands_group = app_commands.Group(name = "settings", description = "Команды для настройки функций бота.")
+	profile_commands = app_commands.Group(name = "profile", description = "Команды для настройки профиля пользователя.")
 
 	def set_profile_param(self, interaction, param: str, content):
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
@@ -54,7 +54,7 @@ class Settings(commands.Cog):
 		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
 	
 
-	@app_commands_group.command(
+	@profile_commands.command(
 		name = "set_profile_about",
 		description = 'Добавить биографию для своего профиля на сервере.'
 	)
@@ -65,7 +65,7 @@ class Settings(commands.Cog):
 		except Exception as e:
 			print(repr(e))
 	
-	@app_commands_group.command(
+	@profile_commands.command(
 		name = "set_profile_age",
 		description = 'Добавить возраст для своего профиля на сервере.'
 	)
@@ -76,7 +76,7 @@ class Settings(commands.Cog):
 		except Exception as e:
 			print(repr(e))
 	
-	@app_commands_group.command(
+	@profile_commands.command(
 		name = "set_profile_city",
 		description = 'Добавить город для своего профиля на сервере.'
 	)
@@ -87,7 +87,7 @@ class Settings(commands.Cog):
 		except Exception as e:
 			print(repr(e))
 	
-	@app_commands_group.command(
+	@profile_commands.command(
 		name = "del_profile_about",
 		description = 'Удалить биографию из своего профиля на сервере.'
 	)
@@ -98,7 +98,7 @@ class Settings(commands.Cog):
 		except Exception as e:
 			print(repr(e))
 	
-	@app_commands_group.command(
+	@profile_commands.command(
 		name = "del_profile_age",
 		description = 'Удалить свой возраст из своего профиля на сервере.'
 	)
@@ -109,7 +109,7 @@ class Settings(commands.Cog):
 		except Exception as e:
 			print(repr(e))
 	
-	@app_commands_group.command(
+	@profile_commands.command(
 		name = "del_profile_city",
 		description = 'Удалить город из своего профиля на сервере.'
 	)

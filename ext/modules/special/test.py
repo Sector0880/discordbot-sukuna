@@ -37,11 +37,6 @@ class Test(commands.Cog):
 			await ctx.send(str(e))
 		except Exception as e:
 			print(repr(e))
-	
-	
-	@group.command(name="ggg", description="...")
-	async def _ping(self, interaction: discord.Interaction):
-		await interaction.response.send_message(dbVars.cspl_get_param(interaction, 'g', 'prefix'))
 
 async def setup(bot):
 	await bot.add_cog(Test(bot))

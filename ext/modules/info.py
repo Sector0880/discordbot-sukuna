@@ -28,17 +28,17 @@ class Info(commands.Cog):
 			if command == None:
 				list_cmds_info = []
 				list_cmds_fun = []
-				list_cmds_settings = [
-					'`set_profile_about`',
-					'`set_profile_age`',
-					'`set_profile_city`',
-					'`del_profile_about`',
-					'`del_profile_age`',
-					'`del_profile_city`',
-				]
-				# https://stackoverflow.com/questions/75372569/how-to-get-a-list-of-slash-commands-discord-py ПОЧИТАТЬ
-				for slash_command in self.bot.tree.walk_commands():
-					list_cmds_info.append(f"</{slash_command.name}:> ")
+				list_cmds_settings = []
+
+				commands = [com for com in self.bot.tree.walk_commands() if isinstance(com, app_commands.Command)]
+				groups = [com for com in self.bot.tree.walk_commands() if isinstance(com, app_commands.Group)]
+
+				for group in groups:
+					for slash_command in group.commands:
+						command_structure = f"</{group.name if group else None} {slash_command.name}:id>"
+						list_cmds_info.append(command_structure) if group.name == "info" else None
+						list_cmds_fun.append(command_structure) if group.name == "fun" else None
+						list_cmds_settings.append(command_structure) if group.name == "settings" else None
 
 				emb = discord.Embed(
 					description = '\n'.join([
