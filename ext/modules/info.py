@@ -14,9 +14,7 @@ class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 	
-	app_commands_group_info = app_commands.Group(name = "info", description="Информационные команды")
-	
-	@app_commands_group_info.command(
+	@app_commands.command(
 		name = "help",
 		description = "Получить информацию о командах бота"
 	)
@@ -26,45 +24,69 @@ class Info(commands.Cog):
 	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
 		try:
 			if command == None:
-				list_cmds_info = []
-				list_cmds_fun = []
-				list_cmds_settings = []
+				list_cmds_info = [
+					{'command': '</help:1250144368837529692>',   'permission': None},
+					{'command': '</ping:1249321143983145034>',   'permission': None},
+					{'command': '</avatar:1249321144469950546>', 'permission': None},
+					{'command': '</about:1250159784683114496>',  'permission': None},
+				]
+				list_cmds_fun = [
+					{'command': '</time:1250150935280357376>', 'permission': None},
+					{'command': '</fact:1250150935280357377>', 'permission': None}
+				]
+				list_cmds_settings = [
+					{'command': '</profile show:1250158028435751013>',      'permission': None},
+					{'command': '</profile set_about:1250158028435751013>', 'permission': None},
+					{'command': '</profile set_age:1250158028435751013>',   'permission': None},
+					{'command': '</profile set_city:1250158028435751013>',  'permission': None},
+					{'command': '</profile del_about:1250158028435751013>', 'permission': None},
+					{'command': '</profile del_age:1250158028435751013>',   'permission': None},
+					{'command': '</profile del_city:1250158028435751013>',  'permission': None},
+				]
+				list_cmds_moderation = [
+					{'command': '</mute:>', 'permission': discord.Permissions.mute_members},
+					{'command': '</ban:>', 'permission': discord.Permissions.ban_members}
+				]
 
-				commands = [com for com in self.bot.tree.walk_commands() if isinstance(com, app_commands.Command)]
-				groups = [com for com in self.bot.tree.walk_commands() if isinstance(com, app_commands.Group)]
+				filtered_list_cmds_info = [cmd for cmd in list_cmds_info if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
+				filtered_list_cmds_fun = [cmd for cmd in list_cmds_fun if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
+				filtered_list_cmds_settings = [cmd for cmd in list_cmds_settings if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
+				filtered_list_cmds_moderation = [cmd for cmd in list_cmds_moderation if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
 
-				for group in groups:
-					for slash_command in group.commands:
-						command_structure = f"</{group.name if group else None} {slash_command.name}:id>"
-						list_cmds_info.append(command_structure) if group.name == "info" else None
-						list_cmds_fun.append(command_structure) if group.name == "fun" else None
-						list_cmds_settings.append(command_structure) if group.name == "settings" else None
-
+				lists_len = len(filtered_list_cmds_info) + len(filtered_list_cmds_fun) + len(filtered_list_cmds_settings) + len(filtered_list_cmds_moderation)
 				emb = discord.Embed(
+					title = f"Доступные техники ({lists_len})",
 					description = '\n'.join([
-						"Есть сложности использования моих техник? Не расстраивайся, постарайся все запомнить."
-						#"Я разделил свои команды на несколько модулей"
+						"Есть сложности использования моих техник? Не расстраивайся, постарайся все запомнить.",
+						"Все мои техники начинаются с `/` (потому что используются слеш-техники).",
+						"Я разделил свои команды на несколько модулей, чтобы твоя бошка тыквенная не сдохла от моей гениальности :)))"
 					]),
 					color = 0x2b2d31
 				)
 				emb.add_field(
-					name = f'Информация [{len(list_cmds_info)}]', 
-					value = ', '.join(list_cmds_info),
-					inline=True
+					name = f'Информация [{len(filtered_list_cmds_info)}]', 
+					value = ' '.join([cmd['command'] for cmd in filtered_list_cmds_info]),
+					inline = False
 				)
 				emb.add_field(
-					name = f'Веселье [{len(list_cmds_fun)}]', 
-					value = ', '.join(list_cmds_fun),
-					inline=True
+					name = f'Веселье [{len(filtered_list_cmds_fun)}]', 
+					value = ' '.join([cmd['command'] for cmd in filtered_list_cmds_fun]),
+					inline = False
 				)
 				emb.add_field(
-					name = f'Настройки [{len(list_cmds_settings)}]', 
-					value = ', '.join(list_cmds_settings),
-					inline=False
+					name = f'Настройки [{len(filtered_list_cmds_settings)}]',
+					value=' '.join([cmd['command'] for cmd in filtered_list_cmds_settings]),
+					inline = False
 				)
-				lists_len = len(list_cmds_info) + len(list_cmds_fun) + len(list_cmds_settings)
-				emb.set_footer(text = f"Доступно {lists_len} техник")
-				emb.set_author(name = "Sukuna рассказывает о себе, читай внимательно", icon_url = self.bot.user.avatar)
+				emb.add_field(
+					name=f'<:Mod_Shield:1142795808945745970> Модерация (команды не существуют) [{len(filtered_list_cmds_moderation)}]',
+					value=' '.join([cmd['command'] for cmd in filtered_list_cmds_moderation]),
+					inline = False
+				)
+				emb.set_thumbnail(url = self.bot.user.avatar)
+				iam = self.bot.get_user(980175834373562439)
+				emb.set_footer(text = "dev: Sectormain, 2024", icon_url = iam.avatar)
+				#emb.set_author(name = "Sukuna рассказывает о себе, читай внимательно", icon_url = self.bot.user.avatar)
 			elif command.name:
 				self.text_footer = False
 				with open(f"./.db/docs/commands/{command.name}.yml", encoding="utf-8") as read_file: cmd = yaml.safe_load(read_file)
@@ -118,13 +140,14 @@ class Info(commands.Cog):
 		except Exception as e:
 			await interaction.response.send_message(f'||{e}||')
 	
-	@commands.hybrid_command(
+	@app_commands.command(
 		name = 'ping',
-		description = 'Узнать время отклика бота.',
-		aliases = ['пинг']
+		description = 'Узнать время отклика бота.'
 	)
-	async def ping(self, ctx):
+	async def ping(self, interaction: discord.Interaction):
 		try:
+			await interaction.response.defer(ephemeral=True, thinking=True)
+
 			ping = self.bot.latency
 			ping_emoji = '🟩🔳🔳🔳🔳'
 
@@ -149,77 +172,33 @@ class Info(commands.Cog):
 			# Переменная с пингом бота до текущего шарда
 			shard_ping = f'{ping_emoji} `{round(self.bot.latency * 1000)}ms`'
 
-			message = await ctx.send('Отбиваю...  🔳🔳🔳🔳🔳 `секунду...`')
-			await message.edit(content = f'Понг! 🏓  {shard_ping}')
+			message = await interaction.edit_original_response(content = 'Отбиваю...  \n🔳🔳🔳🔳🔳 `секунду...`')
+			await message.edit(content = f'Понг! 🏓  \n{shard_ping}')
 		except Exception as e:
-			await ctx.send(e)
+			await interaction.edit_original_response(content = e)
 	
-	@commands.hybrid_command(
-		name = "profile",
-		description = 'Показать информацию о юзере.',
-		aliases = ['профиль']
-	)
-	async def profile(self, ctx, user: discord.Member = None):
-		try:
-			profile = ctx.author if not user else user
-			roles = profile.roles
-			role_list = ''
-			role_list_number = 0
-
-			for role in reversed(roles):
-				if role != ctx.guild.default_role:
-					role_list += f'<@&{role.id}> '
-					role_list_number += 1
-			
-			if profile.status == discord.Status.online:
-				status = '<:online:748149457396433016> В сети'
-			elif profile.status == discord.Status.idle:
-				status = '<:idle:748149485707984907> Не активен'
-			elif profile.status == discord.Status.dnd:
-				status = '<a:mark_none:815121643479236618> Не беспокоить'
-			else:
-				status = '<:offline:748149539915038731> Не в сети'
-			
-			emb = discord.Embed(colour = 0x2b2d31)
-			emb.set_author(name = f'{profile}', icon_url = profile.avatar)
-			emb.set_thumbnail(url = profile.avatar)
-			#if len(cspl_get_param(ctx, 'u', 'profile')) > 0:
-			emb.add_field(name = 'Профиль', value = '\n'.join([
-				f"**О себе:** {cspl_get_param(ctx, 'u', 'about', 'profile', user if user else None)}" if cspl_get_param(ctx, 'u', 'about', 'profile', user if user else None) else "**О себе:** `нету`",
-				f"**Возраст:** {cspl_get_param(ctx, 'u', 'age', 'profile', user if user else None)}" if cspl_get_param(ctx, 'u', 'age', 'profile', user if user else None) else "**Возраст:** `нету`",
-				f"**Город:** {cspl_get_param(ctx, 'u', 'city', 'profile', user if user else None)}" if cspl_get_param(ctx, 'u', 'city', 'profile', user if user else None) else "**Город:** `нету`",
-			]), inline = False)
-			emb.add_field(name = 'Статус', value = status, inline = False)
-			emb.add_field(name = f'Роли [{role_list_number}]', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
-			emb.add_field(name = 'В Discord', value = profile.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.add_field(name = 'На сервере', value = profile.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.set_footer(text = f'ID: {profile.id}')
-			emb.timestamp = datetime.utcnow()
-
-			await ctx.send(embed = emb, ephemeral=True)
-		except Exception as e:
-			await ctx.send(repr(e), ephemeral=True)
-	
-	@commands.hybrid_command(
+	@app_commands.command(
 		name = "avatar",
-		description = 'Получить аватарку юзера.',
-		aliases = ['аватарка']
+		description = 'Получить аватарку юзера.'
 	)
-	async def avatar(self, ctx, user: discord.Member = None):
+	async def avatar(self, interaction: discord.Interaction, user: discord.Member = None):
 		try:
-			user = ctx.author if not user else user
+			user = interaction.user if not user else user
 
 			emb = discord.Embed(colour = 0x2b2d31)
 			emb.set_author(name = user, icon_url = user.avatar)
 			emb.set_image(url = user.avatar)
 
-			await ctx.send(embed = emb, ephemeral=True)
+			await interaction.response.send_message(embed = emb, ephemeral=True)
 		except Exception as e:
-			await ctx.send(e, ephemeral=True)
+			await interaction.response.send_message(e, ephemeral=True)
 	
 	# Получить детальную информацию о боте
-	@commands.command(aliases = ['об'])
-	async def about(self, ctx):
+	@app_commands.command(
+		name = "about",
+		description = 'Получить информацию о боте.'
+	)
+	async def about(self, interaction: discord.Interaction):
 		try:
 			guilds = ''
 			for guild in self.bot.guilds:
@@ -267,7 +246,7 @@ class Info(commands.Cog):
 
 			emb.add_field(name = 'Пинг', value = shard_ping, inline = False)
 
-			await ctx.send(embed = emb)
+			await interaction.response.send_message(embed = emb)
 		except Exception as e:
 			print(e)
 

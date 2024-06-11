@@ -1,6 +1,7 @@
 import json
 import yaml
 import discord
+from discord import app_commands
 
 bot_presence = lambda: yaml.safe_load(open('./.db/bot/bot.yml', 'r', encoding='utf-8'))['presence']
 sf_a = lambda: yaml.safe_load(open('./.db/staff.yml', 'r', encoding='utf-8'))['staffList_Admins']
@@ -34,8 +35,8 @@ def cspl_get_param(interaction, _branch, _param, _path1 = None, _user: discord.M
 		case 'u':
 			if _user:
 				if str(_user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(_user.id)].keys() and (_param in cspl_custom_users(interaction)[str(_user.id)][str(interaction.guild.id)].keys() or _param in cspl_custom_users(interaction)[str(_user.id)][str(interaction.guild.id)][_path1].keys()):
-					if _path1: return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(_user.id)][str(ctx.guild.id)][_path1][_param]
-					else: return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(_user.id)][str(ctx.guild.id)][_param]
+					if _path1: return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(_user.id)][str(interaction.guild.id)][_path1][_param]
+					else: return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(_user.id)][str(interaction.guild.id)][_param]
 				else:
 					if _path1: return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[_path1][_param]
 					else: return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[_param]

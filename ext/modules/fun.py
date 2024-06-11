@@ -12,9 +12,7 @@ class Fun(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 	
-	app_commands_group = app_commands.Group(name = "fun", description = "Команды, приванные поднять Вам настроение :3")
-	
-	@app_commands_group.command(
+	@app_commands.command(
 		name = 'time', 
 		description = 'Узнать время.'
 	)
@@ -33,8 +31,7 @@ class Fun(commands.Cog):
 			await interaction.response.send_message(e)
 			botFunctions.add_command_usage_counter(interaction, 3)
 	
-	# Факт
-	@app_commands_group.command(
+	@app_commands.command(
 		name = "fact",
 		description="Узнать рандомный факт."
 	)
