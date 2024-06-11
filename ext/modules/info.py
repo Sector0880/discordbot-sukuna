@@ -19,7 +19,19 @@ class Info(commands.Cog):
 		description = "Получить информацию о командах бота"
 	)
 	@app_commands.choices(command = [
-		app_commands.Choice(name = "time", value = 1)
+		app_commands.Choice(name = "help", value = 1),
+		app_commands.Choice(name = "ping", value = 2),
+		app_commands.Choice(name = "avatar", value = 3),
+		app_commands.Choice(name = "about", value = 4),
+		app_commands.Choice(name = "time", value = 5),
+		app_commands.Choice(name = "fact", value = 6),
+		app_commands.Choice(name = "profile show", value = 7),
+		app_commands.Choice(name = "profile set_about", value = 8),
+		app_commands.Choice(name = "profile set_age", value = 9),
+		app_commands.Choice(name = "profile set_city", value = 10),
+		app_commands.Choice(name = "profile del_about", value = 11),
+		app_commands.Choice(name = "profile del_age", value = 12),
+		app_commands.Choice(name = "profile del_city", value = 13)
 	])
 	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
 		try:
@@ -207,11 +219,13 @@ class Info(commands.Cog):
 			members = len(list(self.bot.get_all_members()))
 
 			emb = discord.Embed()
-			emb.set_author(name = f'{self.bot.user} | ID: {self.bot.user.id}', icon_url = self.bot.user.avatar)
+			#emb.set_author(name = f'{self.bot.user} | ID: {self.bot.user.id}', icon_url = self.bot.user.avatar)
 
 			maks = self.bot.get_user(980175834373562439)
-			emb.add_field(name = 'Разработчик', value = f'<@980175834373562439>', inline=False)
-			emb.add_field(name = 'Библиотека', value = f'discord.py {discord.__version__}', inline=False)
+			emb.add_field(name = 'Разработчик', value = f'<@980175834373562439>', inline=True)
+			emb.add_field(name = 'Библиотека', value = f'discord.py {discord.__version__}', inline=True)
+
+			emb.add_field(name = 'Версия', value = f'v0.9', inline=False)
 
 			emb.add_field(name = 'Кол-во серверов', value = f'{str(len(guilds))}', inline=True)
 			emb.add_field(name = 'Кол-во юзеров', value = f'{members}', inline=True)
@@ -241,8 +255,7 @@ class Info(commands.Cog):
 			shard_ping = f'{ping_emoji} `{round(self.bot.latency * 1000)}ms`'
 
 			TimeFromStart = datetime.now() - start_time
-
-			emb.set_footer(text = f'Длительность работы: {str(TimeFromStart)[:-7]}')
+			emb.set_footer(text = f"{self.bot.user} | Длительность работы: {str(TimeFromStart)[:-7]}", icon_url = self.bot.user.avatar)
 
 			emb.add_field(name = 'Пинг', value = shard_ping, inline = False)
 

@@ -67,7 +67,7 @@ class Profile(commands.GroupCog, name = "profile"):
 		name = "set_age",
 		description = 'Добавить возраст для своего профиля на сервере.'
 	)
-	async def set_age(self, interaction: discord.Interaction, content: str):
+	async def set_age(self, interaction: discord.Interaction, content: int):
 		try:
 			self.set_profile_param(interaction, "age", content)
 			await interaction.response.send_message(f"```json\n{cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)]['profile']}\n```", ephemeral = True)
@@ -146,12 +146,18 @@ class Profile(commands.GroupCog, name = "profile"):
 			emb = discord.Embed(colour = 0x2b2d31)
 			emb.set_author(name = f'{profile}', icon_url = profile.avatar)
 			emb.set_thumbnail(url = profile.avatar)
-			#if len(cspl_get_param(interaction, 'u', 'profile')) > 0:
-			emb.add_field(name = 'Профиль', value = '\n'.join([
-				f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'about', 'profile', user if user else None) else "**О себе:** `нету`",
-				f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'age', 'profile', user if user else None) else "**Возраст:** `нету`",
-				f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'city', 'profile', user if user else None) else "**Город:** `нету`",
-			]), inline = False)
+			if user != self.bot.user:
+				emb.add_field(name = 'Профиль', value = '\n'.join([
+					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'about', 'profile', user if user else None) else "**О себе:** `нету`",
+					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'age', 'profile', user if user else None) else "**Возраст:** `нету`",
+					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'city', 'profile', user if user else None) else "**Город:** `нету`",
+				]), inline = False)
+			else:
+				emb.add_field(name = 'Профиль', value = '\n'.join([
+					f"**О себе:** 3990см хуй блять нахуй",
+					f"**Возраст:** 2000+",
+					f"**Город:** Залупа",
+				]), inline = False)
 			emb.add_field(name = 'Статус', value = status, inline = False)
 			emb.add_field(name = f'Роли [{role_list_number}]', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
 			emb.add_field(name = 'В Discord', value = profile.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))

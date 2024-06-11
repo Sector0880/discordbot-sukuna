@@ -1,10 +1,16 @@
 import discord
 from discord.ext import commands
+from discord import app_commands, interactions
 
 import asyncio
 import re
 from dbVars import *
 from botFunctions import *
+
+class MyView(discord.ui.View): # Create a class called MyView that subclasses discord.ui.View
+	@discord.ui.button(label="Отмена", style=discord.ButtonStyle.gray)
+	async def button_callback(self, button, interaction):
+		await interaction.response.send_message("You clicked the button!")
 
 
 class ForADA(commands.Cog):
@@ -26,7 +32,7 @@ class ForADA(commands.Cog):
 			else: channel = int(channel)
 			channel_id = self.bot.get_channel(channel) # получаем id канала
 			if not channel_id: return await ctx.send(f"Чат не найден → <#{channel}>") # если id канала не найден
-			await ctx.send(f"Напиши сообщение, я его повторю. Я буду ожидать твоего сообщения `60 секунд`.\nДля отмены команды напиши текст ОТМЕНА (обязательно большим курсивом).\n\nСервер: `{channel_id.guild.name}`\nЧат: <#{channel}>")
+			await ctx.send(f"Напиши сообщение, я его повторю. Я буду ожидать твоего сообщения `60 секунд`.\n\nСервер: `{channel_id.guild.name}`\nЧат: <#{channel}>", view=MyView())
 			time_waiting = 60 # время ожидания
 			try:
 				message = await self.bot.wait_for("message", check = lambda ctx: ctx.author == ctx.author and ctx.channel == ctx.channel, timeout = time_waiting)
@@ -50,6 +56,10 @@ class ForADA(commands.Cog):
 			await channel.send(f'Пользователь {member.name} присоединился к серверу!')
 		else:
 			print(f'Канал с ID {channel_id} не найден.')
+	
+	@commands.command()
+	async def button(self, ctx):
+		await ctx.send("Press the button!", view=MyView())
 			
 async def setup(bot):
 	await bot.add_cog(ForADA(bot))
