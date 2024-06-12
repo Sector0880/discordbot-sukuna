@@ -57,8 +57,8 @@ class Info(commands.Cog):
 					{'command': '</profile del_city:1250158028435751013>',  'permission': None},
 				]
 				list_cmds_moderation = [
-					{'command': '</mute:>', 'permission': discord.Permissions.mute_members},
-					{'command': '</ban:>', 'permission': discord.Permissions.ban_members}
+					{'command': '</mute:1250456425742995456>', 'permission': discord.Permissions.mute_members},
+					{'command': '</ban:1250456425742995457>', 'permission': discord.Permissions.ban_members}
 				]
 
 				filtered_list_cmds_info = [cmd for cmd in list_cmds_info if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
@@ -150,7 +150,7 @@ class Info(commands.Cog):
 				if self.text_footer: emb.set_footer(text = "! — обязательный параметр")
 			else:
 				return await interaction.response.send_message("Команда не найдена.", ephemeral = True)
-			await interaction.response.send_message(embed = emb, ephemeral = True)
+			await interaction.response.send_message(embed = emb, ephemeral = False)
 		except Exception as e:
 			await interaction.response.send_message(f'||{e}||')
 	
@@ -264,6 +264,7 @@ class Info(commands.Cog):
 
 			TimeFromStart = datetime.now() - start_time
 			emb.set_footer(text = f"{self.bot.user} | Длительность работы: {str(TimeFromStart)[:-7]}", icon_url = self.bot.user.avatar)
+			emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1250518361457033258/Sukuna_Ryoumen.jpg?ex=666b3b7a&is=6669e9fa&hm=b3cf1b6e92845d648199e515f84c8bef311e517aaed68298519f48d905d1e72f&')
 
 			await interaction.response.send_message(embed = emb)
 		except Exception as e:

@@ -55,7 +55,7 @@ class ForADA(commands.Cog):
 
 			time_waiting = 60 # время ожидания
 			try:
-				message = await self.bot.wait_for("message", check = lambda ctx: ctx.author == ctx.author and ctx.channel == ctx.channel, timeout = time_waiting)
+				message = await self.bot.wait_for("message", check = lambda message: message.author == ctx.author and message.channel == ctx.channel, timeout = time_waiting)
 				#if message.content == "ОТМЕНА" or "ОТ": return await ctx.send("Команда отменена принужденно.")
 				#if re.fullmatch("ОТМЕНА", message.content): return await ctx.send("Команда отменена принужденно.")
 				if repeat_view.cancelled: 
@@ -89,7 +89,7 @@ class ForADA(commands.Cog):
 			dialog_view = DialogCancel()
 			await ctx.send(f"Диалог запущен. Теперь каждое твое сообщение в этом чате отправляется от моего лица.\nСервер: `{channel_id.guild.name}`\nЧат: <#{channel}>", view = dialog_view)
 			while True:
-				message = await self.bot.wait_for("message", check = lambda ctx: ctx.author == ctx.author and ctx.channel == ctx.channel)
+				message = await self.bot.wait_for("message", check = lambda message: message.author == ctx.author and message.channel == ctx.channel)
 				if dialog_view.cancelled: 
 					dialog_view.cancelled = False
 					return
