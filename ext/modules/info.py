@@ -38,9 +38,10 @@ class Info(commands.Cog):
 			if command == None:
 				list_cmds_info = [
 					{'command': '</help:1250144368837529692>',   'permission': None},
+					{'command': '</about:1250159784683114496>',  'permission': None},
+					{'command': '</serverinfo:1250362239341301760>',  'permission': None},
 					{'command': '</ping:1249321143983145034>',   'permission': None},
 					{'command': '</avatar:1249321144469950546>', 'permission': None},
-					{'command': '</about:1250159784683114496>',  'permission': None},
 				]
 				list_cmds_fun = [
 					{'command': '</time:1250150935280357376>', 'permission': None},
@@ -86,15 +87,16 @@ class Info(commands.Cog):
 					inline = False
 				)
 				emb.add_field(
-					name = f'Настройки [{len(filtered_list_cmds_settings)}]',
+					name = f'<:UtilitySettings:1250376547958001734> Настройки [{len(filtered_list_cmds_settings)}]',
 					value=' '.join([cmd['command'] for cmd in filtered_list_cmds_settings]),
 					inline = False
 				)
-				emb.add_field(
-					name=f'<:Mod_Shield:1142795808945745970> Модерация (команды не существуют) [{len(filtered_list_cmds_moderation)}]',
-					value=' '.join([cmd['command'] for cmd in filtered_list_cmds_moderation]),
-					inline = False
-				)
+				if len(filtered_list_cmds_moderation) > 0:
+					emb.add_field(
+						name=f'<:Mod_Shield:1142795808945745970> Модерация [{len(filtered_list_cmds_moderation)}]',
+						value=' '.join([cmd['command'] for cmd in filtered_list_cmds_moderation]),
+						inline = False
+					)
 				emb.set_thumbnail(url = self.bot.user.avatar)
 				iam = self.bot.get_user(980175834373562439)
 				emb.set_footer(text = "dev: Sectormain, 2024", icon_url = iam.avatar)
@@ -212,23 +214,23 @@ class Info(commands.Cog):
 	)
 	async def about(self, interaction: discord.Interaction):
 		try:
-			guilds = ''
+			guilds = 0
 			for guild in self.bot.guilds:
-				guilds += '1'
+				guilds += 1
 
 			members = len(list(self.bot.get_all_members()))
 
-			emb = discord.Embed()
+			emb = discord.Embed(color=0x2b2d31)
 			#emb.set_author(name = f'{self.bot.user} | ID: {self.bot.user.id}', icon_url = self.bot.user.avatar)
 
 			maks = self.bot.get_user(980175834373562439)
 			emb.add_field(name = 'Разработчик', value = f'<@980175834373562439>', inline=True)
+			emb.add_field(name = 'Кол-во серверов', value = f'{str(guilds)}', inline=True)
+			emb.add_field(name = 'Кол-во юзеров', value = f'{members}', inline=True)
+
 			emb.add_field(name = 'Библиотека', value = f'discord.py {discord.__version__}', inline=True)
 
-			emb.add_field(name = 'Версия', value = f'v0.9', inline=False)
-
-			emb.add_field(name = 'Кол-во серверов', value = f'{str(len(guilds))}', inline=True)
-			emb.add_field(name = 'Кол-во юзеров', value = f'{members}', inline=True)
+			emb.add_field(name = 'Версия', value = f'v0.9', inline=True)
 
 			ping = self.bot.latency
 			ping_emoji = '🟩🔳🔳🔳🔳'
@@ -252,16 +254,35 @@ class Info(commands.Cog):
 				ping_emoji = '🟥🟥🟥🟥🟥'
 
 			# Переменная с пингом бота до текущего шарда
-			shard_ping = f'{ping_emoji} `{round(self.bot.latency * 1000)}ms`'
+			shard_id = interaction.guild.shard_id
+			shard = self.bot.get_shard(shard_id)
+			shard_ping = f'{ping_emoji} `{round(shard.latency * 1000)}ms`'
+			bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
+
+			emb.add_field(name = 'Шард', value = f"{bot_shard_name()}#{shard.id}", inline = True)
+			emb.add_field(name = 'Пинг', value = shard_ping, inline = True)
 
 			TimeFromStart = datetime.now() - start_time
 			emb.set_footer(text = f"{self.bot.user} | Длительность работы: {str(TimeFromStart)[:-7]}", icon_url = self.bot.user.avatar)
 
-			emb.add_field(name = 'Пинг', value = shard_ping, inline = False)
-
 			await interaction.response.send_message(embed = emb)
 		except Exception as e:
 			print(e)
+	
+	@app_commands.command(
+		name = "serverinfo",
+		description="Узнать информацию о сервере."
+	)
+	async def serverinfo(self, interaction: discord.Interaction):
+		try:
+			shard_id = interaction.guild.shard_id
+			shard = self.bot.get_shard(shard_id)
+			shard_ping = shard.latency
+			shard_servers = len([guild for guild in self.bot.guilds if guild.shard_id == shard_id])
+			bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
+			await interaction.response.send_message(f"{bot_shard_name()}#{shard.id}\n{shard_ping}")
+		except Exception as e:
+			await interaction.response.send_message(repr(e))
 
 async def setup(bot):
 	await bot.add_cog(Info(bot))
