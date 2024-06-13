@@ -57,14 +57,35 @@ class Info(commands.Cog):
 					{'command': '</profile del_city:1250158028435751013>',  'permission': None},
 				]
 				list_cmds_moderation = [
-					{'command': '</mute:1250456425742995456>', 'permission': discord.Permissions.mute_members},
-					{'command': '</ban:1250456425742995457>', 'permission': discord.Permissions.ban_members}
+					{'command': '</mute:1250456425742995456>', 'permission': interaction.user.guild_permissions.mute_members},
+					{'command': '</ban:1250456425742995457>', 'permission': interaction.user.guild_permissions.ban_members}
 				]
 
-				filtered_list_cmds_info = [cmd for cmd in list_cmds_info if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
-				filtered_list_cmds_fun = [cmd for cmd in list_cmds_fun if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
-				filtered_list_cmds_settings = [cmd for cmd in list_cmds_settings if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
-				filtered_list_cmds_moderation = [cmd for cmd in list_cmds_moderation if cmd['permission'] is None or interaction.user.guild_permissions.ban_members]
+				"""
+				filtered_list_cmds_info = [cmd for cmd in list_cmds_info if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
+				filtered_list_cmds_fun = [cmd for cmd in list_cmds_fun if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
+				filtered_list_cmds_settings = [cmd for cmd in list_cmds_settings if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
+				filtered_list_cmds_moderation = [cmd for cmd in list_cmds_moderation if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
+				"""
+				# исправленный парс доступных команд
+				filtered_list_cmds_info = []
+				filtered_list_cmds_fun = []
+				filtered_list_cmds_settings = []
+				filtered_list_cmds_moderation = []
+				for cmd in list_cmds_info:
+					if bool(cmd['permission']) or cmd['permission'] is None:
+						filtered_list_cmds_info.append(cmd)
+				for cmd in list_cmds_fun:
+					if bool(cmd['permission']) or cmd['permission'] is None:
+						filtered_list_cmds_fun.append(cmd)
+				for cmd in list_cmds_settings:
+					if bool(cmd['permission']) or cmd['permission'] is None:
+						filtered_list_cmds_settings.append(cmd)
+				for cmd in list_cmds_moderation:
+					if bool(cmd['permission']) or cmd['permission'] is None:
+						filtered_list_cmds_moderation.append(cmd)
+				
+			
 
 				lists_len = len(filtered_list_cmds_info) + len(filtered_list_cmds_fun) + len(filtered_list_cmds_settings) + len(filtered_list_cmds_moderation)
 				emb = discord.Embed(
