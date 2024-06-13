@@ -4,11 +4,17 @@ from discord import app_commands
 import yaml
 
 import datetime, time
+import locale
 from time import *
 from botConfig import *
 from datetime import *
 from dbVars import *
 from botFunctions import *
+
+locale.setlocale(
+    category=locale.LC_ALL,
+    locale="Russian"  # Note: do not use "de_DE" as it doesn't work
+)
 
 class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
@@ -45,7 +51,8 @@ class Info(commands.Cog):
 				]
 				list_cmds_fun = [
 					{'command': '</time:1250150935280357376>', 'permission': None},
-					{'command': '</fact:1250150935280357377>', 'permission': None}
+					{'command': '</fact:1250150935280357377>', 'permission': None},
+					{'command': '</battle:1250720060344107019>', 'permission': None}
 				]
 				list_cmds_settings = [
 					{'command': '</profile show:1250158028435751013>',      'permission': None},
@@ -249,7 +256,7 @@ class Info(commands.Cog):
 			emb.add_field(name = 'Кол-во серверов', value = f'{str(guilds)}', inline=True)
 			emb.add_field(name = 'Кол-во юзеров', value = f'{members}', inline=True)
 
-			emb.add_field(name = 'Библиотека', value = f'discord.py {discord.__version__}', inline=True)
+			#emb.add_field(name = 'Библиотека', value = f'discord.py {discord.__version__}', inline=True)
 
 			emb.add_field(name = 'Версия', value = f'v0.9', inline=True)
 
@@ -282,9 +289,30 @@ class Info(commands.Cog):
 
 			emb.add_field(name = 'Шард', value = f"{bot_shard_name()}#{shard.id}", inline = True)
 			emb.add_field(name = 'Пинг', value = shard_ping, inline = True)
-
+		
+			def choose_correct_word(number, form1, form2, form3):
+				if 10 <= number % 100 <= 20:
+					return form3
+				elif number % 10 == 1:
+					return form1
+				elif 2 <= number % 10 <= 4:
+					return form2
+				else:
+					return form3
+			
 			TimeFromStart = datetime.now() - start_time
-			emb.set_footer(text = f"{self.bot.user} | Длительность работы: {str(TimeFromStart)[:-7]}", icon_url = self.bot.user.avatar)
+			if TimeFromStart.days > 0:
+				days = TimeFromStart.days
+				time_str = f"{days} {choose_correct_word(days, 'день', 'дня', 'дней')}, {TimeFromStart.seconds // 3600} {choose_correct_word(TimeFromStart.seconds // 3600, 'час', 'часа', 'часов')}, {(TimeFromStart.seconds % 3600) // 60} {choose_correct_word((TimeFromStart.seconds % 3600) // 60, 'минута', 'минуты', 'минут')}, {TimeFromStart.seconds % 60} {choose_correct_word(TimeFromStart.seconds % 60, 'секунда', 'секунды', 'секунд')}"
+			elif TimeFromStart.seconds >= 3600:
+				time_str = f"{TimeFromStart.seconds // 3600} {choose_correct_word(TimeFromStart.seconds // 3600, 'час', 'часа', 'часов')}, {(TimeFromStart.seconds % 3600) // 60} {choose_correct_word((TimeFromStart.seconds % 3600) // 60, 'минута', 'минуты', 'минут')}, {TimeFromStart.seconds % 60} {choose_correct_word(TimeFromStart.seconds % 60, 'секунда', 'секунды', 'секунд')}"
+			elif TimeFromStart.seconds >= 60:
+				time_str = f"{(TimeFromStart.seconds % 3600) // 60} {choose_correct_word((TimeFromStart.seconds % 3600) // 60, 'минута', 'минуты', 'минут')}, {TimeFromStart.seconds % 60} {choose_correct_word(TimeFromStart.seconds % 60, 'секунда', 'секунды', 'секунд')}"
+			else:
+				time_str = f"{TimeFromStart.seconds} {choose_correct_word(TimeFromStart.seconds, 'секунда', 'секунды', 'секунд')}"
+
+			emb.set_footer(text=f"{self.bot.user} | Время работы: {time_str}", icon_url=self.bot.user.avatar)
+			
 			emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1250518361457033258/Sukuna_Ryoumen.jpg?ex=666b3b7a&is=6669e9fa&hm=b3cf1b6e92845d648199e515f84c8bef311e517aaed68298519f48d905d1e72f&')
 
 			await interaction.response.send_message(embed = emb)
@@ -293,18 +321,22 @@ class Info(commands.Cog):
 	
 	@app_commands.command(
 		name = "serverinfo",
-		description="Узнать информацию о сервере."
+		description="Получить информацию о сервере."
 	)
 	async def serverinfo(self, interaction: discord.Interaction):
 		try:
-			shard_id = interaction.guild.shard_id
-			shard = self.bot.get_shard(shard_id)
-			shard_ping = shard.latency
-			shard_servers = len([guild for guild in self.bot.guilds if guild.shard_id == shard_id])
-			bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
-			await interaction.response.send_message(f"{bot_shard_name()}#{shard.id}\n{shard_ping}")
+			await interaction.response.send_message('скоро', ephemeral=True)
 		except Exception as e:
 			await interaction.response.send_message(repr(e))
 
 async def setup(bot):
 	await bot.add_cog(Info(bot))
+
+"""
+shard_id = interaction.guild.shard_id
+shard = self.bot.get_shard(shard_id)
+shard_ping = shard.latency
+shard_servers = len([guild for guild in self.bot.guilds if guild.shard_id == shard_id])
+bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
+await interaction.response.send_message(f"{bot_shard_name()}#{shard.id}\n{shard_ping}")
+"""

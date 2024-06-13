@@ -26,6 +26,7 @@ class Moderation(commands.Cog):
 		name = 'mute', 
 		description = 'Заблокировать юзеру возможность писать в чат.'
 	)
+	@app_commands.default_permissions(mute_members = True)
 	async def mute(self, interaction: discord.Interaction):
 		await interaction.response.send_message(content = 'Скоро...')
 	
@@ -33,6 +34,7 @@ class Moderation(commands.Cog):
 		name = 'ban', 
 		description = 'Забанить юзера на сервере.'
 	)
+	@app_commands.default_permissions(ban_members = True)
 	async def ban(self, interaction: discord.Interaction):
 		await interaction.response.send_message(content = 'Скоро...')
 
