@@ -48,6 +48,7 @@ class Info(commands.Cog):
 					{'command': '</serverinfo:1250362239341301760>',  'permission': None},
 					{'command': '</ping:1249321143983145034>',   'permission': None},
 					{'command': '</avatar:1249321144469950546>', 'permission': None},
+					{'command': '</myowner:1250743777077755915>', 'permission': None},
 				]
 				list_cmds_fun = [
 					{'command': '</time:1250150935280357376>', 'permission': None},
@@ -98,9 +99,9 @@ class Info(commands.Cog):
 				emb = discord.Embed(
 					title = f"Доступные техники ({lists_len})",
 					description = '\n'.join([
-						"Есть сложности использования моих техник? Не расстраивайся, постарайся все запомнить.",
-						"Все мои техники начинаются с `/` (потому что используются слеш-техники).",
-						"Я разделил свои команды на несколько модулей, чтобы твоя бошка тыквенная не сдохла от моей гениальности :)))"
+						#"Есть сложности использования моих техник? Не расстраивайся, постарайся все запомнить.",
+						#"Все мои техники начинаются с `/` (потому что используются слеш-техники).",
+						#"Я разделил свои команды на несколько модулей, чтобы твоя бошка тыквенная не сдохла от моей гениальности :)))"
 					]),
 					color = 0x2b2d31
 				)
@@ -324,6 +325,16 @@ class Info(commands.Cog):
 		description="Получить информацию о сервере."
 	)
 	async def serverinfo(self, interaction: discord.Interaction):
+		try:
+			await interaction.response.send_message('скоро', ephemeral=True)
+		except Exception as e:
+			await interaction.response.send_message(repr(e))
+	
+	@app_commands.command(
+		name = "myowner",
+		description="А сейчас о моем разработчике))"
+	)
+	async def myowner(self, interaction: discord.Interaction):
 		try:
 			await interaction.response.send_message('скоро', ephemeral=True)
 		except Exception as e:

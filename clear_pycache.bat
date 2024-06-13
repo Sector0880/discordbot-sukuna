@@ -6,4 +6,3 @@ for /r %%i in (__pycache__) do (
     )
 )
 echo Clear completed.
-pause
