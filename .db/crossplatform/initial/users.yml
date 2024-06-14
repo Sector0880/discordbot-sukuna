@@ -4,6 +4,7 @@ profile:
   about: false
   age: false
   city: false
-  technic: false
-  like-food: false
-  vk: false
+  technic: null
+  like-food: null
+  vk: null
+  tg: null
