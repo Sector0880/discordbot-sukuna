@@ -24,24 +24,13 @@ class Info(commands.Cog):
 		name = "help",
 		description = "Получить информацию о командах бота"
 	)
-	@app_commands.choices(command = [
-		app_commands.Choice(name = "help", value = 1),
-		app_commands.Choice(name = "ping", value = 2),
-		app_commands.Choice(name = "avatar", value = 3),
-		app_commands.Choice(name = "about", value = 4),
-		app_commands.Choice(name = "time", value = 5),
-		app_commands.Choice(name = "fact", value = 6),
-		app_commands.Choice(name = "profile show", value = 7),
-		app_commands.Choice(name = "profile set_about", value = 8),
-		app_commands.Choice(name = "profile set_age", value = 9),
-		app_commands.Choice(name = "profile set_city", value = 10),
-		app_commands.Choice(name = "profile del_about", value = 11),
-		app_commands.Choice(name = "profile del_age", value = 12),
-		app_commands.Choice(name = "profile del_city", value = 13)
+	@app_commands.choices(branch = [
+		app_commands.Choice(name = "command", value = 1),
+		app_commands.Choice(name = "category", value = 2),
 	])
-	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
+	async def help(self, interaction: discord.Interaction, branch: app_commands.Choice[int] = None):
 		try:
-			if command == None:
+			if branch == None:
 				list_cmds_info = [
 					{'command': '</help:1250144368837529692>',   'permission': None},
 					{'command': '</about:1250159784683114496>',  'permission': None},
@@ -53,7 +42,8 @@ class Info(commands.Cog):
 				list_cmds_fun = [
 					{'command': '</time:1250150935280357376>', 'permission': None},
 					{'command': '</fact:1250150935280357377>', 'permission': None},
-					{'command': '</battle:1250720060344107019>', 'permission': None}
+					{'command': '</battle:1250720060344107019>', 'permission': None},
+					{'command': '</opinion:1251281683001643139>', 'permission': None}
 				]
 				list_cmds_settings = [
 					{'command': '</profile show:1250158028435751013>',      'permission': None},
@@ -65,7 +55,8 @@ class Info(commands.Cog):
 					{'command': '</profile del_city:1250158028435751013>',  'permission': None},
 				]
 				list_cmds_moderation = [
-					{'command': '</mute:1250456425742995456>', 'permission': interaction.user.guild_permissions.mute_members},
+					{'command': '</timeout:1251267335613059296>', 'permission': interaction.user.guild_permissions.mute_members},
+					{'command': '</untimeout:1251267335613059297>', 'permission': interaction.user.guild_permissions.mute_members},
 					{'command': '</ban:1250456425742995457>', 'permission': interaction.user.guild_permissions.ban_members}
 				]
 
@@ -128,11 +119,11 @@ class Info(commands.Cog):
 					)
 				emb.set_thumbnail(url = self.bot.user.avatar)
 				iam = self.bot.get_user(980175834373562439)
-				emb.set_footer(text = "dev: Sectormain, 2024", icon_url = iam.avatar)
+				emb.set_footer(text = "dev: Sectormain, 2024 | client: minus7yingzi", icon_url = iam.avatar)
 				#emb.set_author(name = "Sukuna рассказывает о себе, читай внимательно", icon_url = self.bot.user.avatar)
-			elif command.name:
+			elif branch.name:
 				self.text_footer = False
-				with open(f"./.db/docs/commands/{command.name}.yml", encoding="utf-8") as read_file: cmd = yaml.safe_load(read_file)
+				with open(f"./.db/docs/commands/{branch.name}.yml", encoding="utf-8") as read_file: cmd = yaml.safe_load(read_file)
 				
 				if "describe" in cmd:
 					keys = list(cmd["describe"].keys())
@@ -151,21 +142,21 @@ class Info(commands.Cog):
 					formatted_text = add_color_markers(text)
 				else:
 					formatted_text = ""
-				emb = discord.Embed(title = f'Команда: {command.name}', color = 0x2b2d31)
+				emb = discord.Embed(title = f'Команда: {branch.name}', color = 0x2b2d31)
 				emb.add_field(
 					name = "Информация",
 					value = cmd["description"],
 					inline=False
 				)
 				if "prefix" in cmd["type"]:
-					pattern_value = f'\n```ansi\n{cspl_get_param(interaction, "g", "prefix")}{command.name} {formatted_text}\n```'
+					pattern_value = f'\n```ansi\n{cspl_get_param(interaction, "g", "prefix")}{branch.name} {formatted_text}\n```'
 				elif "hybrid" in cmd["type"]:
 					pattern_value = '\n'.join([
-						f'\n```ansi\n/{command.name} {formatted_text}',
-						f'{cspl_get_param(interaction, "g", "prefix")}{command.name} {formatted_text}\n```'
+						f'\n```ansi\n/{branch.name} {formatted_text}',
+						f'{cspl_get_param(interaction, "g", "prefix")}{branch.name} {formatted_text}\n```'
 					])
 				else:
-					pattern_value = f'\n```ansi\n/{command.name} {formatted_text}\n```'
+					pattern_value = f'\n```ansi\n/{branch.name} {formatted_text}\n```'
 				emb.add_field(
 					name = "Паттерн",
 					value = pattern_value,
@@ -259,7 +250,7 @@ class Info(commands.Cog):
 
 			#emb.add_field(name = 'Библиотека', value = f'discord.py {discord.__version__}', inline=True)
 
-			emb.add_field(name = 'Версия', value = f'v0.9', inline=True)
+			#emb.add_field(name = 'Версия', value = f'v0.9', inline=True)
 
 			ping = self.bot.latency
 			ping_emoji = '🟩🔳🔳🔳🔳'
@@ -325,6 +316,16 @@ class Info(commands.Cog):
 		description="Получить информацию о сервере."
 	)
 	async def serverinfo(self, interaction: discord.Interaction):
+		try:
+			await interaction.response.send_message('скоро', ephemeral=True)
+		except Exception as e:
+			await interaction.response.send_message(repr(e))
+	
+	@app_commands.command(
+		name = "myowner",
+		description="А сейчас о моем разработчике))"
+	)
+	async def myowner(self, interaction: discord.Interaction):
 		try:
 			await interaction.response.send_message('скоро', ephemeral=True)
 		except Exception as e:

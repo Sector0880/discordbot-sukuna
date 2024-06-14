@@ -54,7 +54,7 @@ async def reload_exts(ctx):
 				await bot.reload_extension(f"ext.modules.special.{filename[:-3]}")
 				print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m перезагружен.')
 
-		await ctx.send(f"Успешно обновлены коги!")
+		await ctx.send(f"Коги успешно обновлены!")
 	except Exception as e:
 		print(e)
 

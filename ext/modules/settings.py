@@ -133,7 +133,7 @@ class Profile(commands.GroupCog, name = "profile"):
 				if role != interaction.guild.default_role:
 					role_list += f'<@&{role.id}> '
 					role_list_number += 1
-			
+
 			if profile.status == discord.Status.online:
 				status = '<:online:748149457396433016> В сети'
 			elif profile.status == discord.Status.idle:
@@ -158,12 +158,12 @@ class Profile(commands.GroupCog, name = "profile"):
 					f"**Возраст:** 2000+",
 					f"**Город:** Залупа",
 				]), inline = False)
-			emb.add_field(name = 'Статус', value = status, inline = False)
+			#emb.add_field(name = 'Статус', value = status, inline = False)
 			emb.add_field(name = f'Роли [{role_list_number}]', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
 			emb.add_field(name = 'В Discord', value = profile.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
 			emb.add_field(name = 'На сервере', value = profile.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
 			emb.set_footer(text = f'ID: {profile.id}')
-			emb.timestamp = datetime.utcnow()
+			emb.timestamp = datetime.now()
 
 			await interaction.response.send_message(embed = emb, ephemeral=True)
 		except Exception as e:

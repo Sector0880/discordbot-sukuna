@@ -78,6 +78,38 @@ class Fun(commands.Cog):
 				await interaction.response.send_message(embed = emb)
 		except Exception as e:
 			print(repr(e))
+	
+	# Мнение
+	@app_commands.command(
+		name = "opinion",
+		description = 'Узнать мнение бота о чем-то'
+	)
+	async def opinion(self, interaction: discord.Interaction, *, arg: str):
+		try:
+			a = random.randint(1, 3)
+			lst_true = ['Согласен!', 'Пожалуй соглашусь с тобой.', 'Это безаговорочно правда!', 'Да ты прав!']
+			text_true = random.choice(lst_true)
+
+			lst_bot_opinion = [f'{interaction.user.mention},\nЯ считаю что ты натуральный шизик 100%! Моё мнение закон :З']
+			text_bot_opinion = random.choice(lst_bot_opinion)
+
+			lst_false = ['Не согласен!', 'Неправда.']
+			text_false = random.choice(lst_false)
+
+			if a == 1:
+				emb = discord.Embed(title = f"Факт: {arg}" , description = text_true)
+				emb.set_footer(text = interaction.user, icon_url = interaction.user.avatar)
+				await interaction.response.send_message(embed = emb)
+			elif a == 2:
+				emb = discord.Embed(title = f"Факт: {arg}" , description = text_bot_opinion)
+				emb.set_footer(text = interaction.user, icon_url = interaction.user.avatar)
+				await interaction.response.send_message(embed = emb)
+			else:
+				emb = discord.Embed(title = f"Факт: {arg}" , description = text_false)
+				emb.set_footer(text = interaction.user, icon_url = interaction.user.avatar)
+				await interaction.response.send_message(embed = emb)
+		except Exception as e:
+			await interaction.response.send_message(repr(e))
 
 async def setup(bot):
 	await bot.add_cog(Fun(bot))
