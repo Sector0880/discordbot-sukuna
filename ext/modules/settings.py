@@ -51,70 +51,40 @@ class Profile(commands.GroupCog, name = "profile"):
 		
 		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
 	
-
 	@app_commands.command(
-		name = "set_about",
-		description = 'Добавить биографию для своего профиля на сервере.'
+		name = "set",
+		description = 'Добавить параметр для своего профиля на сервере.'
 	)
-	async def set_about(self, interaction: discord.Interaction, *, content: str):
+	async def set(self, interaction: discord.Interaction, *, about: str = None, age: int = None, city: str = None):
 		try:
-			self.set_profile_param(interaction, "about", content)
+			if about:
+				self.set_profile_param(interaction, "about", about)
+			if age:
+				self.set_profile_param(interaction, "age", age)
+			if city:
+				self.set_profile_param(interaction, "city", city)
 			await interaction.response.send_message(f"```json\n{cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)]['profile']}\n```", ephemeral = True)
 		except Exception as e:
 			print(repr(e))
 	
 	@app_commands.command(
-		name = "set_age",
-		description = 'Добавить возраст для своего профиля на сервере.'
+		name = "del",
+		description = 'Удалить параметр для своего профиля на сервере.'
 	)
-	async def set_age(self, interaction: discord.Interaction, content: int):
+	@app_commands.choices(parameter = [
+		app_commands.Choice(name = 'about', value = 1),
+		app_commands.Choice(name = 'age', value = 2),
+		app_commands.Choice(name = 'city', value = 3)
+	])
+	async def delete(self, interaction: discord.Interaction, parameter: app_commands.Choice[int]):
 		try:
-			self.set_profile_param(interaction, "age", content)
+			if parameter.name == 'about':
+				await self.del_profile_param(interaction, "about")
+			if parameter.name == 'age':
+				await self.del_profile_param(interaction, "age")
+			if parameter.name == 'city':
+				await self.del_profile_param(interaction, "city")
 			await interaction.response.send_message(f"```json\n{cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)]['profile']}\n```", ephemeral = True)
-		except Exception as e:
-			print(repr(e))
-	
-	@app_commands.command(
-		name = "set_city",
-		description = 'Добавить город для своего профиля на сервере.'
-	)
-	async def set_city(self, interaction: discord.Interaction, *, content: str):
-		try:
-			self.set_profile_param(interaction, "city", content)
-			await interaction.response.send_message(f"```json\n{cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)]['profile']}\n```", ephemeral = True)
-		except Exception as e:
-			print(repr(e))
-	
-	@app_commands.command(
-		name = "del_about",
-		description = 'Удалить биографию из своего профиля на сервере.'
-	)
-	async def del_about(self, interaction: discord.Interaction):
-		try:
-			await self.del_profile_param(interaction, "about")
-			await interaction.response.send_message("Успешно удалена биография.")
-		except Exception as e:
-			print(repr(e))
-	
-	@app_commands.command(
-		name = "del_age",
-		description = 'Удалить свой возраст из своего профиля на сервере.'
-	)
-	async def del_age(self, interaction: discord.Interaction):
-		try:
-			await self.del_profile_param(interaction, "age")
-			await interaction.response.send_message("Успешно удален возраст.")
-		except Exception as e:
-			print(repr(e))
-	
-	@app_commands.command(
-		name = "del_city",
-		description = 'Удалить город из своего профиля на сервере.'
-	)
-	async def del_city(self, interaction: discord.Interaction):
-		try:
-			await self.del_profile_param(interaction, "city")
-			await interaction.response.send_message("Успешно удален город.")
 		except Exception as e:
 			print(repr(e))
 	
