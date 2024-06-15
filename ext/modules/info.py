@@ -16,48 +16,188 @@ locale.setlocale(
     locale="Russian"  # Note: do not use "de_DE" as it doesn't work
 )
 
+class CmdHelp_CategoryList(discord.ui.View):
+	def __init__(self, bot: commands.Bot):
+		super().__init__()
+		self.bot = bot
+	
+	@discord.ui.select(placeholder="Выберите категорию...", options= [
+		discord.SelectOption(label = "Информация", value = 1),
+		discord.SelectOption(label = "Веселье", value = 2),
+		discord.SelectOption(label = "Настройки", value = 3),
+		discord.SelectOption(label = "Модерация", value = 4)
+	])
+	async def select_category(self, interaction: discord.Interaction, select: discord.ui.Select):
+		try:
+			list_cmds_info = [
+				{'command': '</help:1250144368837529692>',              'permission': None,
+	 			'desc': 'Получить информацию о командах бота.'},
+				{'command': '</about:1250159784683114496>',             'permission': None,
+	 			'desc': 'Получить информацию о боте.'},
+				{'command': '</serverinfo:1250362239341301760>',        'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</ping:1249321143983145034>',              'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</avatar:1249321144469950546>',            'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</myowner:1250743777077755915>',           'permission': None,
+	 			'desc': '`Скоро...`'},
+			]
+			list_cmds_fun = [
+				{'command': '</time:1250150935280357376>',              'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</fact:1250150935280357377>',              'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</battle:1250720060344107019>',            'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</opinion:1251281683001643139>',           'permission': None,
+	 			'desc': '`Скоро...`'}
+			]
+			list_cmds_settings = [
+				{'command': '</profile show:1250158028435751013>',      'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</profile set_about:1250158028435751013>', 'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</profile set_age:1250158028435751013>',   'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</profile set_city:1250158028435751013>',  'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</profile del_about:1250158028435751013>', 'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</profile del_age:1250158028435751013>',   'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</profile del_city:1250158028435751013>',  'permission': None,
+	 			'desc': '`Скоро...`'},
+			]
+			list_cmds_moderation = [
+				{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
+	 			'desc': '`Скоро...`'},
+				{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
+	 			'desc': '`Скоро...`'},
+				{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
+	 			'desc': '`Скоро...`'}
+			]
+
+			filtered_list_cmds_info = []
+			filtered_list_cmds_fun = []
+			filtered_list_cmds_settings = []
+			filtered_list_cmds_moderation = []
+			for cmd in list_cmds_info:
+				if bool(cmd['permission']) or cmd['permission'] is None:
+					filtered_list_cmds_info.append(cmd)
+			for cmd in list_cmds_fun:
+				if bool(cmd['permission']) or cmd['permission'] is None:
+					filtered_list_cmds_fun.append(cmd)
+			for cmd in list_cmds_settings:
+				if bool(cmd['permission']) or cmd['permission'] is None:
+					filtered_list_cmds_settings.append(cmd)
+			for cmd in list_cmds_moderation:
+				if bool(cmd['permission']) or cmd['permission'] is None:
+					filtered_list_cmds_moderation.append(cmd)
+
+			if select.values[0] == '1':
+				emb = discord.Embed(
+					title = f"Доступные команды ({len(filtered_list_cmds_info)})",
+					description = '\n'.join([
+						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_info
+					])
+				)
+				emb.set_footer(text = "Категория: Информация")
+			if select.values[0] == '2':
+				emb = discord.Embed(
+					title = f"Доступные команды ({len(filtered_list_cmds_fun)})",
+					description = '\n'.join([
+						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_fun
+					])
+				)
+				emb.set_footer(text = "Категория: Веселье")
+			if select.values[0] == '3':
+				emb = discord.Embed(
+					title = f"Доступные команды ({len(filtered_list_cmds_settings)})",
+					description = '\n'.join([
+						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_settings
+					])
+				)
+				emb.set_footer(text = "Категория: Настройки")
+			if select.values[0] == '4':
+				emb = discord.Embed(
+					title = f"Доступные команды ({len(filtered_list_cmds_moderation)})",
+					description = '\n'.join([
+						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_moderation
+					])
+				)
+				emb.set_footer(text = "Категория: Модерация")
+			emb.color = 0x2b2d31
+			emb.set_thumbnail(url = self.bot.user.avatar)
+			await interaction.response.send_message(embed = emb, ephemeral = True)
+		except Exception as e:
+			await interaction.response.send_message(repr(e))
+
 class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 	
 	@app_commands.command(
 		name = "help",
-		description = "Получить информацию о командах бота"
+		description = "Получить информацию о командах бота.",
 	)
-	@app_commands.choices(branch = [
-		app_commands.Choice(name = "command", value = 1),
-		app_commands.Choice(name = "category", value = 2),
-	])
-	async def help(self, interaction: discord.Interaction, branch: app_commands.Choice[int] = None):
+	@app_commands.choices(
+		command = [
+			app_commands.Choice(name = "help", value = 1),
+			app_commands.Choice(name = "about", value = 2),
+			app_commands.Choice(name = "serverinfo", value = 3),
+		]
+	)
+	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
 		try:
-			if branch == None:
+			if command == None:
 				list_cmds_info = [
-					{'command': '</help:1250144368837529692>',   'permission': None},
-					{'command': '</about:1250159784683114496>',  'permission': None},
-					{'command': '</serverinfo:1250362239341301760>',  'permission': None},
-					{'command': '</ping:1249321143983145034>',   'permission': None},
-					{'command': '</avatar:1249321144469950546>', 'permission': None},
-					{'command': '</myowner:1250743777077755915>', 'permission': None},
+				{'command': '</help:1250144368837529692>',              'permission': None,
+	 			'desc': 'Получить информацию о командах бота.'},
+				{'command': '</about:1250159784683114496>',             'permission': None,
+	 			'desc': 'Получить информацию о боте.'},
+				{'command': '</serverinfo:1250362239341301760>',        'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</ping:1249321143983145034>',              'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</avatar:1249321144469950546>',            'permission': None,
+	 			'desc': '`Скоро...`'},
+				{'command': '</myowner:1250743777077755915>',           'permission': None,
+	 			'desc': '`Скоро...`'},
 				]
 				list_cmds_fun = [
-					{'command': '</time:1250150935280357376>', 'permission': None},
-					{'command': '</fact:1250150935280357377>', 'permission': None},
-					{'command': '</battle:1250720060344107019>', 'permission': None},
-					{'command': '</opinion:1251281683001643139>', 'permission': None}
+					{'command': '</time:1250150935280357376>',              'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</fact:1250150935280357377>',              'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</battle:1250720060344107019>',            'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</opinion:1251281683001643139>',           'permission': None,
+					'desc': '`Скоро...`'}
 				]
 				list_cmds_settings = [
-					{'command': '</profile show:1250158028435751013>',      'permission': None},
-					{'command': '</profile set_about:1250158028435751013>', 'permission': None},
-					{'command': '</profile set_age:1250158028435751013>',   'permission': None},
-					{'command': '</profile set_city:1250158028435751013>',  'permission': None},
-					{'command': '</profile del_about:1250158028435751013>', 'permission': None},
-					{'command': '</profile del_age:1250158028435751013>',   'permission': None},
-					{'command': '</profile del_city:1250158028435751013>',  'permission': None},
+					{'command': '</profile show:1250158028435751013>',      'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</profile set_about:1250158028435751013>', 'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</profile set_age:1250158028435751013>',   'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</profile set_city:1250158028435751013>',  'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</profile del_about:1250158028435751013>', 'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</profile del_age:1250158028435751013>',   'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</profile del_city:1250158028435751013>',  'permission': None,
+					'desc': '`Скоро...`'},
 				]
 				list_cmds_moderation = [
-					{'command': '</timeout:1251267335613059296>', 'permission': interaction.user.guild_permissions.mute_members},
-					{'command': '</untimeout:1251267335613059297>', 'permission': interaction.user.guild_permissions.mute_members},
-					{'command': '</ban:1250456425742995457>', 'permission': interaction.user.guild_permissions.ban_members}
+					{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
+					'desc': '`Скоро...`'},
+					{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
+					'desc': '`Скоро...`'},
+					{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
+					'desc': '`Скоро...`'}
 				]
 
 				"""
@@ -120,10 +260,10 @@ class Info(commands.Cog):
 				emb.set_thumbnail(url = self.bot.user.avatar)
 				iam = self.bot.get_user(980175834373562439)
 				emb.set_footer(text = "dev: Sectormain, 2024 | client: minus7yingzi", icon_url = iam.avatar)
-				#emb.set_author(name = "Sukuna рассказывает о себе, читай внимательно", icon_url = self.bot.user.avatar)
-			elif branch.name:
+				await interaction.response.send_message(embed = emb, ephemeral = True, view = CmdHelp_CategoryList(self.bot))
+			elif command.name:
 				self.text_footer = False
-				with open(f"./.db/docs/commands/{branch.name}.yml", encoding="utf-8") as read_file: cmd = yaml.safe_load(read_file)
+				with open(f"./.db/docs/commands/{command.name}.yml", encoding="utf-8") as read_file: cmd = yaml.safe_load(read_file)
 				
 				if "describe" in cmd:
 					keys = list(cmd["describe"].keys())
@@ -142,21 +282,21 @@ class Info(commands.Cog):
 					formatted_text = add_color_markers(text)
 				else:
 					formatted_text = ""
-				emb = discord.Embed(title = f'Команда: {branch.name}', color = 0x2b2d31)
+				emb = discord.Embed(title = f'Команда: {command.name}', color = 0x2b2d31)
 				emb.add_field(
 					name = "Информация",
 					value = cmd["description"],
 					inline=False
 				)
 				if "prefix" in cmd["type"]:
-					pattern_value = f'\n```ansi\n{cspl_get_param(interaction, "g", "prefix")}{branch.name} {formatted_text}\n```'
+					pattern_value = f'\n```ansi\n{cspl_get_param(interaction, "g", "prefix")}{command.name} {formatted_text}\n```'
 				elif "hybrid" in cmd["type"]:
 					pattern_value = '\n'.join([
-						f'\n```ansi\n/{branch.name} {formatted_text}',
-						f'{cspl_get_param(interaction, "g", "prefix")}{branch.name} {formatted_text}\n```'
+						f'\n```ansi\n/{command.name} {formatted_text}',
+						f'{cspl_get_param(interaction, "g", "prefix")}{command.name} {formatted_text}\n```'
 					])
 				else:
-					pattern_value = f'\n```ansi\n/{branch.name} {formatted_text}\n```'
+					pattern_value = f'\n```ansi\n/{command.name} {formatted_text}\n```'
 				emb.add_field(
 					name = "Паттерн",
 					value = pattern_value,
@@ -168,9 +308,9 @@ class Info(commands.Cog):
 					inline=False
 				)
 				if self.text_footer: emb.set_footer(text = "! — обязательный параметр")
+				await interaction.response.send_message(embed = emb, ephemeral = False)
 			else:
 				return await interaction.response.send_message("Команда не найдена.", ephemeral = True)
-			await interaction.response.send_message(embed = emb, ephemeral = False)
 		except Exception as e:
 			await interaction.response.send_message(f'||{e}||')
 	

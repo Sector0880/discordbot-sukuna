@@ -1,6 +1,6 @@
 all:
-  use: 1
-  success: 1
+  use: 0
+  success: 0
   lose: 0
   error: 0
 repeat:
@@ -9,7 +9,7 @@ repeat:
   lose: 0
   error: 0
 time:
-  use: 1
-  success: 1
+  use: 0
+  success: 0
   lose: 0
   error: 0
