@@ -174,6 +174,16 @@ class Settings(commands.Cog):
 		self.bot = bot
 		self.profile_commands = Profile(bot)
 	
+	@app_commands.command(
+		name = "switch",
+		description = "Изменить переключатели настроек бота."
+	)
+	@app_commands.checks.has_permissions(administrator = True)
+	@app_commands.default_permissions(administrator = True)
+	async def switch(self, interaction: discord.Interaction, switch: str):
+		await interaction.response.send_message("Скоро...", ephemeral=True)
+	
+	
 	async def setup_profile_commands(self):
 		await self.bot.add_cog(self.profile_commands)
 

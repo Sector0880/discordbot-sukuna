@@ -68,11 +68,17 @@ class CmdHelp_CategoryList(discord.ui.View):
 	 			'desc': '`Скоро...`'},
 				{'command': '</profile del_city:1250158028435751013>',  'permission': None,
 	 			'desc': '`Скоро...`'},
+				{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
+	 			'desc': 'Изменить переключатели настроек бота.'},
 			]
 			list_cmds_moderation = [
 				{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
 	 			'desc': '`Скоро...`'},
 				{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
+	 			'desc': '`Скоро...`'},
+				 {'command': '</mute:1251497656266526730>',           'permission': interaction.user.guild_permissions.mute_members,
+	 			'desc': '`Скоро...`'},
+				{'command': '</unmute:1251497656266526731>',         'permission': interaction.user.guild_permissions.mute_members,
 	 			'desc': '`Скоро...`'},
 				{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
 	 			'desc': '`Скоро...`'}
@@ -152,18 +158,18 @@ class Info(commands.Cog):
 		try:
 			if command == None:
 				list_cmds_info = [
-				{'command': '</help:1250144368837529692>',              'permission': None,
-	 			'desc': 'Получить информацию о командах бота.'},
-				{'command': '</about:1250159784683114496>',             'permission': None,
-	 			'desc': 'Получить информацию о боте.'},
-				{'command': '</serverinfo:1250362239341301760>',        'permission': None,
-	 			'desc': '`Скоро...`'},
-				{'command': '</ping:1249321143983145034>',              'permission': None,
-	 			'desc': '`Скоро...`'},
-				{'command': '</avatar:1249321144469950546>',            'permission': None,
-	 			'desc': '`Скоро...`'},
-				{'command': '</myowner:1250743777077755915>',           'permission': None,
-	 			'desc': '`Скоро...`'},
+					{'command': '</help:1250144368837529692>',              'permission': None,
+					'desc': 'Получить информацию о командах бота.'},
+					{'command': '</about:1250159784683114496>',             'permission': None,
+					'desc': 'Получить информацию о боте.'},
+					{'command': '</serverinfo:1250362239341301760>',        'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</ping:1249321143983145034>',              'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</avatar:1249321144469950546>',            'permission': None,
+					'desc': '`Скоро...`'},
+					{'command': '</myowner:1250743777077755915>',           'permission': None,
+					'desc': '`Скоро...`'},
 				]
 				list_cmds_fun = [
 					{'command': '</time:1250150935280357376>',              'permission': None,
@@ -190,11 +196,17 @@ class Info(commands.Cog):
 					'desc': '`Скоро...`'},
 					{'command': '</profile del_city:1250158028435751013>',  'permission': None,
 					'desc': '`Скоро...`'},
+					{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
+					'desc': 'Изменить переключатели настроек бота.'},
 				]
 				list_cmds_moderation = [
 					{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
 					'desc': '`Скоро...`'},
 					{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
+					'desc': '`Скоро...`'},
+					{'command': '</mute:1251497656266526730>',           'permission': interaction.user.guild_permissions.mute_members,
+					'desc': '`Скоро...`'},
+					{'command': '</unmute:1251497656266526731>',         'permission': interaction.user.guild_permissions.mute_members,
 					'desc': '`Скоро...`'},
 					{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
 					'desc': '`Скоро...`'}

@@ -29,7 +29,7 @@ class Moderation(commands.Cog):
 		name='timeout', 
 		description='Временно заблокировать юзеру возможность писать в чат и подключаться в войсы.'
 	)
-	@app_commands.checks.has_permissions(mute_members=True)
+	@app_commands.checks.has_permissions(mute_members = True)
 	@app_commands.default_permissions(mute_members = True)
 	async def timeout(self, interaction: discord.Interaction, member: discord.Member, seconds: int = 0, minutes: int = 0, hours: int = 0, days: int = 0, reason: str = None):
 		try:
@@ -65,7 +65,7 @@ class Moderation(commands.Cog):
 		name='untimeout',
 		description='Вернуть юзеру возможность писать в чат и подключаться в войсы.'
 	)
-	@app_commands.checks.has_permissions(mute_members=True)
+	@app_commands.checks.has_permissions(mute_members = True)
 	@app_commands.default_permissions(mute_members = True)
 	async def untimeout(self, interaction: discord.Interaction, member: discord.Member):
 		try:
@@ -74,7 +74,25 @@ class Moderation(commands.Cog):
 		except Exception as e:
 			await interaction.response.send_message(repr(e))
 	
+	@app_commands.command(
+		name = 'mute', 
+		description = 'Замутить юзера на сервере.'
+	)
+	@app_commands.checks.has_permissions(mute_members = True)
+	@app_commands.default_permissions(mute_members = True)
+	async def mute(self, interaction: discord.Interaction):
+		await interaction.response.send_message(content = 'Скоро...')
 	
+	@app_commands.command(
+		name = 'unmute', 
+		description = 'Размьютить юзера на сервере.'
+	)
+	@app_commands.checks.has_permissions(mute_members = True)
+	@app_commands.default_permissions(mute_members = True)
+	async def unmute(self, interaction: discord.Interaction):
+		await interaction.response.send_message(content = 'Скоро...')
+	
+
 	@app_commands.command(
 		name = 'ban', 
 		description = 'Забанить юзера на сервере.'
