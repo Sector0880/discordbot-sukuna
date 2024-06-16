@@ -321,28 +321,28 @@ class Info(commands.Cog):
 			await interaction.response.defer(ephemeral = False, thinking = True)
 
 			ping = self.bot.latency
-			ping_emoji = '🟩🔳🔳🔳🔳'
+			ping_emoji = '🟩 🔳 🔳 🔳 🔳'
 
 			if ping > 0.10000000000000000:
-				ping_emoji = '🟧🟩🔳🔳🔳'
+				ping_emoji = '🟧 🟩 🔳 🔳 🔳'
 
 			if ping > 0.15000000000000000:
-				ping_emoji = '🟥🟧🟩🔳🔳'
+				ping_emoji = '🟥 🟧 🟩 🔳 🔳'
 
 			if ping > 0.20000000000000000:
-				ping_emoji = '🟥🟥🟧🟩🔳'
+				ping_emoji = '🟥 🟥 🟧 🟩 🔳'
 
 			if ping > 0.25000000000000000:
-				ping_emoji = '🟥🟥🟥🟧🟩'
+				ping_emoji = '🟥 🟥 🟥 🟧 🟩'
 
 			if ping > 0.30000000000000000:
-				ping_emoji = '🟥🟥🟥🟥🟧'
+				ping_emoji = '🟥 🟥 🟥 🟥 🟧'
 
 			if ping > 0.35000000000000000:
-				ping_emoji = '🟥🟥🟥🟥🟥'
+				ping_emoji = '🟥 🟥 🟥 🟥 🟥'
 
 			# Переменная с пингом бота до текущего шарда
-			shard_ping = f'{ping_emoji} `{round(self.bot.latency * 1000)}ms`'
+			shard_ping = f'{ping_emoji}  `{round(self.bot.latency * 1000)}ms`'
 
 			message = await interaction.edit_original_response(content = 'Отбиваю...  \n🔳🔳🔳🔳🔳 `секунду...`')
 			await message.edit(content = f'Понг! 🏓  \n{shard_ping}')
@@ -379,30 +379,30 @@ class Info(commands.Cog):
 			emb.add_field(name = 'Версия', value = f"v{botConfig.version['number']}", inline=True)
 
 			ping = self.bot.latency
-			ping_emoji = '🟩🔳🔳🔳🔳'
+			ping_emoji = '🟩 🔳 🔳 🔳 🔳'
 
 			if ping > 0.10000000000000000:
-				ping_emoji = '🟧🟩🔳🔳🔳'
+				ping_emoji = '🟧 🟩 🔳 🔳 🔳'
 
 			if ping > 0.15000000000000000:
-				ping_emoji = '🟥🟧🟩🔳🔳'
+				ping_emoji = '🟥 🟧 🟩 🔳 🔳'
 
 			if ping > 0.20000000000000000:
-				ping_emoji = '🟥🟥🟧🟩🔳'
+				ping_emoji = '🟥 🟥 🟧 🟩 🔳'
 
 			if ping > 0.25000000000000000:
-				ping_emoji = '🟥🟥🟥🟧🟩'
+				ping_emoji = '🟥 🟥 🟥 🟧 🟩'
 
 			if ping > 0.30000000000000000:
-				ping_emoji = '🟥🟥🟥🟥🟧'
+				ping_emoji = '🟥 🟥 🟥 🟥 🟧'
 
 			if ping > 0.35000000000000000:
-				ping_emoji = '🟥🟥🟥🟥🟥'
+				ping_emoji = '🟥 🟥 🟥 🟥 🟥'
 
 			# Переменная с пингом бота до текущего шарда
 			shard_id = interaction.guild.shard_id
 			shard = self.bot.get_shard(shard_id)
-			shard_ping = f'{ping_emoji} `{round(shard.latency * 1000)}ms`'
+			shard_ping = f'{ping_emoji}  `{round(shard.latency * 1000)}ms`'
 			bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
 
 			emb.add_field(name = 'Шард', value = f"{bot_shard_name()}#{shard.id}", inline = True)
@@ -476,11 +476,21 @@ class Info(commands.Cog):
 			emb.set_author(name = f'{profile}', icon_url = profile.avatar)
 			emb.set_thumbnail(url = profile.avatar)
 			if user != self.bot.user:
-				emb.add_field(name = 'Биография', value = '\n'.join([
-					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', user if user else None)}" if cspl_get_param(interaction, 'u', 'about', 'biography', user if user else None) else "**О себе:** `нету`",
-					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', user if user else None)}" if cspl_get_param(interaction, 'u', 'age', 'biography', user if user else None) else "**Возраст:** `нету`",
-					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', user if user else None)}" if cspl_get_param(interaction, 'u', 'city', 'biography', user if user else None) else "**Город:** `нету`",
-				]), inline = False)
+				bio_list = []
+				if cspl_get_param(interaction, 'u', 'about', 'biography', user if user else None):
+					bio_list.append(f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', user if user else None)}")
+				if cspl_get_param(interaction, 'u', 'age', 'biography', user if user else None):
+					bio_list.append(f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', user if user else None)}")
+				if cspl_get_param(interaction, 'u', 'city', 'biography', user if user else None):
+					bio_list.append(f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', user if user else None)}")
+				if cspl_get_param(interaction, 'u', 'vk', 'biography', user if user else None):
+					bio_list.append(f"**VK:** {cspl_get_param(interaction, 'u', 'vk', 'biography', user if user else None)}")
+				if cspl_get_param(interaction, 'u', 'tg', 'biography', user if user else None):
+					bio_list.append(f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', user if user else None)}")
+				if len(bio_list) > 0:
+					emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
+				else:
+					emb.description = "Вы можете создать свою биографию с помощью команды </biography set:1251828637473439767>"
 			else:
 				emb.add_field(name = 'Биография', value = '\n'.join([
 					f"**О себе:** 3990см хуй блять нахуй",

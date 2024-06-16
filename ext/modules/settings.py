@@ -62,7 +62,7 @@ class Biography(commands.GroupCog, name = "biography"):
 		name = "set",
 		description = 'Добавить информацию для своей биографии'
 	)
-	async def set(self, interaction: discord.Interaction, *, about: str = None, age: int = None, city: str = None):
+	async def set(self, interaction: discord.Interaction, *, about: str = None, age: int = None, city: str = None, vk: str = None, tg: str = None):
 		try:
 			if about:
 				self.set_biography_param(interaction, "about", about)
@@ -70,12 +70,18 @@ class Biography(commands.GroupCog, name = "biography"):
 				self.set_biography_param(interaction, "age", age)
 			if city:
 				self.set_biography_param(interaction, "city", city)
+			if vk:
+				self.set_biography_param(interaction, "vk", vk)
+			if tg:
+				self.set_biography_param(interaction, "tg", tg)
 			emb = discord.Embed(
 				title = "Успешно",
 				description = f"Вы изменили свои данные в биографии:\n" + '\n'.join([
 					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'about', 'biography', interaction.user) else "**О себе:** `нету`",
 					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'age', 'biography', interaction.user) else "**Возраст:** `нету`",
 					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'city', 'biography', interaction.user) else "**Город:** `нету`",
+					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', 'biography', interaction.user) else "**VK:** `нету`",
+					f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'tg', 'biography', interaction.user) else "**TG:** `нету`",
 				]),
 				color=discord.Color.green()
 			)
@@ -92,7 +98,9 @@ class Biography(commands.GroupCog, name = "biography"):
 		app_commands.Choice(name = 'about', value = 1),
 		app_commands.Choice(name = 'age', value = 2),
 		app_commands.Choice(name = 'city', value = 3),
-		app_commands.Choice(name = 'all', value = 4)
+		app_commands.Choice(name = 'vk', value = 4),
+		app_commands.Choice(name = 'tg', value = 5),
+		app_commands.Choice(name = 'all', value = 6)
 	])
 	async def delete(self, interaction: discord.Interaction, parameter: app_commands.Choice[int]):
 		try:
@@ -102,10 +110,16 @@ class Biography(commands.GroupCog, name = "biography"):
 				await self.del_biography_param(interaction, "age")
 			if parameter.name == 'city':
 				await self.del_biography_param(interaction, "city")
+			if parameter.name == 'vk':
+				await self.del_biography_param(interaction, "vk")
+			if parameter.name == 'tg':
+				await self.del_biography_param(interaction, "tg")
 			if parameter.name == 'all':
 				await self.del_biography_param(interaction, "about", True)
 				await self.del_biography_param(interaction, "age", True)
 				await self.del_biography_param(interaction, "city", True)
+				await self.del_biography_param(interaction, "vk", True)
+				await self.del_biography_param(interaction, "tg", True)
 			
 			if self.stop:
 				return
@@ -115,6 +129,8 @@ class Biography(commands.GroupCog, name = "biography"):
 					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'about', 'biography', interaction.user) else "**О себе:** `нету`",
 					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'age', 'biography', interaction.user) else "**Возраст:** `нету`",
 					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'city', 'biography', interaction.user) else "**Город:** `нету`",
+					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', 'biography', interaction.user) else "**VK:** `нету`",
+					f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'tg', 'biography', interaction.user) else "**TG:** `нету`",
 				]),
 				color=discord.Color.green()
 			)

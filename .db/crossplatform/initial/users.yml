@@ -4,7 +4,5 @@ biography:
   about: false
   age: false
   city: false
-  technic: null
-  like-food: null
-  vk: null
-  tg: null
+  vk: false
+  tg: false

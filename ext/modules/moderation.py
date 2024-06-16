@@ -23,20 +23,9 @@ class Moderation(commands.Cog):
 		for channel in guild.voice_channels: await channel.set_permissions(role_mute, connect = False)
 
 		self.bot.tree.copy_global_to(guild = discord.Object(id = guild.id))
-	
-	@app_commands.command(
-		name='timeout_list', 
-		description='Список тайм-аутов'
-	)
-	async def timeout_list(self, interaction: discord.Interaction, member: discord.Member):
-		try:
-			await interaction.response.send_message(member.timed_out_until)
-		except Exception as e:
-			await interaction.response.send_message(repr(e))
-	
 
 	@app_commands.command(
-		name='timeout', 
+		name='timeout',
 		description='Временная блокировка разрешений писать/подключаться в чат/войс'
 	)
 	@app_commands.checks.has_permissions(mute_members = True)
@@ -79,7 +68,10 @@ class Moderation(commands.Cog):
 	@app_commands.default_permissions(mute_members = True)
 	async def untimeout(self, interaction: discord.Interaction, member: discord.Member):
 		try:
-			await member.edit(timed_out_until=None, reason=f"Тайм-аут снят модератором {interaction.user}")
+			if not member.timed_out_until:
+				return await interaction.response.send_message(f'<a:mark_error:815121144016404500> {member.name} не находится в тайм-ауте', ephemeral=False)
+			
+			await member.edit(timed_out_until = None, reason = f"Тайм-аут снят модератором {interaction.user}")
 			await interaction.response.send_message(f'С {member.mention} был снят тайм-аут', ephemeral=False)
 		except Exception as e:
 			await interaction.response.send_message(repr(e))
