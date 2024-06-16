@@ -5,6 +5,7 @@ import yaml
 
 import datetime, time
 import locale
+from typing import Any, Dict, Generic, List, TYPE_CHECKING, Optional, TypeVar, Union
 from time import *
 from botConfig import *
 from datetime import *
@@ -503,7 +504,9 @@ class Info(commands.Cog):
 			emb.add_field(name = 'На сервере', value = profile.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
 			emb.set_footer(text = f'ID: {profile.id}')
 			emb.timestamp = datetime.now()
-
+			#if interaction.user == self.bot.get_user(980175834373562439):
+			#	emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=66704425&is=666ef2a5&hm=6fbe760673a386e62f00964be5c1422cf6df10cb6dd8da2a4cccd37a5d3fbdae&')
+			#else:
 			req = await self.bot.http.request(discord.http.Route("GET", f"/users/{profile.id}"))
 			banner_id = req["banner"]
 			if banner_id:
