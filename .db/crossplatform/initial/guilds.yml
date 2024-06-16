@@ -4,7 +4,6 @@ prefix: "!"
 language: "ru"
 modules:
   moderation: true
-  profile: false
   fun: false
   audit: false
   music: false

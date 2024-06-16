@@ -1,4 +1,4 @@
-creator:
+dev:
   name: "sectormain_"
   id1: &creator_id1 980175834373562439 # revampcroot
   id2: &creator_id2 522136072151367691 # restart
@@ -6,5 +6,6 @@ administrators:
   admin1: # Ада
     name: "minus7yingz"
     id: &ada_id 224632121879166976
+staffList_Creators: [*creator_id1, *ada_id]
 staffList_Admins: [*ada_id]
 staffList_SpecialPerms: [*creator_id1, *creator_id2, *ada_id]

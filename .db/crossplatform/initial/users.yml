@@ -1,6 +1,6 @@
 mute:
   status: false
-profile:
+biography:
   about: false
   age: false
   city: false

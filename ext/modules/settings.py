@@ -7,146 +7,129 @@ import re
 from dbVars import *
 from botFunctions import *
 
-class Profile(commands.GroupCog, name = "profile"):
+class Biography(commands.GroupCog, name = "biography"):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 		super().__init__()
+		self.stop = False
 	
-	def set_profile_param(self, interaction, param: str, content):
+	def set_biography_param(self, interaction, param: str, content):
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
 		if str(interaction.user.id) not in custom_users:
 			custom_users[str(interaction.user.id)] = {}
 		if str(interaction.guild.id) not in custom_users[str(interaction.user.id)]:
 			custom_users[str(interaction.user.id)][str(interaction.guild.id)] = {}
-		if "profile" not in custom_users[str(interaction.user.id)][str(interaction.guild.id)]:
-			custom_users[str(interaction.user.id)][str(interaction.guild.id)]["profile"] = {}
-		custom_users[str(interaction.user.id)][str(interaction.guild.id)]["profile"][param] = str(content)
+		if "biography" not in custom_users[str(interaction.user.id)][str(interaction.guild.id)]:
+			custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"] = {}
+		custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"][param] = str(content)
 		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii = False, indent = 4)
 	
-	async def del_profile_param(self, interaction, param: str):
-		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
-		if str(interaction.user.id) not in custom_users:
-			custom_users[str(interaction.user.id)] = {}
-		if str(interaction.guild.id) not in custom_users[str(interaction.user.id)]:
-			custom_users[str(interaction.user.id)][str(interaction.guild.id)] = {}
-		if "profile" not in custom_users[str(interaction.user.id)][str(interaction.guild.id)]:
-			custom_users[str(interaction.user.id)][str(interaction.guild.id)]["profile"] = {}
-		if str(param) not in custom_users[str(interaction.user.id)][str(interaction.guild.id)]["profile"]:
-			return await interaction.response.send_message(f"В Вашем профиле не указан {param}.")
-		
-		# Удалить параметр из профиля
-		custom_users[str(interaction.user.id)][str(interaction.guild.id)]["profile"].pop(str(param))
-		
-		# Проверка и удаление profile, если он стал пустым
-		if not custom_users[str(interaction.user.id)][str(interaction.guild.id)]["profile"]:
-			del custom_users[str(interaction.user.id)][str(interaction.guild.id)]["profile"]
-		
-		# Проверка и удаление str(interaction.guild.id), если profile стал пустым
-		if not custom_users[str(interaction.user.id)][str(interaction.guild.id)]:
-			del custom_users[str(interaction.user.id)][str(interaction.guild.id)]
-		
-		# Проверка и удаление str(interaction.user.id), если str(interaction.guild.id) стал пустым
-		if not custom_users[str(interaction.user.id)]:
-			del custom_users[str(interaction.user.id)]
-		
-		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
+	async def del_biography_param(self, interaction, param: str, all = False):
+		try:
+			custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
+			if str(interaction.user.id) not in custom_users:
+				custom_users[str(interaction.user.id)] = {}
+			if str(interaction.guild.id) not in custom_users[str(interaction.user.id)]:
+				custom_users[str(interaction.user.id)][str(interaction.guild.id)] = {}
+			if "biography" not in custom_users[str(interaction.user.id)][str(interaction.guild.id)]:
+				custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"] = {}
+			if all == False:
+				if str(param) not in custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"]:
+					await interaction.response.send_message(f"В Вашей биографии не указан {param}.")
+					self.stop = True
+					return
+			
+			# Удалить параметр из профиля
+			custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"].pop(str(param))
+			
+			# Проверка и удаление biography, если он стал пустым
+			if not custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"]:
+				del custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"]
+			
+			# Проверка и удаление str(interaction.guild.id), если biography стал пустым
+			if not custom_users[str(interaction.user.id)][str(interaction.guild.id)]:
+				del custom_users[str(interaction.user.id)][str(interaction.guild.id)]
+			
+			# Проверка и удаление str(interaction.user.id), если str(interaction.guild.id) стал пустым
+			if not custom_users[str(interaction.user.id)]:
+				del custom_users[str(interaction.user.id)]
+			
+			with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
+		except KeyError:
+			pass
 	
 	@app_commands.command(
 		name = "set",
-		description = 'Добавить параметр для своего профиля на сервере.'
+		description = 'Добавить информацию для своей биографии'
 	)
 	async def set(self, interaction: discord.Interaction, *, about: str = None, age: int = None, city: str = None):
 		try:
 			if about:
-				self.set_profile_param(interaction, "about", about)
+				self.set_biography_param(interaction, "about", about)
 			if age:
-				self.set_profile_param(interaction, "age", age)
+				self.set_biography_param(interaction, "age", age)
 			if city:
-				self.set_profile_param(interaction, "city", city)
-			await interaction.response.send_message(f"```json\n{cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)]['profile']}\n```", ephemeral = True)
+				self.set_biography_param(interaction, "city", city)
+			emb = discord.Embed(
+				title = "Успешно",
+				description = f"Вы изменили свои данные в биографии:\n" + '\n'.join([
+					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'about', 'biography', interaction.user) else "**О себе:** `нету`",
+					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'age', 'biography', interaction.user) else "**Возраст:** `нету`",
+					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'city', 'biography', interaction.user) else "**Город:** `нету`",
+				]),
+				color=discord.Color.green()
+			)
+			await interaction.response.send_message(embed = emb, ephemeral = True)
+			#await interaction.response.send_message(f"```json\n{cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)]['biography']}\n```", embed = emb, ephemeral = True)
 		except Exception as e:
 			print(repr(e))
 	
 	@app_commands.command(
 		name = "del",
-		description = 'Удалить параметр для своего профиля на сервере.'
+		description = 'Удалить информацию из своей биографии'
 	)
 	@app_commands.choices(parameter = [
 		app_commands.Choice(name = 'about', value = 1),
 		app_commands.Choice(name = 'age', value = 2),
-		app_commands.Choice(name = 'city', value = 3)
+		app_commands.Choice(name = 'city', value = 3),
+		app_commands.Choice(name = 'all', value = 4)
 	])
 	async def delete(self, interaction: discord.Interaction, parameter: app_commands.Choice[int]):
 		try:
 			if parameter.name == 'about':
-				await self.del_profile_param(interaction, "about")
+				await self.del_biography_param(interaction, "about")
 			if parameter.name == 'age':
-				await self.del_profile_param(interaction, "age")
+				await self.del_biography_param(interaction, "age")
 			if parameter.name == 'city':
-				await self.del_profile_param(interaction, "city")
-			await interaction.response.send_message(f"```json\n{cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)]['profile']}\n```", ephemeral = True)
+				await self.del_biography_param(interaction, "city")
+			if parameter.name == 'all':
+				await self.del_biography_param(interaction, "about", True)
+				await self.del_biography_param(interaction, "age", True)
+				await self.del_biography_param(interaction, "city", True)
+			
+			if self.stop:
+				return
+			emb = discord.Embed(
+				title = "Успешно",
+				description = f"Вы удалили свои данные из биографии:\n" + '\n'.join([
+					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'about', 'biography', interaction.user) else "**О себе:** `нету`",
+					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'age', 'biography', interaction.user) else "**Возраст:** `нету`",
+					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', interaction.user)}" if cspl_get_param(interaction, 'u', 'city', 'biography', interaction.user) else "**Город:** `нету`",
+				]),
+				color=discord.Color.green()
+			)
+			await interaction.response.send_message(embed = emb, ephemeral = True)
 		except Exception as e:
 			print(repr(e))
-	
-	@app_commands.command(
-		name = "show",
-		description = 'Показать профиль юзера.'
-	)
-	async def show(self, interaction: discord.Interaction, user: discord.Member = None):
-		try:
-			profile = interaction.user if not user else user
-			roles = profile.roles
-			role_list = ''
-			role_list_number = 0
-
-			for role in reversed(roles):
-				if role != interaction.guild.default_role:
-					role_list += f'<@&{role.id}> '
-					role_list_number += 1
-
-			if profile.status == discord.Status.online:
-				status = '<:online:748149457396433016> В сети'
-			elif profile.status == discord.Status.idle:
-				status = '<:idle:748149485707984907> Не активен'
-			elif profile.status == discord.Status.dnd:
-				status = '<a:mark_none:815121643479236618> Не беспокоить'
-			else:
-				status = '<:offline:748149539915038731> Не в сети'
-			
-			emb = discord.Embed(colour = 0x2b2d31)
-			emb.set_author(name = f'{profile}', icon_url = profile.avatar)
-			emb.set_thumbnail(url = profile.avatar)
-			if user != self.bot.user:
-				emb.add_field(name = 'Профиль', value = '\n'.join([
-					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'about', 'profile', user if user else None) else "**О себе:** `нету`",
-					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'age', 'profile', user if user else None) else "**Возраст:** `нету`",
-					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'profile', user if user else None)}" if cspl_get_param(interaction, 'u', 'city', 'profile', user if user else None) else "**Город:** `нету`",
-				]), inline = False)
-			else:
-				emb.add_field(name = 'Профиль', value = '\n'.join([
-					f"**О себе:** 3990см хуй блять нахуй",
-					f"**Возраст:** 2000+",
-					f"**Город:** Залупа",
-				]), inline = False)
-			#emb.add_field(name = 'Статус', value = status, inline = False)
-			emb.add_field(name = f'Роли [{role_list_number}]', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
-			emb.add_field(name = 'В Discord', value = profile.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.add_field(name = 'На сервере', value = profile.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.set_footer(text = f'ID: {profile.id}')
-			emb.timestamp = datetime.now()
-
-			await interaction.response.send_message(embed = emb, ephemeral=True)
-		except Exception as e:
-			await interaction.response.send_message(repr(e), ephemeral=True)
 
 class Settings(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.profile_commands = Profile(bot)
+		self.biography_commands = Biography(bot)
 	
 	@app_commands.command(
 		name = "switch",
-		description = "Изменить переключатели настроек бота."
+		description = "Изменить состояние переключателей настроек бота"
 	)
 	@app_commands.checks.has_permissions(administrator = True)
 	@app_commands.default_permissions(administrator = True)
@@ -154,11 +137,11 @@ class Settings(commands.Cog):
 		await interaction.response.send_message("Скоро...", ephemeral=True)
 	
 	
-	async def setup_profile_commands(self):
-		await self.bot.add_cog(self.profile_commands)
+	async def setup_biography_commands(self):
+		await self.bot.add_cog(self.biography_commands)
 
 
 async def setup(bot):
 	settings = Settings(bot)
-	await settings.setup_profile_commands()
+	await settings.setup_biography_commands()
 	await bot.add_cog(settings)

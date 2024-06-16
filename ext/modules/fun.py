@@ -17,7 +17,7 @@ class Fun(commands.Cog):
 	
 	@app_commands.command(
 		name = 'time', 
-		description = 'Узнать время.'
+		description = 'Узнать время'
 	)
 	async def time(self, interaction: discord.Interaction):
 		try:
@@ -36,7 +36,7 @@ class Fun(commands.Cog):
 	
 	@app_commands.command(
 		name = "fact",
-		description="Узнать рандомный факт."
+		description="Рандомный факт"
 	)
 	async def fact(self, interaction: discord.Interaction):
 		facts = nekos.fact()
@@ -49,7 +49,7 @@ class Fun(commands.Cog):
 	
 	@app_commands.command(
 		name = "battle",
-		description="У кого удача сильнее?"
+		description="У кого сильнее удача?"
 	)
 	@app_commands.describe(
 		member = "Юзер сервера"
@@ -82,7 +82,7 @@ class Fun(commands.Cog):
 	# Мнение
 	@app_commands.command(
 		name = "opinion",
-		description = 'Узнать мнение бота о чем-то'
+		description = 'Мнение бота о чем-либо'
 	)
 	async def opinion(self, interaction: discord.Interaction, *, arg: str):
 		try:

@@ -24,10 +24,20 @@ class Moderation(commands.Cog):
 
 		self.bot.tree.copy_global_to(guild = discord.Object(id = guild.id))
 	
+	@app_commands.command(
+		name='timeout_list', 
+		description='Список тайм-аутов'
+	)
+	async def timeout_list(self, interaction: discord.Interaction, member: discord.Member):
+		try:
+			await interaction.response.send_message(member.timed_out_until)
+		except Exception as e:
+			await interaction.response.send_message(repr(e))
+	
 
 	@app_commands.command(
 		name='timeout', 
-		description='Временно заблокировать юзеру возможность писать в чат и подключаться в войсы.'
+		description='Временная блокировка разрешений писать/подключаться в чат/войс'
 	)
 	@app_commands.checks.has_permissions(mute_members = True)
 	@app_commands.default_permissions(mute_members = True)
@@ -63,7 +73,7 @@ class Moderation(commands.Cog):
 	
 	@app_commands.command(
 		name='untimeout',
-		description='Вернуть юзеру возможность писать в чат и подключаться в войсы.'
+		description='Отменить блокировку разрешений писать/подключаться в чат/войс'
 	)
 	@app_commands.checks.has_permissions(mute_members = True)
 	@app_commands.default_permissions(mute_members = True)
@@ -76,7 +86,7 @@ class Moderation(commands.Cog):
 	
 	@app_commands.command(
 		name = 'mute', 
-		description = 'Замутить юзера на сервере.'
+		description = 'Замутить юзера'
 	)
 	@app_commands.checks.has_permissions(mute_members = True)
 	@app_commands.default_permissions(mute_members = True)
@@ -85,7 +95,7 @@ class Moderation(commands.Cog):
 	
 	@app_commands.command(
 		name = 'unmute', 
-		description = 'Размьютить юзера на сервере.'
+		description = 'Размьютить юзера'
 	)
 	@app_commands.checks.has_permissions(mute_members = True)
 	@app_commands.default_permissions(mute_members = True)
@@ -95,7 +105,7 @@ class Moderation(commands.Cog):
 
 	@app_commands.command(
 		name = 'ban', 
-		description = 'Забанить юзера на сервере.'
+		description = 'Забанить юзера'
 	)
 	@app_commands.checks.has_permissions(ban_members = True)
 	@app_commands.default_permissions(ban_members = True)
