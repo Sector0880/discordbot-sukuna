@@ -486,7 +486,7 @@ class Info(commands.Cog):
 					emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
 				else:
 					if interaction.user == member or not member:
-						emb.description = "Вы можете создать свою биографию с помощью команды </biography set:1251828637473439767>"
+						emb.description = "Создайте свою биографию с помощью команды </biography set:1251828637473439767>"
 			else:
 				emb.add_field(name = 'Биография', value = '\n'.join([
 					f"**О себе:** 3990см хуй блять нахуй",
@@ -495,13 +495,14 @@ class Info(commands.Cog):
 				]), inline = False)
 			#emb.add_field(name = 'Статус', value = status)
 			emb.add_field(name = f'Роли [{role_list_number}]', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
-			#emb.add_field(name = 'В Discord', value = user.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			#emb.add_field(name = 'На сервере', value = user.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
+			emb.add_field(name = 'В Discord', value = user.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
+			emb.add_field(name = 'На сервере', value = user.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
 			emb.set_footer(text = f'ID: {user.id}')
 			emb.timestamp = datetime.now()
 			if user.id == 980175834373562439:
 				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=66704425&is=666ef2a5&hm=6fbe760673a386e62f00964be5c1422cf6df10cb6dd8da2a4cccd37a5d3fbdae&')
-				emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1221372466350522368/D82A2342.jpg?ex=667142bf&is=666ff13f&hm=7cd87d621f9cb941e5d301b9abbd3f4a914873d9faa9fdad53b731705002bc41&')
+				emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1252359093440479242/6dtr5mSE000.png?ex=6671edcb&is=66709c4b&hm=dc6d926cb4f6f737b07031cf64c425eeded60d4295757481bdfcde79d491b344&')
+				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1221372466350522368/D82A2342.jpg?ex=667142bf&is=666ff13f&hm=7cd87d621f9cb941e5d301b9abbd3f4a914873d9faa9fdad53b731705002bc41&')
 				#emb.set_image(url = "attachment://.db/content/owner/wlp1.jpeg")
 			else:
 				req = await self.bot.http.request(discord.http.Route("GET", f"/users/{user.id}"))
