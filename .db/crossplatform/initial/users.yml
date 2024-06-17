@@ -1,5 +1,4 @@
-mute:
-  status: false
+mute: false
 biography:
   about: false
   age: false

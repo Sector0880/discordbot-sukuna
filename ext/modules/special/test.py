@@ -32,7 +32,7 @@ class Test(commands.Cog):
 							inline=False) 
 			#await ctx.send(embed = em)
 			await ctx.send("/help")
-			await ctx.send(dbVars.cspl_get_param(ctx, 'u', 'profile'))
+			await ctx.send(dbVars.cspl_get_param(ctx, 'u', 'mute'))
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:

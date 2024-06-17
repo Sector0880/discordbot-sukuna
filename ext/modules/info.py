@@ -7,6 +7,9 @@ import datetime, time
 import locale
 from typing import Any, Dict, Generic, List, TYPE_CHECKING, Optional, TypeVar, Union
 from time import *
+import requests
+from bs4 import BeautifulSoup
+
 from botConfig import *
 from datetime import *
 from dbVars import *
@@ -452,30 +455,21 @@ class Info(commands.Cog):
 		name = "member",
 		description = 'Показать информацию об участнике'
 	)
-	async def member(self, interaction: discord.Interaction, user: discord.Member = None):
+	async def member(self, interaction: discord.Interaction, member: discord.Member = None):
 		try:
-			profile = interaction.user if not user else user
-			roles = profile.roles
+			user = interaction.user if not member else member
+			roles = user.roles
+
 			role_list = ''
 			role_list_number = 0
-
 			for role in reversed(roles):
 				if role != interaction.guild.default_role:
 					role_list += f'<@&{role.id}> '
 					role_list_number += 1
 			
-			if profile.status == discord.Status.online:
-				status = '<:online:748149457396433016> В сети'
-			elif profile.status == discord.Status.idle:
-				status = '<:idle:748149485707984907> Не активен'
-			elif profile.status == discord.Status.do_not_disturb:
-				status = '<a:mark_none:815121643479236618> Не беспокоить'
-			else:
-				status = '<:offline:748149539915038731> Не в сети'
-			
 			emb = discord.Embed(colour = 0x2b2d31)
-			emb.set_author(name = f'{profile}', icon_url = profile.avatar)
-			emb.set_thumbnail(url = profile.avatar)
+			emb.set_author(name = f'{user}', icon_url = user.avatar)
+			emb.set_thumbnail(url = user.avatar)
 			if user != self.bot.user:
 				bio_list = []
 				if cspl_get_param(interaction, 'u', 'about', 'biography', user if user else None):
@@ -491,27 +485,30 @@ class Info(commands.Cog):
 				if len(bio_list) > 0:
 					emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
 				else:
-					emb.description = "Вы можете создать свою биографию с помощью команды </biography set:1251828637473439767>"
+					if interaction.user == member or not member:
+						emb.description = "Вы можете создать свою биографию с помощью команды </biography set:1251828637473439767>"
 			else:
 				emb.add_field(name = 'Биография', value = '\n'.join([
 					f"**О себе:** 3990см хуй блять нахуй",
 					f"**Возраст:** 2000+",
 					f"**Город:** Залупа",
 				]), inline = False)
-			emb.add_field(name = 'Статус', value = status)
+			#emb.add_field(name = 'Статус', value = status)
 			emb.add_field(name = f'Роли [{role_list_number}]', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
-			emb.add_field(name = 'В Discord', value = profile.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.add_field(name = 'На сервере', value = profile.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.set_footer(text = f'ID: {profile.id}')
+			#emb.add_field(name = 'В Discord', value = user.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
+			#emb.add_field(name = 'На сервере', value = user.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
+			emb.set_footer(text = f'ID: {user.id}')
 			emb.timestamp = datetime.now()
-			#if interaction.user == self.bot.get_user(980175834373562439):
-			#	emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=66704425&is=666ef2a5&hm=6fbe760673a386e62f00964be5c1422cf6df10cb6dd8da2a4cccd37a5d3fbdae&')
-			#else:
-			req = await self.bot.http.request(discord.http.Route("GET", f"/users/{profile.id}"))
-			banner_id = req["banner"]
-			if banner_id:
-				banner_url = f"https://cdn.discordapp.com/banners/{profile.id}/{banner_id}?size=1024"
-				emb.set_image(url = banner_url)
+			if user.id == 980175834373562439:
+				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=66704425&is=666ef2a5&hm=6fbe760673a386e62f00964be5c1422cf6df10cb6dd8da2a4cccd37a5d3fbdae&')
+				emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1221372466350522368/D82A2342.jpg?ex=667142bf&is=666ff13f&hm=7cd87d621f9cb941e5d301b9abbd3f4a914873d9faa9fdad53b731705002bc41&')
+				#emb.set_image(url = "attachment://.db/content/owner/wlp1.jpeg")
+			else:
+				req = await self.bot.http.request(discord.http.Route("GET", f"/users/{user.id}"))
+				banner_id = req["banner"]
+				if banner_id:
+					banner_url = f"https://cdn.discordapp.com/banners/{user.id}/{banner_id}?size=1024"
+					emb.set_image(url = banner_url)
 
 			await interaction.response.send_message(embed = emb, ephemeral = False)
 		except Exception as e:
@@ -553,4 +550,29 @@ shard_ping = shard.latency
 shard_servers = len([guild for guild in self.bot.guilds if guild.shard_id == shard_id])
 bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
 await interaction.response.send_message(f"{bot_shard_name()}#{shard.id}\n{shard_ping}")
+
+
+def get_member_status(user_id):
+	url = f"https://discord.com/api/v9/users/{user_id}"
+	headers = {
+		"Authorization": botConfig.token
+	}
+	response = requests.get(url, headers=headers)
+	if response.status_code == 200:
+		user_data = response.json()
+		return user_data['presence']['status']
+	else:
+		return None
+
+user_id = user.id
+user_status = get_member_status(user_id)
+
+if user_status == discord.Status.online:
+	status = '<:online:748149457396433016> В сети'
+elif user_status == discord.Status.idle:
+	status = '<:idle:748149485707984907> Не активен'
+elif user_status == discord.Status.do_not_disturb:
+	status = '<a:mark_none:815121643479236618> Не беспокоить'
+else:
+	status = '<:offline:748149539915038731> Не в сети'
 """
