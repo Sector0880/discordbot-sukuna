@@ -14,9 +14,14 @@ import botDecorators
 class Test(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-	
-	group = app_commands.Group(name = 'test', description = 'lol')
 		
+	@app_commands.command(
+		name = "test",
+		description="тестовая команда (только для овнера)"
+	)
+	async def test(self, interaction: discord.Interaction):
+		await interaction.response.send_message(dbVars.cspl_get_param(interaction, 'u', 'xp', 'economy'))
+
 	@commands.command()
 	@commands.is_owner()
 	async def t(self, ctx):

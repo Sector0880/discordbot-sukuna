@@ -1,7 +1,11 @@
-mute: false
+mute:
+  status: false
 biography:
   about: false
   age: false
   city: false
   vk: false
   tg: false
+economy:
+  xp: 0
+  coins: 0

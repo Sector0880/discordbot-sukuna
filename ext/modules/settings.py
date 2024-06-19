@@ -19,6 +19,7 @@ class Biography(commands.GroupCog, name = "biography"):
 			custom_users[str(interaction.user.id)] = {}
 		if str(interaction.guild.id) not in custom_users[str(interaction.user.id)]:
 			custom_users[str(interaction.user.id)][str(interaction.guild.id)] = {}
+
 		if "biography" not in custom_users[str(interaction.user.id)][str(interaction.guild.id)]:
 			custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"] = {}
 		custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"][param] = str(content)
