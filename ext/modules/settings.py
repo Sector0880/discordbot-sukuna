@@ -139,18 +139,80 @@ class Biography(commands.GroupCog, name = "biography"):
 		except Exception as e:
 			print(repr(e))
 
+
+class PanelDialogs(discord.ui.View):
+	def __init__(self, bot: commands.Bot):
+		super().__init__()
+		self.bot = bot
+	
+	@discord.ui.button(label="Модули", style=discord.ButtonStyle.gray)
+	async def modules(self, interaction: discord.Interaction, button: discord.ui.Button):
+		try:
+			emb = discord.Embed(
+				title = "Модули",
+				description = "\n".join([
+					(f'<:switch_on:818125506309652490> **{module}** ```/switch off:{module}```' if cspl_get_param(interaction, 'g', 'modules')[module] else f'<:switch_off:818125535951323177> **{module}** ```/switch on:{module}```') for module in cspl_get_param(interaction, 'g', 'modules')
+				])
+			)
+			emb.set_thumbnail(url = self.bot.user.avatar)
+			await interaction.response.send_message(embed = emb, ephemeral = True)
+			#interaction.message.view.stop() должно скрывать кнопку после нажатия но не скрывает
+		except Exception as e:
+			await interaction.response.send_message(repr(e), ephemeral = True)
+
 class Settings(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.biography_commands = Biography(bot)
 	
 	@app_commands.command(
+		name = "panel",
+		description = "Панель управления настройками бота"
+	)
+	@app_commands.checks.has_permissions(administrator = True)
+	@app_commands.default_permissions(administrator = True)
+	async def panel(self, interaction: discord.Interaction):
+		try:
+			emb = discord.Embed(
+				title=f"{interaction.guild.name}"
+			)
+			modules = " ".join([
+				(f'<:switch_on:818125506309652490> **{module}**' if cspl_get_param(interaction, 'g', 'modules')[module] else f'<:switch_off:818125535951323177> **{module}**') for module in cspl_get_param(interaction, 'g', 'modules')
+			])
+			modules_on = []
+			modules_off = []
+			for module in cspl_get_param(interaction, 'g', 'modules'):
+				if cspl_get_param(interaction, 'g', 'modules')[module]:
+					modules_on.append(module)
+				else:
+					modules_off.append(module)
+
+			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
+			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
+			emb.add_field(
+				name = "Модули",
+				value = "\n".join([
+					'<:switch_on:818125506309652490> ' + modules_on_str,
+					'<:switch_off:818125535951323177> ' + modules_off_str
+				])
+			)
+			emb.set_footer(text = f"Панель управления {self.bot.user}")
+			await interaction.response.send_message(content="Для изменения настроек воспользуйтесь кнопками.", embed = emb, ephemeral = True, view = PanelDialogs(self.bot))
+		except Exception as e:
+			await interaction.response.send_message(repr(e))
+
+	@app_commands.command(
 		name = "switch",
 		description = "Изменить состояние переключателей настроек бота"
 	)
 	@app_commands.checks.has_permissions(administrator = True)
 	@app_commands.default_permissions(administrator = True)
-	async def switch(self, interaction: discord.Interaction, switch: str):
+	@app_commands.choices(
+		on = [
+			app_commands.Choice(name = "module-info", value = 1)
+		]
+	)
+	async def switch(self, interaction: discord.Interaction, on: app_commands.Choice[int] = None, off: str = None):
 		await interaction.response.send_message("Скоро...", ephemeral=True)
 	
 	

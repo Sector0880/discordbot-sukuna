@@ -3,8 +3,11 @@ gateaway:
 prefix: "!"
 language: "ru"
 modules:
+  info: true
+  fun: true
+  settings: true
   moderation: true
-  fun: false
+  economy: true
   audit: false
   music: false
 premium:
@@ -13,7 +16,8 @@ economy:
   lvls:
     [
     {lvl: 1, xp: 50,  award: 200}, 
-    {lvl: 2, xp: 100, award: 400}
+    {lvl: 2, xp: 100, award: 400},
+    {lvl: 3, xp: 200, award: 800}
     ]
   xpAdd: 5
   xpAddCooldown: 7

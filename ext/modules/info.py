@@ -65,6 +65,8 @@ class CmdHelp_CategoryList(discord.ui.View):
 	 			'desc': 'Добавить информацию для своей биографии'},
 				{'command': '</biography del:1251828637473439767>', 'permission': None,
 	 			'desc': 'Удалить информацию из своей биографии'},
+				{'command': '</panel:1253446283889348679>',  'permission': interaction.user.guild_permissions.administrator,
+	 			'desc': 'Панель управления настройками бота'},
 				{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
 	 			'desc': 'Изменить состояние переключателей настроек бота'},
 			]
@@ -100,7 +102,7 @@ class CmdHelp_CategoryList(discord.ui.View):
 
 			if select.values[0] == '1':
 				emb = discord.Embed(
-					title = f"Доступные команды ({len(filtered_list_cmds_info)})",
+					title = f"Доступные техники ({len(filtered_list_cmds_info)})",
 					description = '\n'.join([
 						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_info
 					])
@@ -108,7 +110,7 @@ class CmdHelp_CategoryList(discord.ui.View):
 				emb.set_footer(text = "Категория: Информация")
 			if select.values[0] == '2':
 				emb = discord.Embed(
-					title = f"Доступные команды ({len(filtered_list_cmds_fun)})",
+					title = f"Доступные техники ({len(filtered_list_cmds_fun)})",
 					description = '\n'.join([
 						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_fun
 					])
@@ -116,7 +118,7 @@ class CmdHelp_CategoryList(discord.ui.View):
 				emb.set_footer(text = "Категория: Веселье")
 			if select.values[0] == '3':
 				emb = discord.Embed(
-					title = f"Доступные команды ({len(filtered_list_cmds_settings)})",
+					title = f"Доступные техники ({len(filtered_list_cmds_settings)})",
 					description = '\n'.join([
 						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_settings
 					])
@@ -124,7 +126,7 @@ class CmdHelp_CategoryList(discord.ui.View):
 				emb.set_footer(text = "Категория: Настройки")
 			if select.values[0] == '4':
 				emb = discord.Embed(
-					title = f"Доступные команды ({len(filtered_list_cmds_moderation)})",
+					title = f"Доступные техники ({len(filtered_list_cmds_moderation)})",
 					description = '\n'.join([
 						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_moderation
 					])
@@ -185,6 +187,8 @@ class Info(commands.Cog):
 					'desc': 'Добавить информацию для своей биографии'},
 					{'command': '</biography del:1251828637473439767>', 'permission': None,
 					'desc': 'Удалить информацию из своей биографии'},
+					{'command': '</panel:1253446283889348679>',  'permission': interaction.user.guild_permissions.administrator,
+	 				'desc': 'Панель управления настройками бота'},
 					{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
 					'desc': 'Изменить состояние переключателей настроек бота'},
 				]
@@ -447,7 +451,7 @@ class Info(commands.Cog):
 	)
 	async def serverinfo(self, interaction: discord.Interaction):
 		try:
-			await interaction.response.send_message('скоро', ephemeral=True)
+			await interaction.response.send_message("скоро...", ephemeral = False)
 		except Exception as e:
 			await interaction.response.send_message(repr(e))
 	
