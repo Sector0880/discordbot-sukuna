@@ -1,5 +1,15 @@
 {
     "815119789110198293": {
-        "prefix": "!"
+        "economy": {
+            "lvls": [
+                {
+                    "lvl": 3,
+                    "xp": 110,
+                    "award": 10000
+                }
+            ],
+            "xpAdd": 1,
+            "xpAddCooldown": 1
+        }
     }
 }

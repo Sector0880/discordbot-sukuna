@@ -20,6 +20,7 @@ class Test(commands.Cog):
 		description="тестовая команда (только для овнера)"
 	)
 	async def test(self, interaction: discord.Interaction):
+		if interaction.user.id not in dbVars.sf_sp(): return await interaction.response.send_message("Нету прав.")
 		await interaction.response.send_message(dbVars.cspl_get_param(interaction, 'u', 'xp', 'economy'))
 
 	@commands.command()
@@ -36,8 +37,7 @@ class Test(commands.Cog):
 							value=slash_command.description if slash_command.description else slash_command.name, 
 							inline=False) 
 			#await ctx.send(embed = em)
-			await ctx.send("/help")
-			await ctx.send(dbVars.cspl_get_param(ctx, 'u', 'mute'))
+			await ctx.send(dbVars.cspl_get_param(ctx, 'u', 'xp', 'economy'))
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:

@@ -9,3 +9,11 @@ modules:
   music: false
 premium:
   status: true
+economy:
+  lvls:
+    [
+    {lvl: 1, xp: 50,  award: 200}, 
+    {lvl: 2, xp: 100, award: 400}
+    ]
+  xpAdd: 5
+  xpAddCooldown: 7
