@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 
 import asyncio
+import enum
 import re
 from dbVars import *
 from botFunctions import *
@@ -148,12 +149,26 @@ class PanelDialogs(discord.ui.View):
 	@discord.ui.button(label="Модули", style=discord.ButtonStyle.gray)
 	async def modules(self, interaction: discord.Interaction, button: discord.ui.Button):
 		try:
+			modules_on = []
+			modules_off = []
+			for module in cspl_get_param(interaction, 'g', 'modules'):
+				if cspl_get_param(interaction, 'g', 'modules')[module]:
+					modules_on.append(module)
+				else:
+					modules_off.append(module)
+
+			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
+			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
+
 			emb = discord.Embed(
 				title = "Модули",
 				description = "\n".join([
-					(f'<:switch_on:818125506309652490> **{module}** ```/switch off:{module}```' if cspl_get_param(interaction, 'g', 'modules')[module] else f'<:switch_off:818125535951323177> **{module}** ```/switch on:{module}```') for module in cspl_get_param(interaction, 'g', 'modules')
+					'<:switch_on:818125506309652490> ' + modules_on_str,
+					'<:switch_off:818125535951323177> ' + modules_off_str
 				])
 			)
+			emb.add_field(name = "Включить модуль", value = '```/switch on:module```')
+			emb.add_field(name = "Выключить модуль", value = '```/switch off:module```')
 			emb.set_thumbnail(url = self.bot.user.avatar)
 			await interaction.response.send_message(embed = emb, ephemeral = True)
 			#interaction.message.view.stop() должно скрывать кнопку после нажатия но не скрывает
@@ -173,12 +188,6 @@ class Settings(commands.Cog):
 	@app_commands.default_permissions(administrator = True)
 	async def panel(self, interaction: discord.Interaction):
 		try:
-			emb = discord.Embed(
-				title=f"{interaction.guild.name}"
-			)
-			modules = " ".join([
-				(f'<:switch_on:818125506309652490> **{module}**' if cspl_get_param(interaction, 'g', 'modules')[module] else f'<:switch_off:818125535951323177> **{module}**') for module in cspl_get_param(interaction, 'g', 'modules')
-			])
 			modules_on = []
 			modules_off = []
 			for module in cspl_get_param(interaction, 'g', 'modules'):
@@ -189,6 +198,10 @@ class Settings(commands.Cog):
 
 			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
 			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
+
+			emb = discord.Embed(
+				title=f"{interaction.guild.name}"
+			)
 			emb.add_field(
 				name = "Модули",
 				value = "\n".join([
@@ -200,6 +213,15 @@ class Settings(commands.Cog):
 			await interaction.response.send_message(content="Для изменения настроек воспользуйтесь кнопками.", embed = emb, ephemeral = True, view = PanelDialogs(self.bot))
 		except Exception as e:
 			await interaction.response.send_message(repr(e))
+	
+	class ChoiceModules(enum.Enum):
+		module_info = 1
+		module_fun = 2
+		module_settings = 3
+		module_moderation = 4
+		module_economy = 5
+		module_audit = 6
+		module_music = 7
 
 	@app_commands.command(
 		name = "switch",
@@ -207,12 +229,7 @@ class Settings(commands.Cog):
 	)
 	@app_commands.checks.has_permissions(administrator = True)
 	@app_commands.default_permissions(administrator = True)
-	@app_commands.choices(
-		on = [
-			app_commands.Choice(name = "module-info", value = 1)
-		]
-	)
-	async def switch(self, interaction: discord.Interaction, on: app_commands.Choice[int] = None, off: str = None):
+	async def switch(self, interaction: discord.Interaction, on: ChoiceModules = None, off: ChoiceModules = None):
 		await interaction.response.send_message("Скоро...", ephemeral=True)
 	
 	
