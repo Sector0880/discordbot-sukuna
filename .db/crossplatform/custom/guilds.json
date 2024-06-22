@@ -8,8 +8,8 @@
                     "award": 10000
                 }
             ],
-            "xpAdd": 1,
-            "xpAddCooldown": 1
+            "xpAdd": 10,
+            "xpAddCooldown": 10
         }
     }
 }

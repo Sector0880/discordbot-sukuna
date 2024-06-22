@@ -39,6 +39,8 @@ class CmdHelp_CategoryList(discord.ui.View):
 	 			'desc': 'Получить информацию о командах бота'},
 				{'command': '</ping:1249321143983145034>',              'permission': None,
 	 			'desc': 'Узнать время отклика бота'},
+				{'command': '</panel:1253446283889348679>',  'permission': interaction.user.guild_permissions.administrator,
+	 			'desc': 'Панель управления настройками бота'},
 				{'command': '</about:1250159784683114496>',             'permission': None,
 	 			'desc': 'Получить информацию о боте'},
 				{'command': '</serverinfo:1250362239341301760>',        'permission': None,
@@ -61,14 +63,12 @@ class CmdHelp_CategoryList(discord.ui.View):
 	 			'desc': 'Мнение бота о чем-либо'}
 			]
 			list_cmds_settings = [
+				{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
+	 			'desc': 'Изменить состояние переключателей настроек бота'},
 				{'command': '</biography set:1251828637473439767>', 'permission': None,
 	 			'desc': 'Добавить информацию для своей биографии'},
 				{'command': '</biography del:1251828637473439767>', 'permission': None,
 	 			'desc': 'Удалить информацию из своей биографии'},
-				{'command': '</panel:1253446283889348679>',  'permission': interaction.user.guild_permissions.administrator,
-	 			'desc': 'Панель управления настройками бота'},
-				{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
-	 			'desc': 'Изменить состояние переключателей настроек бота'},
 			]
 			list_cmds_moderation = [
 				{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
@@ -138,6 +138,49 @@ class CmdHelp_CategoryList(discord.ui.View):
 		except Exception as e:
 			await interaction.response.send_message(repr(e))
 
+class PanelDialogs(discord.ui.View):
+	def __init__(self, bot: commands.Bot):
+		super().__init__()
+		self.bot = bot
+	
+	@discord.ui.button(label="Модули", style=discord.ButtonStyle.gray)
+	async def modules(self, interaction: discord.Interaction, button: discord.ui.Button):
+		try:
+			modules_on = []
+			modules_off = []
+			for module in cspl_get_param(interaction, 'g', 'modules'):
+				if cspl_get_param(interaction, 'g', 'modules')[module]:
+					modules_on.append(module)
+				else:
+					modules_off.append(module)
+
+			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
+			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
+
+			emb = discord.Embed(
+				title = "Модули",
+				description = "\n".join([
+					'<:switch_on:818125506309652490> ' + modules_on_str,
+					'<:switch_off:818125535951323177> ' + modules_off_str
+				])
+			)
+			emb.set_thumbnail(url = self.bot.user.avatar)
+
+			txt = '\n'.join([
+				"**Включить модуль:** `/switch on:module`",
+				"**Выключить модуль:** `/switch off:module`",
+				"\n**Включить команду:** `/switch on:command`",
+				"**Выключить команду:** `/switch off:command`"
+			])
+			await interaction.response.send_message(content = txt, embed = emb, ephemeral = True)
+			#interaction.message.view.stop() должно скрывать кнопку после нажатия но не скрывает
+		except Exception as e:
+			await interaction.response.send_message(repr(e), ephemeral = True)
+	
+	@discord.ui.button(label="Экономика", style=discord.ButtonStyle.gray)
+	async def ecomony(self, interaction: discord.Interaction, button: discord.ui.Button):
+		await interaction.response.send_message("Скоро", ephemeral=True)
+
 class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
@@ -161,6 +204,8 @@ class Info(commands.Cog):
 					'desc': 'Получить информацию о командах бота'},
 					{'command': '</ping:1249321143983145034>',              'permission': None,
 					'desc': 'Узнать время отклика бота'},
+					{'command': '</panel:1253446283889348679>',  'permission': interaction.user.guild_permissions.administrator,
+	 				'desc': 'Панель управления настройками бота'},
 					{'command': '</about:1250159784683114496>',             'permission': None,
 					'desc': 'Получить информацию о боте'},
 					{'command': '</serverinfo:1250362239341301760>',        'permission': None,
@@ -183,14 +228,12 @@ class Info(commands.Cog):
 					'desc': 'Мнение бота о чем-либо'}
 				]
 				list_cmds_settings = [
+					{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
+					'desc': 'Изменить состояние переключателей настроек бота'},
 					{'command': '</biography set:1251828637473439767>', 'permission': None,
 					'desc': 'Добавить информацию для своей биографии'},
 					{'command': '</biography del:1251828637473439767>', 'permission': None,
 					'desc': 'Удалить информацию из своей биографии'},
-					{'command': '</panel:1253446283889348679>',  'permission': interaction.user.guild_permissions.administrator,
-	 				'desc': 'Панель управления настройками бота'},
-					{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
-					'desc': 'Изменить состояние переключателей настроек бота'},
 				]
 				list_cmds_moderation = [
 					{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
@@ -236,36 +279,36 @@ class Info(commands.Cog):
 					title = f"Доступные техники ({lists_len})",
 					description = '\n'.join([
 						#"Есть сложности использования моих техник? Не расстраивайся, постарайся все запомнить.",
-						#"Все мои техники начинаются с `/` (потому что используются слеш-техники).",
+						f"Мои техники начинаются с префиксов `/` и `{cspl_get_param(interaction, 'g', 'prefix')}`. Для получения доп. информации по категории выберите её в списке."
 						#"Я разделил свои команды на несколько модулей, чтобы твоя бошка тыквенная не сдохла от моей гениальности :)))"
 					]),
 					color = 0x2b2d31
 				)
 				emb.add_field(
-					name = f'Информация [{len(filtered_list_cmds_info)}]', 
+					name = f'Информация ({len(filtered_list_cmds_info)})', 
 					value = ' '.join([cmd['command'] for cmd in filtered_list_cmds_info]),
 					inline = False
 				)
 				emb.add_field(
-					name = f'Веселье [{len(filtered_list_cmds_fun)}]', 
+					name = f'Веселье ({len(filtered_list_cmds_fun)})', 
 					value = ' '.join([cmd['command'] for cmd in filtered_list_cmds_fun]),
 					inline = False
 				)
 				emb.add_field(
-					name = f'<:UtilitySettings:1250376547958001734> Настройки [{len(filtered_list_cmds_settings)}]',
+					name = f'<:UtilitySettings:1250376547958001734> Настройки ({len(filtered_list_cmds_settings)})',
 					value=' '.join([cmd['command'] for cmd in filtered_list_cmds_settings]),
 					inline = False
 				)
 				if len(filtered_list_cmds_moderation) > 0:
 					emb.add_field(
-						name=f'<:Mod_Shield:1142795808945745970> Модерация [{len(filtered_list_cmds_moderation)}]',
+						name=f'<:Mod_Shield:1142795808945745970> Модерация ({len(filtered_list_cmds_moderation)})',
 						value=' '.join([cmd['command'] for cmd in filtered_list_cmds_moderation]),
 						inline = False
 					)
 				emb.set_thumbnail(url = self.bot.user.avatar)
 				iam = self.bot.get_user(980175834373562439)
-				#emb.set_footer(text = "dev: Sectormain, 2024", icon_url = iam.avatar)
-				emb.set_footer(text = "creators: Sectormain, minus7yingzi | 2024")
+				emb.set_footer(text = "dev: Sectormain, 2024", icon_url = iam.avatar)
+				#emb.set_footer(text = "creators: Sectormain, minus7yingzi | 2024")
 				await interaction.response.send_message(embed = emb, ephemeral = True, view = CmdHelp_CategoryList(self.bot))
 			elif command.name:
 				self.text_footer = False
@@ -356,6 +399,50 @@ class Info(commands.Cog):
 			await message.edit(content = f'Понг! 🏓  \n{shard_ping}')
 		except Exception as e:
 			await interaction.edit_original_response(content = e)
+	
+	@app_commands.command(
+		name = "panel",
+		description = "Панель управления настройками бота"
+	)
+	@app_commands.checks.has_permissions(administrator = True)
+	@app_commands.default_permissions(administrator = True)
+	async def panel(self, interaction: discord.Interaction):
+		try:
+			modules_on = []
+			modules_off = []
+			for module in cspl_get_param(interaction, 'g', 'modules'):
+				if cspl_get_param(interaction, 'g', 'modules')[module]:
+					modules_on.append(module)
+				else:
+					modules_off.append(module)
+
+			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
+			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
+
+			emb = discord.Embed(
+				title=f"{interaction.guild.name}"
+			)
+			emb.add_field(
+				name = "Модули",
+				value = "\n".join([
+					'<:switch_on:818125506309652490> ' + modules_on_str,
+					'<:switch_off:818125535951323177> ' + modules_off_str
+				])
+			)
+			emb.add_field(
+				name = "Экономика",
+				value = '\n'.join([
+					f'**Уровни:** `{cspl_get_param(interaction, "g", "lvls", "economy")}`',
+					f'**Опыт за сообщение:** `{cspl_get_param(interaction, "g", "xpAdd", "economy")}`',
+					f'**Кулдаун:** `{cspl_get_param(interaction, "g", "xpAddCooldown", "economy")} секунд`'
+				]),
+				inline=False
+			)
+			emb.set_thumbnail(url = self.bot.user.avatar)
+			emb.set_footer(text = f"Панель управления {self.bot.user}")
+			await interaction.response.send_message(content="Для изменения настроек воспользуйтесь кнопками.", embed = emb, ephemeral = True, view = PanelDialogs(self.bot))
+		except Exception as e:
+			await interaction.response.send_message(repr(e))
 	
 	
 	# Получить детальную информацию о боте
@@ -488,9 +575,6 @@ class Info(commands.Cog):
 					bio_list.append(f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', user if user else None)}")
 				if len(bio_list) > 0:
 					emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
-				else:
-					if interaction.user == member or not member:
-						emb.description = "Создайте свою биографию с помощью команды </biography set:1251828637473439767>"
 			else:
 				emb.add_field(name = 'Биография', value = '\n'.join([
 					f"**О себе:** 3990см хуй блять нахуй",
@@ -498,7 +582,7 @@ class Info(commands.Cog):
 					f"**Город:** Залупа",
 				]), inline = False)
 			#emb.add_field(name = 'Статус', value = status)
-			emb.add_field(name = f'Роли [{role_list_number}]', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
+			emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
 			emb.add_field(name = 'В Discord', value = user.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
 			emb.add_field(name = 'На сервере', value = user.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
 			emb.set_footer(text = f'ID: {user.id}')
@@ -515,7 +599,7 @@ class Info(commands.Cog):
 					banner_url = f"https://cdn.discordapp.com/banners/{user.id}/{banner_id}?size=1024"
 					emb.set_image(url = banner_url)
 
-			await interaction.response.send_message(embed = emb, ephemeral = False)
+			await interaction.response.send_message(content = "Создайте свою биографию с помощью команды </biography set:1251828637473439767>" if interaction.user == member or not member else None, embed = emb, ephemeral = False)
 		except Exception as e:
 			await interaction.response.send_message(repr(e), ephemeral = False)
 	
