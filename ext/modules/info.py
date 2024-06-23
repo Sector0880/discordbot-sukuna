@@ -21,6 +21,61 @@ locale.setlocale(
     locale="Russian"  # Note: do not use "de_DE" as it doesn't work
 )
 
+def get_commands_list(interaction: discord.Interaction, category):
+	if category == 'info':
+		return [
+			{'command': '</help:1250144368837529692>',              'permission': None,
+			'desc': 'Получить информацию о командах бота'},
+			{'command': '</ping:1249321143983145034>',              'permission': None,
+			'desc': 'Узнать время отклика бота'},
+			{'command': '</dashboard:1254395126633992233>',  'permission': interaction.user.guild_permissions.administrator,
+			'desc': 'Панель управления настройками бота'},
+			{'command': '</about:1250159784683114496>',             'permission': None,
+			'desc': 'Получить информацию о боте'},
+			{'command': '</serverinfo:1250362239341301760>',        'permission': None,
+			'desc': 'Получить информацию о сервере'},
+			{'command': '</member:1251828637473439765>',        'permission': None,
+			'desc': 'Показать информацию об участнике'},
+			{'command': '</avatar:1249321144469950546>',            'permission': None,
+			'desc': 'Получить аватарку юзера'},
+			{'command': '</myowner:1250743777077755915>',           'permission': None,
+			'desc': 'А сейчас о моем разработчике))'},
+		]
+	elif category == 'fun':
+		return [
+			{'command': '</time:1250150935280357376>',              'permission': None,
+			'desc': 'Узнать время'},
+			{'command': '</fact:1250150935280357377>',              'permission': None,
+			'desc': 'Рандомный факт'},
+			{'command': '</battle:1250720060344107019>',            'permission': None,
+			'desc': 'У кого сильнее удача?'},
+			{'command': '</opinion:1251281683001643139>',           'permission': None,
+			'desc': 'Мнение бота о чем-либо'}
+		]
+	elif category == 'settings':
+		return [
+			{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
+			'desc': 'Изменить состояние переключателей настроек бота'},
+			{'command': '</biography set:1251828637473439767>', 'permission': None,
+			'desc': 'Добавить информацию для своей биографии'},
+			{'command': '</biography del:1251828637473439767>', 'permission': None,
+			'desc': 'Удалить информацию из своей биографии'},
+		]
+	elif category == 'moderation':
+		return [
+			{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
+			'desc': 'Временная блокировка разрешений писать/подключаться в чат/войс'},
+			{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
+			'desc': 'Отменить блокировку разрешений писать/подключаться в чат/войс'},
+				{'command': '</mute:1251497656266526730>',           'permission': interaction.user.guild_permissions.mute_members,
+			'desc': 'Замутить юзера'},
+			{'command': '</unmute:1251497656266526731>',         'permission': interaction.user.guild_permissions.mute_members,
+			'desc': 'Размьютить юзера'},
+			{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
+			'desc': 'Забанить юзера'}
+		]
+	else: return [{'command': 'не найден список команд', 'permission': None, 'desc': 'None'}]
+
 class CmdHelp_CategoryList(discord.ui.View):
 	def __init__(self, bot: commands.Bot):
 		super().__init__()
@@ -34,54 +89,10 @@ class CmdHelp_CategoryList(discord.ui.View):
 	])
 	async def select_category(self, interaction: discord.Interaction, select: discord.ui.Select):
 		try:
-			list_cmds_info = [
-				{'command': '</help:1250144368837529692>',              'permission': None,
-	 			'desc': 'Получить информацию о командах бота'},
-				{'command': '</ping:1249321143983145034>',              'permission': None,
-	 			'desc': 'Узнать время отклика бота'},
-				{'command': '</panel:1253446283889348679>',  'permission': interaction.user.guild_permissions.administrator,
-	 			'desc': 'Панель управления настройками бота'},
-				{'command': '</about:1250159784683114496>',             'permission': None,
-	 			'desc': 'Получить информацию о боте'},
-				{'command': '</serverinfo:1250362239341301760>',        'permission': None,
-	 			'desc': 'Получить информацию о сервере'},
-				{'command': '</member:1251828637473439765>',        'permission': None,
-	 			'desc': 'Показать информацию об участнике'},
-				{'command': '</avatar:1249321144469950546>',            'permission': None,
-	 			'desc': 'Получить аватарку юзера'},
-				{'command': '</myowner:1250743777077755915>',           'permission': None,
-	 			'desc': 'А сейчас о моем разработчике))'},
-			]
-			list_cmds_fun = [
-				{'command': '</time:1250150935280357376>',              'permission': None,
-	 			'desc': 'Узнать время'},
-				{'command': '</fact:1250150935280357377>',              'permission': None,
-	 			'desc': 'Рандомный факт'},
-				{'command': '</battle:1250720060344107019>',            'permission': None,
-	 			'desc': 'У кого сильнее удача?'},
-				{'command': '</opinion:1251281683001643139>',           'permission': None,
-	 			'desc': 'Мнение бота о чем-либо'}
-			]
-			list_cmds_settings = [
-				{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
-	 			'desc': 'Изменить состояние переключателей настроек бота'},
-				{'command': '</biography set:1251828637473439767>', 'permission': None,
-	 			'desc': 'Добавить информацию для своей биографии'},
-				{'command': '</biography del:1251828637473439767>', 'permission': None,
-	 			'desc': 'Удалить информацию из своей биографии'},
-			]
-			list_cmds_moderation = [
-				{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
-	 			'desc': 'Временная блокировка разрешений писать/подключаться в чат/войс'},
-				{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
-	 			'desc': 'Отменить блокировку разрешений писать/подключаться в чат/войс'},
-				 {'command': '</mute:1251497656266526730>',           'permission': interaction.user.guild_permissions.mute_members,
-	 			'desc': 'Замутить юзера'},
-				{'command': '</unmute:1251497656266526731>',         'permission': interaction.user.guild_permissions.mute_members,
-	 			'desc': 'Размьютить юзера'},
-				{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
-	 			'desc': 'Забанить юзера'}
-			]
+			list_cmds_info = get_commands_list(interaction, 'info')
+			list_cmds_fun = get_commands_list(interaction, 'fun')
+			list_cmds_settings = get_commands_list(interaction, 'settings')
+			list_cmds_moderation = get_commands_list(interaction, 'moderation')
 
 			filtered_list_cmds_info = []
 			filtered_list_cmds_fun = []
@@ -199,54 +210,10 @@ class Info(commands.Cog):
 	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
 		try:
 			if command == None:
-				list_cmds_info = [
-					{'command': '</help:1250144368837529692>',              'permission': None,
-					'desc': 'Получить информацию о командах бота'},
-					{'command': '</ping:1249321143983145034>',              'permission': None,
-					'desc': 'Узнать время отклика бота'},
-					{'command': '</panel:1253446283889348679>',  'permission': interaction.user.guild_permissions.administrator,
-	 				'desc': 'Панель управления настройками бота'},
-					{'command': '</about:1250159784683114496>',             'permission': None,
-					'desc': 'Получить информацию о боте'},
-					{'command': '</serverinfo:1250362239341301760>',        'permission': None,
-					'desc': 'Получить информацию о сервере'},
-					{'command': '</member:1251828637473439765>',        'permission': None,
-					'desc': 'Показать информацию об участнике'},
-					{'command': '</avatar:1249321144469950546>',            'permission': None,
-					'desc': 'Получить аватарку юзера'},
-					{'command': '</myowner:1250743777077755915>',           'permission': None,
-					'desc': 'А сейчас о моем разработчике))'},
-				]
-				list_cmds_fun = [
-					{'command': '</time:1250150935280357376>',              'permission': None,
-					'desc': 'Узнать время'},
-					{'command': '</fact:1250150935280357377>',              'permission': None,
-					'desc': 'Рандомный факт'},
-					{'command': '</battle:1250720060344107019>',            'permission': None,
-					'desc': 'У кого сильнее удача?'},
-					{'command': '</opinion:1251281683001643139>',           'permission': None,
-					'desc': 'Мнение бота о чем-либо'}
-				]
-				list_cmds_settings = [
-					{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
-					'desc': 'Изменить состояние переключателей настроек бота'},
-					{'command': '</biography set:1251828637473439767>', 'permission': None,
-					'desc': 'Добавить информацию для своей биографии'},
-					{'command': '</biography del:1251828637473439767>', 'permission': None,
-					'desc': 'Удалить информацию из своей биографии'},
-				]
-				list_cmds_moderation = [
-					{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
-					'desc': 'Временная блокировка разрешений писать/подключаться в чат/войс'},
-					{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
-					'desc': 'Отменить блокировку разрешений писать/подключаться в чат/войс'},
-					{'command': '</mute:1251497656266526730>',           'permission': interaction.user.guild_permissions.mute_members,
-					'desc': 'Замутить юзера'},
-					{'command': '</unmute:1251497656266526731>',         'permission': interaction.user.guild_permissions.mute_members,
-					'desc': 'Размьютить юзера'},
-					{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
-					'desc': 'Забанить юзера'}
-				]
+				list_cmds_info = get_commands_list(interaction, 'info')
+				list_cmds_fun = get_commands_list(interaction, 'fun')
+				list_cmds_settings = get_commands_list(interaction, 'settings')
+				list_cmds_moderation = get_commands_list(interaction, 'moderation')
 
 				"""
 				filtered_list_cmds_info = [cmd for cmd in list_cmds_info if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
@@ -401,12 +368,12 @@ class Info(commands.Cog):
 			await interaction.edit_original_response(content = e)
 	
 	@app_commands.command(
-		name = "panel",
+		name = "dashboard",
 		description = "Панель управления настройками бота"
 	)
 	@app_commands.checks.has_permissions(administrator = True)
 	@app_commands.default_permissions(administrator = True)
-	async def panel(self, interaction: discord.Interaction):
+	async def dashboard(self, interaction: discord.Interaction):
 		try:
 			modules_on = []
 			modules_off = []
@@ -429,12 +396,18 @@ class Info(commands.Cog):
 					'<:switch_off:818125535951323177> ' + modules_off_str
 				])
 			)
+			economy_data = cspl_get_param(interaction, "g", "lvls", "economy")
+			first_lvl = economy_data[0]['lvl']
+			first_lvl_xp = economy_data[0]['xp']
+			last_lvl = economy_data[-1]['lvl']
+			last_lvl_xp = economy_data[-1]['xp']
+			level_range = f'`{first_lvl}ур. ({first_lvl_xp}{cspl_get_param(interaction, "g", "xpName", "economy")[0]})` → `{last_lvl}ур. ({last_lvl_xp}{cspl_get_param(interaction, "g", "xpName", "economy")[0]})`'
+			
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
-					f'**Уровни:** `{cspl_get_param(interaction, "g", "lvls", "economy")}`',
-					f'**Опыт за сообщение:** `{cspl_get_param(interaction, "g", "xpAdd", "economy")}`',
-					f'**Кулдаун:** `{cspl_get_param(interaction, "g", "xpAddCooldown", "economy")} секунд`'
+					f'**Уровни:** {level_range}',
+					f'**Выдача** `{cspl_get_param(interaction, "g", "xpName", "economy")[0]}` **за сообщение:** `{cspl_get_param(interaction, "g", "xpAdd", "economy")}{cspl_get_param(interaction, "g", "xpName", "economy")[0]} / {cspl_get_param(interaction, "g", "xpAddCooldown", "economy")} сек.`',
 				]),
 				inline=False
 			)
@@ -582,6 +555,43 @@ class Info(commands.Cog):
 					f"**Город:** Залупа",
 				]), inline = False)
 			#emb.add_field(name = 'Статус', value = status)
+
+			def find_current_level_xp(xp):
+				economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+				current_level = cspl_get_param(interaction, 'u', 'lvl', 'economy')
+				next_level = cspl_get_param(interaction, 'u', 'lvl', 'economy') + 1
+
+				for i in range(1, len(economy_levels)):
+					if xp >= economy_levels[i]["xp"]:
+						current_level = economy_levels[i]["lvl"]
+						next_level = economy_levels[i + 1]["lvl"]
+
+				current_xp = economy_levels[current_level - 1]["xp"]
+				next_xp = economy_levels[next_level - 1]["xp"]
+
+				percent_to_next_level = int(((xp - current_xp) / (next_xp - current_xp)) * 100)
+
+				return current_level, next_level, percent_to_next_level
+			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy'))
+
+			progress_bar_length = 10
+			filled_blocks = int(percent_to_next_level / 100 * progress_bar_length)
+			empty_blocks = progress_bar_length - filled_blocks
+
+			progress_bar = f"[{'▰' * filled_blocks}{'═' * empty_blocks}]"
+
+			economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+			current_xp_needed = economy_levels[current_level - 1]["xp"]
+			next_xp_needed = economy_levels[next_level - 1]["xp"]
+
+			emb.add_field(
+				name = "Экономика",
+				value = '\n'.join([
+					f"**Уровень:**\n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`",
+					f"**{cspl_get_param(interaction, 'g', 'xpName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'xp', 'economy')}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}`",
+					f"**{cspl_get_param(interaction, 'g', 'coinsName', 'economy')}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy')}`"
+				])
+			)
 			emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
 			emb.add_field(name = 'В Discord', value = user.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
 			emb.add_field(name = 'На сервере', value = user.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
@@ -589,7 +599,7 @@ class Info(commands.Cog):
 			emb.timestamp = datetime.now()
 			if user.id == 980175834373562439:
 				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=66704425&is=666ef2a5&hm=6fbe760673a386e62f00964be5c1422cf6df10cb6dd8da2a4cccd37a5d3fbdae&')
-				emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1252359093440479242/6dtr5mSE000.png?ex=6671edcb&is=66709c4b&hm=dc6d926cb4f6f737b07031cf64c425eeded60d4295757481bdfcde79d491b344&')
+				emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=6678d5e5&is=66778465&hm=84845127e2c75af4dbcb1058a483656704885ba47f8f045646f1c236443135ca&')
 				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1221372466350522368/D82A2342.jpg?ex=667142bf&is=666ff13f&hm=7cd87d621f9cb941e5d301b9abbd3f4a914873d9faa9fdad53b731705002bc41&')
 				#emb.set_image(url = "attachment://.db/content/owner/wlp1.jpeg")
 			else:

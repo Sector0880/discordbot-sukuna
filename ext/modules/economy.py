@@ -44,7 +44,7 @@ class Economy(commands.Cog):
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"] = {}
 		if 'xp' not in custom_users[str(message.author.id)][str(message.guild.id)]["economy"]:
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['xp'] = xp_add
-			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['lvl'] = 0
+			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['lvl'] = 1
 		else:
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['xp'] += xp_add
 
@@ -71,21 +71,22 @@ class Economy(commands.Cog):
 		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii = False, indent = 4)
 
 
-	async def start_economy_count(self, message):
+	async def start_economy_count(self, message: discord.Message):
 		await self.append_economy_xp(message)
 		
 		u_xp = dbVars.cspl_get_param(message, 'u', 'xp', 'economy')
+		u_lvl = dbVars.cspl_get_param(message, 'u', 'lvl', 'economy')
 		lvls_list = dbVars.cspl_get_param(message, 'g', 'lvls', 'economy')
 
 		for level_data in lvls_list:
-			if u_xp == level_data['xp']:
-				coins = level_data['award']
+			if u_xp >= level_data['xp'] and u_lvl < level_data['lvl']:
+				coins = level_data['coins']
 				lvl = level_data['lvl']
 				self.add_econony_lvl_and_coins(message, lvl, coins)
-				await message.channel.send(f"ура! вы достигли {lvl}-ого уровня! Вы получаете {coins} монеток))")
+				await message.channel.send(f"{message.author.mention} ура! вы достигли {lvl}-ого уровня! Вы получаете {coins} монеток))")
 
 	@commands.Cog.listener()
-	async def on_message(self, message):
+	async def on_message(self, message: discord.Message):
 		try:
 			if message.author.bot: return
 			await self.start_economy_count(message)
