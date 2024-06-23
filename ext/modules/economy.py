@@ -52,7 +52,7 @@ class Economy(commands.Cog):
 
 		self.xp_cooldown[message.author.id][message.guild.id] = current_time
 	
-	def add_econony_lvl_and_coins(self, message, lvl: int, coins: int):
+	def add_econony_lvl_and_coins(self, message, lvl: int, coins: int = None):
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
 		if str(message.author.id) not in custom_users:
 			custom_users[str(message.author.id)] = {}
@@ -64,9 +64,12 @@ class Economy(commands.Cog):
 		
 		custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['lvl'] = lvl
 		
-		if 'coins' not in custom_users[str(message.author.id)][str(message.guild.id)]["economy"]:
-			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['coins'] = coins
-		else: custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['coins'] += coins
+		if coins:
+			if 'coins' in custom_users[str(message.author.id)][str(message.guild.id)]["economy"]:
+				if 'coins' in custom_users[str(message.author.id)][str(message.guild.id)]["economy"] == 0:
+					custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['coins'] = coins
+					print('типооо')
+				custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['coins'] += coins
 
 		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii = False, indent = 4)
 
@@ -80,10 +83,11 @@ class Economy(commands.Cog):
 
 		for level_data in lvls_list:
 			if u_xp >= level_data['xp'] and u_lvl < level_data['lvl']:
-				coins = level_data['coins']
+				if level_data['coins']:
+					coins = level_data['coins']
 				lvl = level_data['lvl']
-				self.add_econony_lvl_and_coins(message, lvl, coins)
-				await message.channel.send(f"{message.author.mention} ура! вы достигли {lvl}-ого уровня! Вы получаете {coins} монеток))")
+				self.add_econony_lvl_and_coins(message, lvl, coins if level_data['coins'] else None)
+				await message.channel.send(f"{message.author.mention} ура! вы достигли {lvl}-ого уровня!" + f" Вы получаете {coins} монеток))" if level_data['coins'] else None)
 
 	@commands.Cog.listener()
 	async def on_message(self, message: discord.Message):

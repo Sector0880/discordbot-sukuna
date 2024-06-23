@@ -17,8 +17,8 @@ from botFunctions import *
 import botConfig
 
 locale.setlocale(
-    category=locale.LC_ALL,
-    locale="Russian"  # Note: do not use "de_DE" as it doesn't work
+	category=locale.LC_ALL,
+	locale="Russian"  # Note: do not use "de_DE" as it doesn't work
 )
 
 def get_commands_list(interaction: discord.Interaction, category):
@@ -78,7 +78,7 @@ def get_commands_list(interaction: discord.Interaction, category):
 
 class CmdHelp_CategoryList(discord.ui.View):
 	def __init__(self, bot: commands.Bot):
-		super().__init__()
+		super().__init__(timeout=None)
 		self.bot = bot
 	
 	@discord.ui.select(placeholder="Выберите категорию...", options= [
@@ -146,8 +146,10 @@ class CmdHelp_CategoryList(discord.ui.View):
 			emb.color = 0x2b2d31
 			emb.set_thumbnail(url = self.bot.user.avatar)
 			await interaction.response.send_message(embed = emb, ephemeral = True)
+		except discord.InteractionResponded:
+			await interaction.response.send_message("Это взаимодействие устарело. Пожалуйста, повторите команду.", ephemeral=True)
 		except Exception as e:
-			await interaction.response.send_message(repr(e))
+			await interaction.response.send_message(f"Произошла ошибка: {repr(e)}", ephemeral=True)
 
 class PanelDialogs(discord.ui.View):
 	def __init__(self, bot: commands.Bot):
@@ -185,12 +187,19 @@ class PanelDialogs(discord.ui.View):
 			])
 			await interaction.response.send_message(content = txt, embed = emb, ephemeral = True)
 			#interaction.message.view.stop() должно скрывать кнопку после нажатия но не скрывает
+		except discord.InteractionResponded:
+			await interaction.response.send_message("Это взаимодействие устарело. Пожалуйста, повторите команду.", ephemeral=True)
 		except Exception as e:
-			await interaction.response.send_message(repr(e), ephemeral = True)
+			await interaction.response.send_message(f"Произошла ошибка: {repr(e)}", ephemeral=True)
 	
 	@discord.ui.button(label="Экономика", style=discord.ButtonStyle.gray)
 	async def ecomony(self, interaction: discord.Interaction, button: discord.ui.Button):
-		await interaction.response.send_message("Скоро", ephemeral=True)
+		try:
+			await interaction.response.send_message("Скоро", ephemeral=True)
+		except discord.InteractionResponded:
+			await interaction.response.send_message("Это взаимодействие устарело. Пожалуйста, повторите команду.", ephemeral=True)
+		except Exception as e:
+			await interaction.response.send_message(f"Произошла ошибка: {repr(e)}", ephemeral=True)
 
 class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
@@ -397,6 +406,7 @@ class Info(commands.Cog):
 				])
 			)
 			economy_data = cspl_get_param(interaction, "g", "lvls", "economy")
+			economy_data.insert(0, {"lvl": 1, "xp": 0})
 			first_lvl = economy_data[0]['lvl']
 			first_lvl_xp = economy_data[0]['xp']
 			last_lvl = economy_data[-1]['lvl']
@@ -556,22 +566,29 @@ class Info(commands.Cog):
 				]), inline = False)
 			#emb.add_field(name = 'Статус', value = status)
 
+			economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+			economy_levels.insert(0, {"lvl": 1, "xp": 0})
+
 			def find_current_level_xp(xp):
-				economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
 				current_level = cspl_get_param(interaction, 'u', 'lvl', 'economy')
-				next_level = cspl_get_param(interaction, 'u', 'lvl', 'economy') + 1
+				next_level = current_level + 1
 
 				for i in range(1, len(economy_levels)):
 					if xp >= economy_levels[i]["xp"]:
 						current_level = economy_levels[i]["lvl"]
-						next_level = economy_levels[i + 1]["lvl"]
+						if i + 1 < len(economy_levels):
+							next_level = economy_levels[i + 1]["lvl"]
+						else:
+							next_level = None  # Нет следующего уровня
 
 				current_xp = economy_levels[current_level - 1]["xp"]
-				next_xp = economy_levels[next_level - 1]["xp"]
-
-				percent_to_next_level = int(((xp - current_xp) / (next_xp - current_xp)) * 100)
-
+				if next_level is not None:
+					next_xp = economy_levels[next_level - 1]["xp"]
+					percent_to_next_level = int(((xp - current_xp) / (next_xp - current_xp)) * 100)
+				else:
+					percent_to_next_level = 100  # Достигнут максимальный уровень
 				return current_level, next_level, percent_to_next_level
+
 			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy'))
 
 			progress_bar_length = 10
@@ -580,16 +597,19 @@ class Info(commands.Cog):
 
 			progress_bar = f"[{'▰' * filled_blocks}{'═' * empty_blocks}]"
 
-			economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
 			current_xp_needed = economy_levels[current_level - 1]["xp"]
-			next_xp_needed = economy_levels[next_level - 1]["xp"]
+			if next_level is not None:
+				next_xp_needed = economy_levels[next_level - 1]["xp"]
+				economy_lvl_txt = f"**Уровень:** \n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`"
+			else:
+				economy_lvl_txt = f"**Уровень:** \n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `Макс. уровень достигнут`"
 
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
-					f"**Уровень:**\n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`",
+					economy_lvl_txt,
 					f"**{cspl_get_param(interaction, 'g', 'xpName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'xp', 'economy')}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}`",
-					f"**{cspl_get_param(interaction, 'g', 'coinsName', 'economy')}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy')}`"
+					f"**{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy')}{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[0]}`"
 				])
 			)
 			emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
@@ -674,4 +694,42 @@ elif user_status == discord.Status.do_not_disturb:
 	status = '<a:mark_none:815121643479236618> Не беспокоить'
 else:
 	status = '<:offline:748149539915038731> Не в сети'
+
+	
+def find_current_level_xp(xp):
+				economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+				current_level = cspl_get_param(interaction, 'u', 'lvl', 'economy')
+				next_level = cspl_get_param(interaction, 'u', 'lvl', 'economy') + 1
+
+				for i in range(1, len(economy_levels)):
+					if xp >= economy_levels[i]["xp"]:
+						current_level = economy_levels[i]["lvl"]
+						next_level = economy_levels[i + 1]["lvl"]
+
+				current_xp = economy_levels[current_level - 1]["xp"]
+				next_xp = economy_levels[next_level - 1]["xp"]
+
+				percent_to_next_level = int(((xp - current_xp) / (next_xp - current_xp)) * 100)
+
+				return current_level, next_level, percent_to_next_level
+			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy'))
+
+			progress_bar_length = 10
+			filled_blocks = int(percent_to_next_level / 100 * progress_bar_length)
+			empty_blocks = progress_bar_length - filled_blocks
+
+			progress_bar = f"[{'▰' * filled_blocks}{'═' * empty_blocks}]"
+
+			economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+			current_xp_needed = economy_levels[current_level - 1]["xp"]
+			next_xp_needed = economy_levels[next_level - 1]["xp"]
+
+			emb.add_field(
+				name = "Экономика",
+				value = '\n'.join([
+					f"**Уровень:** \n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`",
+					f"**{cspl_get_param(interaction, 'g', 'xpName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'xp', 'economy')}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}`",
+					f"**{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy')}{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[0]}`"
+				])
+			)
 """

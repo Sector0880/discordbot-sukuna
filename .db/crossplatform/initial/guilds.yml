@@ -51,12 +51,12 @@ premium:
 economy:
   lvls:
     [
-    {lvl: 1, xp: 0}, 
     {lvl: 2, xp: 100, coins: 400},
     {lvl: 3, xp: 200, coins: 800},
-    {lvl: 4, xp: 500, coins: 2000}
+    {lvl: 4, xp: 500, coins: 2000},
+    {lvl: 5, xp: 600, coins: 2000}
     ]
   xpAdd: 8
-  xpAddCooldown: 7
+  xpAddCooldown: 1
   xpName: ["xp", "Опыт"]
-  coinsName: "Монетки"
+  coinsName: ["cns", "Монетки"]

@@ -1,11 +1,11 @@
 all:
-  use: 0
-  success: 0
+  use: 1
+  success: 1
   lose: 0
   error: 0
 repeat:
-  use: 0
-  success: 0
+  use: 1
+  success: 1
   lose: 0
   error: 0
 time:

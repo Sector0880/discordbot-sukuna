@@ -9,7 +9,7 @@ from botFunctions import *
 
 class RepeatCancel(discord.ui.View):
 	def __init__(self):
-		super().__init__()
+		super().__init__(timeout=60)
 		self.cancelled = False
 	
 	@discord.ui.button(label="Отменить", style=discord.ButtonStyle.gray)
@@ -21,10 +21,10 @@ class RepeatCancel(discord.ui.View):
 
 class DialogCancel(discord.ui.View):
 	def __init__(self):
-		super().__init__()
+		super().__init__(timeout=60)
 		self.cancelled = False
 	
-	@discord.ui.button(label="Прекратить", style=discord.ButtonStyle.gray)
+	@discord.ui.button(label="Остановить", style=discord.ButtonStyle.gray)
 	async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
 		self.cancelled = True
 		await interaction.response.send_message('Диалог прекращен.', ephemeral=False)
@@ -42,7 +42,7 @@ class ForADA(commands.Cog):
 			# проверки
 			if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения
 			if channel is None: 
-				#await ctx.message.add_reaction('❌')
+				await ctx.message.add_reaction('❌')
 				return await ctx.send("❌ Напиши id чата вместе с командой.\n```!rp [id чата]```") # на наличие channel_id
 			if not isinstance(channel, int) and not channel.isdigit(): # слава богам всевышним что пока этот try except работает, раньше команда и без него нормально выводила ошибку если написано str но ожидали int, но чтото сломалось и пизда
 				return await ctx.send("Я понимаю только id чата, не ссылку или имя, ID!") # на тип channel_id
