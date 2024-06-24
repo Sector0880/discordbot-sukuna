@@ -20,9 +20,10 @@ class Economy(commands.Cog):
 
 		self.xp_cooldown = {}
 	
-	async def append_economy_xp(self, message):
+	async def append_economy_xp_coins(self, message):
 		xp_add = dbVars.cspl_get_param(message, 'g', 'xpAdd', 'economy')
-		xp_add_cooldown = dbVars.cspl_get_param(message, 'g', 'xpAddCooldown', 'economy')
+		coins_add = dbVars.cspl_get_param(message, 'g', 'coinsAdd', 'economy')
+		add_cooldown = dbVars.cspl_get_param(message, 'g', 'addCooldown', 'economy')
 
 		current_time = datetime.datetime.now()
 
@@ -32,7 +33,7 @@ class Economy(commands.Cog):
 		if message.guild.id not in self.xp_cooldown[message.author.id]:
 			self.xp_cooldown[message.author.id][message.guild.id] = datetime.datetime.min
 		
-		if (current_time - self.xp_cooldown[message.author.id][message.guild.id]).total_seconds() < xp_add_cooldown:
+		if (current_time - self.xp_cooldown[message.author.id][message.guild.id]).total_seconds() < add_cooldown:
 			return
 
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
@@ -47,6 +48,11 @@ class Economy(commands.Cog):
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['lvl'] = 1
 		else:
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['xp'] += xp_add
+		
+		if 'coins' not in custom_users[str(message.author.id)][str(message.guild.id)]["economy"]:
+			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['coins'] = coins_add
+		else:
+			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['coins'] += coins_add
 
 		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
 
@@ -75,7 +81,7 @@ class Economy(commands.Cog):
 
 
 	async def start_economy_count(self, message: discord.Message):
-		await self.append_economy_xp(message)
+		await self.append_economy_xp_coins(message)
 		
 		u_xp = dbVars.cspl_get_param(message, 'u', 'xp', 'economy')
 		u_lvl = dbVars.cspl_get_param(message, 'u', 'lvl', 'economy')

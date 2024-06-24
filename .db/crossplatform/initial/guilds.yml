@@ -51,12 +51,38 @@ premium:
 economy:
   lvls:
     [
-    {lvl: 2, xp: 100, coins: 400},
-    {lvl: 3, xp: 200, coins: 800},
-    {lvl: 4, xp: 500, coins: 2000},
-    {lvl: 5, xp: 600, coins: 2000}
+    {lvl: 2, xp: 120, coins: 500},
+    {lvl: 3, xp: 240, coins: 1000},
+    {lvl: 4, xp: 480, coins: 2500},
+    {lvl: 5, xp: 720, coins: 2500},
+    {lvl: 6, xp: 1000, coins: 3000},
+    {lvl: 7, xp: 1200, coins: 3500},
+    {lvl: 8, xp: 1440, coins: 4000},
+    {lvl: 9, xp: 1680, coins: 4500},
+    {lvl: 10, xp: 1920, coins: 5000},
+    {lvl: 11, xp: 2160, coins: 5500},
+    {lvl: 12, xp: 2400, coins: 6000},
+    {lvl: 13, xp: 2640, coins: 6500},
+    {lvl: 14, xp: 2880, coins: 7000},
+    {lvl: 15, xp: 3120, coins: 7500},
+    {lvl: 16, xp: 3360, coins: 8000},
+    {lvl: 17, xp: 3600, coins: 8500},
+    {lvl: 18, xp: 3840, coins: 9000},
+    {lvl: 19, xp: 4080, coins: 9500},
+    {lvl: 20, xp: 4320, coins: 10000},
+    {lvl: 21, xp: 4560, coins: 10500},
+    {lvl: 22, xp: 4800, coins: 11000},
+    {lvl: 23, xp: 5040, coins: 11500},
+    {lvl: 24, xp: 5280, coins: 12000},
+    {lvl: 25, xp: 5520, coins: 12500},
+    {lvl: 26, xp: 5760, coins: 13000},
+    {lvl: 27, xp: 6000, coins: 13500},
+    {lvl: 28, xp: 6240, coins: 14000},
+    {lvl: 29, xp: 6480, coins: 14500},
+    {lvl: 30, xp: 6720, coins: 15000}
     ]
   xpAdd: 8
-  xpAddCooldown: 1
+  coinsAdd: 0
+  addCooldown: 7
   xpName: ["xp", "Опыт"]
   coinsName: ["cns", "Монетки"]
