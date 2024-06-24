@@ -417,7 +417,7 @@ class Info(commands.Cog):
 				name = "Экономика",
 				value = '\n'.join([
 					f'**Уровни:** {level_range}',
-					f'**Награда за сообщение:** `{cspl_get_param(interaction, "g", "xpAdd", "economy")}{cspl_get_param(interaction, "g", "xpName", "economy")[0]}, {cspl_get_param(interaction, "g", "coinsAdd", "economy")}{cspl_get_param(interaction, "g", "coinsName", "economy")[0]} / {cspl_get_param(interaction, "g", "addCooldown", "economy")} сек.`',
+					f'**Награда за сообщение:** `{cspl_get_param(interaction, "g", "msgAward", "economy")["xp"]}{cspl_get_param(interaction, "g", "xpName", "economy")[0]}, {cspl_get_param(interaction, "g", "msgAward", "economy")["coins"]}{cspl_get_param(interaction, "g", "coinsName", "economy")[0]} / {cspl_get_param(interaction, "g", "msgAward", "economy")["cooldown"]} сек.`',
 				]),
 				inline=False
 			)

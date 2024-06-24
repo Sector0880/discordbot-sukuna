@@ -44,8 +44,10 @@ modules:
     name: "Экономика"
     events:
       start_economy_count: true
-  audit: false
-  music: false
+  audit:
+    status: false
+  music:
+    status: false
 premium:
   status: true
 economy:
@@ -81,8 +83,9 @@ economy:
     {lvl: 29, xp: 6480, coins: 14500},
     {lvl: 30, xp: 6720, coins: 15000}
     ]
-  xpAdd: 8
-  coinsAdd: 0
-  addCooldown: 7
+  msgAward:
+    xp: 5
+    coins: 3
+    cooldown: 1
   xpName: ["xp", "Опыт"]
   coinsName: ["cns", "Монетки"]
