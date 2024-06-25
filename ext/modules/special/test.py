@@ -67,7 +67,7 @@ class Test(commands.Cog):
 
 	@commands.command()
 	@commands.is_owner()
-	async def t(self, ctx):
+	async def t(self, ctx: discord.Message):
 		try:
 			em = discord.Embed(
 				title="Слеш команды",
@@ -79,7 +79,8 @@ class Test(commands.Cog):
 							value=slash_command.description if slash_command.description else slash_command.name, 
 							inline=False) 
 			#await ctx.send(embed = em)
-			await ctx.send(cspl_get_param(ctx, 'u', 'xp', 'economy'))
+
+			print(cspl_get_param(ctx, 'g', 'prefix', None, None, None, ['path1', 'path2']))
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:

@@ -25,32 +25,32 @@ def get_commands_list(interaction: discord.Interaction, category):
 	if category == 'info':
 		return [
 			{'command': '</help:1250144368837529692>',              'permission': None,
-			'desc': 'Получить информацию о командах бота'},
+			'desc': 'Информация о командах бота'},
 			{'command': '</ping:1249321143983145034>',              'permission': None,
-			'desc': 'Узнать время отклика бота'},
+			'desc': 'Время отклика бота'},
 			{'command': '</dashboard:1254395126633992233>',  'permission': interaction.user.guild_permissions.administrator,
 			'desc': 'Панель управления настройками бота'},
 			{'command': '</about:1250159784683114496>',             'permission': None,
-			'desc': 'Получить информацию о боте'},
+			'desc': 'Информация о боте'},
 			{'command': '</serverinfo:1250362239341301760>',        'permission': None,
-			'desc': 'Получить информацию о сервере'},
+			'desc': 'Информация о сервере'},
 			{'command': '</member:1251828637473439765>',        'permission': None,
-			'desc': 'Показать информацию об участнике'},
+			'desc': 'Информация об участнике'},
 			{'command': '</avatar:1249321144469950546>',            'permission': None,
-			'desc': 'Получить аватарку юзера'},
+			'desc': 'Аватарка участника сервера'},
 			{'command': '</myowner:1250743777077755915>',           'permission': None,
 			'desc': 'А сейчас о моем разработчике))'},
 		]
 	elif category == 'fun':
 		return [
 			{'command': '</time:1250150935280357376>',              'permission': None,
-			'desc': 'Узнать время'},
+			'desc': 'Время'},
 			{'command': '</fact:1250150935280357377>',              'permission': None,
 			'desc': 'Рандомный факт'},
 			{'command': '</battle:1250720060344107019>',            'permission': None,
-			'desc': 'У кого сильнее удача?'},
+			'desc': 'Батл с участником сервера'},
 			{'command': '</opinion:1251281683001643139>',           'permission': None,
-			'desc': 'Мнение бота о чем-либо'}
+			'desc': 'Мнение бота'}
 		]
 	elif category == 'settings':
 		return [
@@ -226,7 +226,7 @@ class Info(commands.Cog):
 	
 	@app_commands.command(
 		name = "help",
-		description = "Получить информацию о командах бота",
+		description = "Информация о командах бота",
 	)
 	@app_commands.choices(
 		command = [
@@ -370,7 +370,7 @@ class Info(commands.Cog):
 	
 	@app_commands.command(
 		name = 'ping',
-		description = 'Узнать время отклика бота'
+		description = 'Время отклика бота'
 	)
 	async def ping(self, interaction: discord.Interaction):
 		try:
@@ -460,7 +460,7 @@ class Info(commands.Cog):
 	# Получить детальную информацию о боте
 	@app_commands.command(
 		name = "about",
-		description = 'Получить информацию о боте'
+		description = 'Информация о боте'
 	)
 	async def about(self, interaction: discord.Interaction):
 		try:
@@ -476,8 +476,8 @@ class Info(commands.Cog):
 			creators = '\n'.join([
 				f'<@{creator}>' for creator in sf_c()
 			])
-			#emb.add_field(name = 'Разработчик', value = f'<@980175834373562439>', inline=True)
-			emb.add_field(name = 'Создатели', value = creators, inline=True)
+			emb.add_field(name = 'Разработчик', value = f'<@980175834373562439>', inline=True)
+			#emb.add_field(name = 'Создатели', value = creators, inline=True)
 			emb.add_field(name = 'Серверы', value = f'{str(guilds)}', inline=True)
 			emb.add_field(name = 'Юзеры', value = f'{members}', inline=True)
 
@@ -546,7 +546,7 @@ class Info(commands.Cog):
 	
 	@app_commands.command(
 		name = "serverinfo",
-		description="Получить информацию о сервере"
+		description="Информация о сервере"
 	)
 	async def serverinfo(self, interaction: discord.Interaction):
 		try:
@@ -556,7 +556,7 @@ class Info(commands.Cog):
 	
 	@app_commands.command(
 		name = "member",
-		description = 'Показать информацию об участнике'
+		description = 'Информация об участнике'
 	)
 	async def member(self, interaction: discord.Interaction, member: discord.Member = None):
 		try:
@@ -630,15 +630,16 @@ class Info(commands.Cog):
 			filled_blocks = int(percent_to_next_level / 100 * progress_bar_length)
 			empty_blocks = progress_bar_length - filled_blocks
 
-			progress_bar = f"[{'▰' * filled_blocks}{'═' * empty_blocks}]"
+			#progress_bar = f"\n`[{'▰' * filled_blocks}{'═' * empty_blocks}]{percent_to_next_level:02d}%`"
+			progress_bar = ''
 			#progress_bar = f"[{'▰' * filled_blocks}{'▱' * empty_blocks}]"
 
 			current_xp_needed = economy_levels[current_level - 1]["xp"]
 			if next_level is not None:
 				next_xp_needed = economy_levels[next_level - 1]["xp"]
-				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` \n`{progress_bar}{percent_to_next_level:02d}%` \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}` до `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`"
+				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` {progress_bar} \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}` до `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`"
 			else:
-				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` \n`{progress_bar}{percent_to_next_level:02d}%` \n`Макс. уровень достигнут`"
+				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` {progress_bar} \n`Макс. уровень достигнут`"
 
 			emb.add_field(
 				name = "Экономика",
@@ -648,8 +649,18 @@ class Info(commands.Cog):
 				])
 			)
 			emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
-			emb.add_field(name = 'В Discord', value = user.created_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
-			emb.add_field(name = 'На сервере', value = user.joined_at.strftime('**Дата:** %d/%m/%Y\n**Время:** %H:%M:%S'))
+			# Время создания пользователя в Discord
+			created_at_timestamp = int(interaction.user.created_at.timestamp())
+			emb.add_field(
+				name = 'В Discord', 
+				value = f'**Дата:** <t:{created_at_timestamp}:d>\n**Время:** <t:{created_at_timestamp}:T>'
+			)
+			# Время присоединения пользователя к серверу
+			joined_at_timestamp = int(interaction.user.joined_at.timestamp())
+			emb.add_field(
+				name = 'На сервере', 
+				value = f'**Дата:** <t:{joined_at_timestamp}:d>\n**Время:** <t:{joined_at_timestamp}:T>'
+			)
 			emb.set_footer(text = f'ID: {user.id}')
 			emb.timestamp = datetime.now()
 			if user.id == 980175834373562439:
@@ -670,7 +681,7 @@ class Info(commands.Cog):
 	
 	@app_commands.command(
 		name = "avatar",
-		description = 'Получить аватарку юзера'
+		description = 'Аватарка участника сервера'
 	)
 	async def avatar(self, interaction: discord.Interaction, user: discord.Member = None):
 		try:

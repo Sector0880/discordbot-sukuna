@@ -36,7 +36,7 @@ class ForADA(commands.Cog):
 		self.bot = bot
 	
 	@commands.command(aliases = ["повтори", "п", "rp"])
-	async def repeat(self, ctx, channel = None):
+	async def repeat(self, ctx: discord.Message, channel = None):
 		try:
 			add_command_usage_counter(ctx, 1)
 			# проверки
@@ -72,7 +72,7 @@ class ForADA(commands.Cog):
 			add_command_usage_counter(ctx, 3)
 	
 	@commands.command(aliases = ['dg', 'диалог'])
-	async def dialog(self, ctx, channel = None):
+	async def dialog(self, ctx: discord.Message, channel = None):
 		try:
 			# проверки
 			if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения
@@ -100,7 +100,7 @@ class ForADA(commands.Cog):
 			await ctx.send(e)
 
 	@commands.Cog.listener()
-	async def on_member_join(self, member):
+	async def on_member_join(self, member: discord.Member):
 		channel_id = 1051768599930482728  # ID канала, в который бот будет отправлять сообщение
 		channel = self.bot.get_channel(channel_id)
 

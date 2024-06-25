@@ -87,5 +87,5 @@ economy:
     xp: 8
     coins: 3
     cooldown: 7
-  xpName: ["xp", "Опыт"]
-  coinsName: ["cns", "Монетки"]
+  xpName: ["curen", "Проклятая энергия"]
+  coinsName: ["grb", "Гербы магической школы"]

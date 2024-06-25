@@ -17,7 +17,7 @@ class Fun(commands.Cog):
 	
 	@app_commands.command(
 		name = 'time', 
-		description = 'Узнать время'
+		description = 'Время'
 	)
 	async def time(self, interaction: discord.Interaction):
 		try:
@@ -49,7 +49,7 @@ class Fun(commands.Cog):
 	
 	@app_commands.command(
 		name = "battle",
-		description="У кого сильнее удача?"
+		description="Батл с участником сервера"
 	)
 	@app_commands.describe(
 		member = "Юзер сервера"
@@ -82,7 +82,7 @@ class Fun(commands.Cog):
 	# Мнение
 	@app_commands.command(
 		name = "opinion",
-		description = 'Мнение бота о чем-либо'
+		description = 'Мнение бота'
 	)
 	async def opinion(self, interaction: discord.Interaction, *, arg: str):
 		try:
