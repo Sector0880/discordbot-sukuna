@@ -24,8 +24,8 @@ class Test(commands.Cog):
 			if interaction.user.id not in sf_sp(): return await interaction.response.send_message("Нету прав.")
 
 			def find_current_level_xp(xp, interaction):
-				economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
-				current_level = cspl_get_param(interaction, 'u', 'lvl', 'economy')
+				economy_levels = cspl_get_param(interaction, 'g', 'lvls', ['economy'])
+				current_level = cspl_get_param(interaction, 'u', 'lvl', ['economy'])
 				next_level = current_level + 1
 
 				for i in range(1, len(economy_levels)):
@@ -45,7 +45,7 @@ class Test(commands.Cog):
 
 				return current_level, next_level, percent_to_next_level
 			
-			xp = cspl_get_param(interaction, 'u', 'xp', 'economy')
+			xp = cspl_get_param(interaction, 'u', 'xp', ['economy'])
 			current_level, next_level, percent_to_next_level = find_current_level_xp(xp, interaction)
 
 			progress_bar_length = 10
@@ -54,14 +54,14 @@ class Test(commands.Cog):
 
 			progress_bar = f"[{'▰' * filled_blocks}{'═' * empty_blocks}]"
 
-			economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+			economy_levels = cspl_get_param(interaction, 'g', 'lvls', ['economy'])
 			current_xp_needed = economy_levels[current_level - 1]["xp"]
 			
 			if next_level is not None:
 				next_xp_needed = economy_levels[next_level - 1]["xp"]
-				print(f"**Уровень:** \n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`")
+				print(f"**Уровень:** \n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})`")
 			else:
-				print(f"**Уровень:** \n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `Макс. уровень достигнут`")
+				print(f"**Уровень:** \n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})` `{progress_bar}{percent_to_next_level:02d}%` `Макс. уровень достигнут`")
 		except Exception as e:
 			print(repr(e))
 
@@ -80,7 +80,7 @@ class Test(commands.Cog):
 							inline=False) 
 			#await ctx.send(embed = em)
 
-			print(cspl_get_param(ctx, 'g', 'prefix', None, None, None, ['path1', 'path2']))
+			print(cspl_get_param(ctx, 'g', 'prefix'))
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:

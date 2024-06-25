@@ -24,19 +24,20 @@ cspl_get_param(interaction, 'guilds', 'prefix')
 cspl_get_param(interaction, 'guilds', 'status', 'premium')
 3. Особенности: Идет проверка на наличие кастомного параметра
 """
-def cspl_get_param(interaction, branch, param, path1 = None, path2 = None, user: discord.Member = None):
+def cspl_get_param(interaction, branch, param, path = None, user: discord.Member = None):
+	if path: path_len = len(path)
 	match branch:
 		case 'g':
-			if path1 and path2:
-				if str(interaction.guild.id) in cspl_custom_guilds(interaction).keys() and path1 in cspl_custom_guilds(interaction)[str(interaction.guild.id)].keys() and path2 in cspl_custom_guilds(interaction)[str(interaction.guild.id)][path1].keys() and param in cspl_custom_guilds(interaction)[str(interaction.guild.id)][path1][path2].keys():
-					return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(interaction.guild.id)][path1][path2][param]
+			if path and path_len == 2:
+				if str(interaction.guild.id) in cspl_custom_guilds(interaction).keys() and path[0] in cspl_custom_guilds(interaction)[str(interaction.guild.id)].keys() and path[1] in cspl_custom_guilds(interaction)[str(interaction.guild.id)][path[0]].keys() and param in cspl_custom_guilds(interaction)[str(interaction.guild.id)][path[0]][path[1]].keys():
+					return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(interaction.guild.id)][path[0]][path[1]][param]
 				else:
-					return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))[path1][path2][param]
-			elif path1:
-				if str(interaction.guild.id) in cspl_custom_guilds(interaction).keys() and path1 in cspl_custom_guilds(interaction)[str(interaction.guild.id)].keys() and param in cspl_custom_guilds(interaction)[str(interaction.guild.id)][path1].keys():
-					return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(interaction.guild.id)][path1][param]
+					return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))[path[0]][path[1]][param]
+			elif path and path_len == 1:
+				if str(interaction.guild.id) in cspl_custom_guilds(interaction).keys() and path[0] in cspl_custom_guilds(interaction)[str(interaction.guild.id)].keys() and param in cspl_custom_guilds(interaction)[str(interaction.guild.id)][path[0]].keys():
+					return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(interaction.guild.id)][path[0]][param]
 				else:
-					return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))[path1][param]
+					return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))[path[0]][param]
 			else:
 				if str(interaction.guild.id) in cspl_custom_guilds(interaction).keys() and param in cspl_custom_guilds(interaction)[str(interaction.guild.id)].keys():
 					return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(interaction.guild.id)][param]
@@ -44,16 +45,16 @@ def cspl_get_param(interaction, branch, param, path1 = None, path2 = None, user:
 					return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))[param]
 		case 'u':
 			if user:
-				if path1 and path2:
-					if str(user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(user.id)].keys() and path1 in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)].keys() and path2 in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)][path1].keys() and param in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)][path1][path2].keys():
-						return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(user.id)][str(interaction.guild.id)][path1][path2][param]
+				if path and path_len == 2:
+					if str(user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(user.id)].keys() and path[0] in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)].keys() and path[1] in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)][path[0]].keys() and param in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)][path[0]][path[1]].keys():
+						return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(user.id)][str(interaction.guild.id)][path[0]][path[1]][param]
 					else:
-						return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path1][path2][param]
-				elif path1:
-					if str(user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(user.id)].keys() and path1 in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)].keys() and param in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)][path1].keys():
-						return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(user.id)][str(interaction.guild.id)][path1][param]
+						return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path[0]][path[1]][param]
+				elif path and path_len == 1:
+					if str(user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(user.id)].keys() and path[0] in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)].keys() and param in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)][path[0]].keys():
+						return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(user.id)][str(interaction.guild.id)][path[0]][param]
 					else:
-						return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path1][param]
+						return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path[0]][param]
 				else:
 					if str(user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(user.id)].keys() and param in cspl_custom_users(interaction)[str(user.id)][str(interaction.guild.id)].keys():
 						return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(user.id)][str(interaction.guild.id)][param]
@@ -61,32 +62,32 @@ def cspl_get_param(interaction, branch, param, path1 = None, path2 = None, user:
 						return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[param]
 			else:
 				if type(interaction) == discord.Interaction:
-					if path1 and path2:
-						if str(interaction.user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.user.id)].keys() and path1 in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)].keys() and path2 in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)][path1].keys() and param in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)][path1][path2].keys():
-							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.user.id)][str(interaction.guild.id)][path1][path2][param]
+					if path and path_len == 2:
+						if str(interaction.user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.user.id)].keys() and path[0] in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)].keys() and path[1] in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)][path[0]].keys() and param in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)][path[0]][path[1]].keys():
+							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.user.id)][str(interaction.guild.id)][path[0]][path[1]][param]
 						else:
-							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path1][path2][param]
-					elif path1:
-						if str(interaction.user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.user.id)].keys() and path1 in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)].keys() and param in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)][path1].keys():
-							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.user.id)][str(interaction.guild.id)][path1][param]
+							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path[0]][path[1]][param]
+					elif path and path_len == 1:
+						if str(interaction.user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.user.id)].keys() and path[0] in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)].keys() and param in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)][path[0]].keys():
+							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.user.id)][str(interaction.guild.id)][path[0]][param]
 						else:
-							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path1][param]
+							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path[0]][param]
 					else:
 						if str(interaction.user.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.user.id)].keys() and param in cspl_custom_users(interaction)[str(interaction.user.id)][str(interaction.guild.id)].keys():
 							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.user.id)][str(interaction.guild.id)][param]
 						else:
 							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[param]
 				elif type(interaction) == discord.Message:
-					if path1 and path2:
-						if str(interaction.author.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.author.id)].keys() and path1 in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)].keys() and path2 in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)][path1].keys() and param in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)][path1][path2].keys():
-							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.author.id)][str(interaction.guild.id)][path1][path2][param]
+					if path and path_len == 2:
+						if str(interaction.author.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.author.id)].keys() and path[0] in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)].keys() and path[1] in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)][path[0]].keys() and param in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)][path[0]][path[1]].keys():
+							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.author.id)][str(interaction.guild.id)][path[0]][path[1]][param]
 						else:
-							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path1][path2][param]
-					elif path1:
-						if str(interaction.author.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.author.id)].keys() and path1 in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)].keys() and param in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)][path1].keys():
-							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.author.id)][str(interaction.guild.id)][path1][param]
+							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path[0]][path[1]][param]
+					elif path and path_len == 1:
+						if str(interaction.author.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.author.id)].keys() and path[0] in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)].keys() and param in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)][path[0]].keys():
+							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.author.id)][str(interaction.guild.id)][path[0]][param]
 						else:
-							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path1][param]
+							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[path[0]][param]
 					else:
 						if str(interaction.author.id) in cspl_custom_users(interaction).keys() and str(interaction.guild.id) in cspl_custom_users(interaction)[str(interaction.author.id)].keys() and param in cspl_custom_users(interaction)[str(interaction.author.id)][str(interaction.guild.id)].keys():
 							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.author.id)][str(interaction.guild.id)][param]

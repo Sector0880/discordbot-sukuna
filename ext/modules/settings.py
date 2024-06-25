@@ -79,11 +79,11 @@ class Biography(commands.GroupCog, name = "biography"):
 			emb = discord.Embed(
 				title = "Успешно",
 				description = f"Вы изменили свои данные в биографии:\n" + '\n'.join([
-					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'about', 'biography', None, interaction.user) else "**О себе:** `нету`",
-					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'age', 'biography', None, interaction.user) else "**Возраст:** `нету`",
-					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'city', 'biography', None, interaction.user) else "**Город:** `нету`",
-					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', 'biography', None, interaction.user) else "**VK:** `нету`",
-					f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'tg', 'biography', None, interaction.user) else "**TG:** `нету`",
+					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'about', ['biography'], interaction.user) else "**О себе:** `нету`",
+					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user) else "**Возраст:** `нету`",
+					f"**Город:** {cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user) else "**Город:** `нету`",
+					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user) else "**VK:** `нету`",
+					f"**TG:** {cspl_get_param(interaction, 'u', 'tg', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'tg', ['biography'], interaction.user) else "**TG:** `нету`",
 				]),
 				color=discord.Color.green()
 			)
@@ -127,11 +127,11 @@ class Biography(commands.GroupCog, name = "biography"):
 			emb = discord.Embed(
 				title = "Успешно",
 				description = f"Вы удалили свои данные из биографии:\n" + '\n'.join([
-					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'about', 'biography', None, interaction.user) else "**О себе:** `нету`",
-					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'age', 'biography', None, interaction.user) else "**Возраст:** `нету`",
-					f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'city', 'biography', None, interaction.user) else "**Город:** `нету`",
-					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', 'biography', None, interaction.user) else "**VK:** `нету`",
-					f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', None, interaction.user)}" if cspl_get_param(interaction, 'u', 'tg', 'biography', None, interaction.user) else "**TG:** `нету`",
+					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'about', ['biography'], interaction.user) else "**О себе:** `нету`",
+					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user) else "**Возраст:** `нету`",
+					f"**Город:** {cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user) else "**Город:** `нету`",
+					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user) else "**VK:** `нету`",
+					f"**TG:** {cspl_get_param(interaction, 'u', 'tg', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'tg', ['biography'], interaction.user) else "**TG:** `нету`",
 				]),
 				color=discord.Color.green()
 			)

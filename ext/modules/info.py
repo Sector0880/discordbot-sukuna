@@ -244,13 +244,6 @@ class Info(commands.Cog):
 				list_cmds_moderation = get_commands_list(interaction, 'moderation')
 				list_cmds_economy = get_commands_list(interaction, 'economy')
 
-				"""
-				filtered_list_cmds_info = [cmd for cmd in list_cmds_info if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
-				filtered_list_cmds_fun = [cmd for cmd in list_cmds_fun if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
-				filtered_list_cmds_settings = [cmd for cmd in list_cmds_settings if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
-				filtered_list_cmds_moderation = [cmd for cmd in list_cmds_moderation if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
-				"""
-				# исправленный парс доступных команд
 				filtered_list_cmds_info = []
 				filtered_list_cmds_fun = []
 				filtered_list_cmds_settings = []
@@ -434,19 +427,19 @@ class Info(commands.Cog):
 					'<:switch_off:818125535951323177> ' + modules_off_str
 				])
 			)
-			economy_data = cspl_get_param(interaction, "g", "lvls", "economy")
+			economy_data = cspl_get_param(interaction, "g", "lvls", ["economy"])
 			economy_data.insert(0, {"lvl": 1, "xp": 0})
 			first_lvl = economy_data[0]['lvl']
 			first_lvl_xp = economy_data[0]['xp']
 			last_lvl = economy_data[-1]['lvl']
 			last_lvl_xp = economy_data[-1]['xp']
-			level_range = f'`{first_lvl}ур. ({first_lvl_xp}{cspl_get_param(interaction, "g", "xpName", "economy")[0]})` → `{last_lvl}ур. ({last_lvl_xp}{cspl_get_param(interaction, "g", "xpName", "economy")[0]})`'
+			level_range = f'`{first_lvl}ур. ({first_lvl_xp}{cspl_get_param(interaction, "g", "xpName", ["economy"])[0]})` → `{last_lvl}ур. ({last_lvl_xp}{cspl_get_param(interaction, "g", "xpName", ["economy"])[0]})`'
 			
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
 					f'**Уровни:** {level_range}',
-					f'**Награда за сообщение:** `{cspl_get_param(interaction, "g", "xp", "economy", "msgAward")}{cspl_get_param(interaction, "g", "xpName", "economy")[0]}, {cspl_get_param(interaction, "g", "coins", "economy", "msgAward")}{cspl_get_param(interaction, "g", "coinsName", "economy")[0]} / {cspl_get_param(interaction, "g", "cooldown", "economy", "msgAward")} сек.`',
+					f'**Награда за сообщение:** `{cspl_get_param(interaction, "g", "xp", ["economy", "msgAward"])}{cspl_get_param(interaction, "g", "xpName", ["economy"])[0]}, {cspl_get_param(interaction, "g", "coins", ["economy", "msgAward"])}{cspl_get_param(interaction, "g", "coinsName", ["economy"])[0]} / {cspl_get_param(interaction, "g", "cooldown", ["economy", "msgAward"])} сек.`',
 				]),
 				inline=False
 			)
@@ -575,16 +568,16 @@ class Info(commands.Cog):
 			emb.set_thumbnail(url = user.avatar)
 			if user != self.bot.user:
 				bio_list = []
-				if cspl_get_param(interaction, 'u', 'about', 'biography', None, user):
-					bio_list.append(f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', None, user)}")
-				if cspl_get_param(interaction, 'u', 'age', 'biography', None, user):
-					bio_list.append(f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', None, user)}")
-				if cspl_get_param(interaction, 'u', 'city', 'biography', None, user):
-					bio_list.append(f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', None, user)}")
-				if cspl_get_param(interaction, 'u', 'vk', 'biography', None, user):
-					bio_list.append(f"**VK:** {cspl_get_param(interaction, 'u', 'vk', 'biography', None, user)}")
-				if cspl_get_param(interaction, 'u', 'tg', 'biography', None, user):
-					bio_list.append(f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', None, user)}")
+				if cspl_get_param(interaction, 'u', 'about', ['biography'], user):
+					bio_list.append(f"**О себе:** {cspl_get_param(interaction, 'u', 'about', ['biography'], user)}")
+				if cspl_get_param(interaction, 'u', 'age', ['biography'], user):
+					bio_list.append(f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', ['biography'], user)}")
+				if cspl_get_param(interaction, 'u', 'city', ['biography'], user):
+					bio_list.append(f"**Город:** {cspl_get_param(interaction, 'u', 'city', ['biography'], user)}")
+				if cspl_get_param(interaction, 'u', 'vk', ['biography'], user):
+					bio_list.append(f"**VK:** {cspl_get_param(interaction, 'u', 'vk', ['biography'], user)}")
+				if cspl_get_param(interaction, 'u', 'tg', ['biography'], user):
+					bio_list.append(f"**TG:** {cspl_get_param(interaction, 'u', 'tg', ['biography'], user)}")
 				if len(bio_list) > 0:
 					emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
 					bio_txt_send_message = ''
@@ -598,7 +591,7 @@ class Info(commands.Cog):
 				]), inline = False)
 			#emb.add_field(name = 'Статус', value = status)
 
-			economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+			economy_levels = cspl_get_param(interaction, 'g', 'lvls', ['economy'])
 			economy_levels.insert(0, {"lvl": 1, "xp": 0})
 
 			def find_current_level_xp(xp):
@@ -624,7 +617,7 @@ class Info(commands.Cog):
 
 				return current_level, next_level, percent_to_next_level
 
-			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy', None, user))
+			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', ['economy'], user))
 
 			progress_bar_length = 10
 			filled_blocks = int(percent_to_next_level / 100 * progress_bar_length)
@@ -637,15 +630,15 @@ class Info(commands.Cog):
 			current_xp_needed = economy_levels[current_level - 1]["xp"]
 			if next_level is not None:
 				next_xp_needed = economy_levels[next_level - 1]["xp"]
-				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` {progress_bar} \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}` до `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`"
+				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})` {progress_bar} \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]}` до `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})`"
 			else:
-				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` {progress_bar} \n`Макс. уровень достигнут`"
+				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})` {progress_bar} \n`Макс. уровень достигнут`"
 
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
 					economy_lvl_txt,
-					f"**{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[0]}`"
+					f"**{cspl_get_param(interaction, 'g', 'coinsName', ['economy'])[1]}:** `{cspl_get_param(interaction, 'u', 'coins', ['economy'], user)}{cspl_get_param(interaction, 'g', 'coinsName', ['economy'])[0]}`"
 				])
 			)
 			emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)

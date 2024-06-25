@@ -28,7 +28,7 @@ class Economy(commands.Cog):
 			self.xp_cooldown[message.author.id] = {}
 		if message.guild.id not in self.xp_cooldown[message.author.id]:
 			self.xp_cooldown[message.author.id][message.guild.id] = datetime.datetime.min
-		if (current_time - self.xp_cooldown[message.author.id][message.guild.id]).total_seconds() < dbVars.cspl_get_param(message, 'g', 'cooldown', 'economy', 'msgAward'):
+		if (current_time - self.xp_cooldown[message.author.id][message.guild.id]).total_seconds() < dbVars.cspl_get_param(message, 'g', 'cooldown', ['economy', 'msgAward']):
 			return
 
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
@@ -40,8 +40,8 @@ class Economy(commands.Cog):
 		if "economy" not in custom_users[str(message.author.id)][str(message.guild.id)]:
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"] = {}
 
-		xp_add = dbVars.cspl_get_param(message, 'g', 'xp', 'economy', 'msgAward')
-		coins_add = dbVars.cspl_get_param(message, 'g', 'coins', 'economy', 'msgAward')
+		xp_add = dbVars.cspl_get_param(message, 'g', 'xp', ['economy', 'msgAward'])
+		coins_add = dbVars.cspl_get_param(message, 'g', 'coins', ['economy', 'msgAward'])
 		
 		if 'xp' not in custom_users[str(message.author.id)][str(message.guild.id)]["economy"]:
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['xp'] = xp_add
@@ -71,7 +71,7 @@ class Economy(commands.Cog):
 		if "economy" not in custom_users[user_id][guild_id]:
 			custom_users[user_id][guild_id]["economy"] = {}
 
-		economy_levels = dbVars.cspl_get_param(message, 'g', 'lvls', 'economy')
+		economy_levels = dbVars.cspl_get_param(message, 'g', 'lvls', ['economy'])
 		economy_levels.insert(0, {"lvl": 1, "xp": 0})
 
 		def find_current_level_xp(xp):
@@ -97,10 +97,10 @@ class Economy(commands.Cog):
 
 			return current_level, next_level, percent_to_next_level
 
-		user_xp = dbVars.cspl_get_param(message, 'u', 'xp', 'economy')
+		user_xp = dbVars.cspl_get_param(message, 'u', 'xp', ['economy'])
 		current_level, next_level, percent_to_next_level = find_current_level_xp(user_xp)
 
-		if dbVars.cspl_get_param(message, 'u', 'lvl', 'economy') != current_level:
+		if dbVars.cspl_get_param(message, 'u', 'lvl', ['economy']) != current_level:
 			custom_users[user_id][guild_id]["economy"]['lvl'] = current_level
 		
 		if current_level == 1:
@@ -112,10 +112,10 @@ class Economy(commands.Cog):
 	async def lvl_award(self, message: discord.Message):
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
 
-		lvls = dbVars.cspl_get_param(message, 'g', 'lvls', 'economy')
+		lvls = dbVars.cspl_get_param(message, 'g', 'lvls', ['economy'])
 		lvls.insert(0, {"lvl": 1, "xp": 0})
-		member_xp = dbVars.cspl_get_param(message, 'u', 'xp', 'economy')
-		member_lvl = dbVars.cspl_get_param(message, 'u', 'lvl', 'economy')
+		member_xp = dbVars.cspl_get_param(message, 'u', 'xp', ['economy'])
+		member_lvl = dbVars.cspl_get_param(message, 'u', 'lvl', ['economy'])
 
 		user_id = str(message.author.id)
 		guild_id = str(message.guild.id)
@@ -132,7 +132,7 @@ class Economy(commands.Cog):
 					awards = lvl.get('awards', {})
 					if 'coins' in awards:
 						custom_users[user_id][guild_id]["economy"]['coins'] += awards['coins']
-						awards_txt += f"`{awards['coins']}{dbVars.cspl_get_param(message, 'g', 'coinsName', 'economy')[0]}` "
+						awards_txt += f"`{awards['coins']}{dbVars.cspl_get_param(message, 'g', 'coinsName', ['economy'])[0]}` "
 					if 'role' in awards:
 						role_id = int(awards['role'].strip('<@&>'))
 						role = message.guild.get_role(role_id)
@@ -157,7 +157,7 @@ class Economy(commands.Cog):
 				json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
 
 			await message.channel.send('\n'.join([
-				f"{message.author.mention} поздравляю! Вы достигли `{dbVars.cspl_get_param(message, 'u', 'lvl', 'economy')}ур.`",
+				f"{message.author.mention} поздравляю! Вы достигли `{dbVars.cspl_get_param(message, 'u', 'lvl', ['economy'])}ур.`",
 				f'**Награды:** {awards_txt.strip()}' if awards_txt else ''
 			]))
 
