@@ -63,14 +63,14 @@ def get_commands_list(interaction: discord.Interaction, category):
 		]
 	elif category == 'moderation':
 		return [
+			{'command': '</mute:1251497656266526730>',           'permission': interaction.user.guild_permissions.mute_members,
+			'desc': 'Замутить юзера'},
+			{'command': '</unmute:1251497656266526731>',         'permission': interaction.user.guild_permissions.mute_members,
+			'desc': 'Размьютить юзера'},
 			{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
 			'desc': 'Временная блокировка разрешений писать/подключаться в чат/войс'},
 			{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
 			'desc': 'Отменить блокировку разрешений писать/подключаться в чат/войс'},
-				{'command': '</mute:1251497656266526730>',           'permission': interaction.user.guild_permissions.mute_members,
-			'desc': 'Замутить юзера'},
-			{'command': '</unmute:1251497656266526731>',         'permission': interaction.user.guild_permissions.mute_members,
-			'desc': 'Размьютить юзера'},
 			{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
 			'desc': 'Забанить юзера'}
 		]
