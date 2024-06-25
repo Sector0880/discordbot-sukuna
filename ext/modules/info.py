@@ -570,8 +570,8 @@ class Info(commands.Cog):
 			economy_levels.insert(0, {"lvl": 1, "xp": 0})
 
 			def find_current_level_xp(xp):
-				current_level = cspl_get_param(interaction, 'u', 'lvl', 'economy', user)
-				next_level = current_level + 1
+				current_level = 1  # Начальный уровень 1
+				next_level = 2  # Следующий уровень 2
 
 				for i in range(1, len(economy_levels)):
 					if xp >= economy_levels[i]["xp"]:
@@ -580,6 +580,8 @@ class Info(commands.Cog):
 							next_level = economy_levels[i + 1]["lvl"]
 						else:
 							next_level = None  # Нет следующего уровня
+					else:
+						break  # Если текущий xp меньше требуемого, остановить цикл
 
 				current_xp = economy_levels[current_level - 1]["xp"]
 				if next_level is not None:
@@ -587,6 +589,7 @@ class Info(commands.Cog):
 					percent_to_next_level = int(((xp - current_xp) / (next_xp - current_xp)) * 100)
 				else:
 					percent_to_next_level = 100  # Достигнут максимальный уровень
+
 				return current_level, next_level, percent_to_next_level
 
 			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy', user))
