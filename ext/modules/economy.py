@@ -28,7 +28,7 @@ class Economy(commands.Cog):
 			self.xp_cooldown[message.author.id] = {}
 		if message.guild.id not in self.xp_cooldown[message.author.id]:
 			self.xp_cooldown[message.author.id][message.guild.id] = datetime.datetime.min
-		if (current_time - self.xp_cooldown[message.author.id][message.guild.id]).total_seconds() < dbVars.cspl_get_param(message, 'g', 'msgAward', 'economy')['cooldown']:
+		if (current_time - self.xp_cooldown[message.author.id][message.guild.id]).total_seconds() < dbVars.cspl_get_param(message, 'g', 'cooldown', 'economy', 'msgAward'):
 			return
 
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
@@ -40,8 +40,8 @@ class Economy(commands.Cog):
 		if "economy" not in custom_users[str(message.author.id)][str(message.guild.id)]:
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"] = {}
 
-		xp_add = dbVars.cspl_get_param(message, 'g', 'msgAward', 'economy')['xp']
-		coins_add = dbVars.cspl_get_param(message, 'g', 'msgAward', 'economy')['coins']
+		xp_add = dbVars.cspl_get_param(message, 'g', 'xp', 'economy', 'msgAward')
+		coins_add = dbVars.cspl_get_param(message, 'g', 'coins', 'economy', 'msgAward')
 		
 		if 'xp' not in custom_users[str(message.author.id)][str(message.guild.id)]["economy"]:
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['xp'] = xp_add

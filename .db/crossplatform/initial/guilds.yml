@@ -84,8 +84,8 @@ economy:
     {lvl: 30, xp: 6720, awards: {coins: 15000, role: '<@&123>'}}
     ]
   msgAward:
-    xp: 15
+    xp: 8
     coins: 3
-    cooldown: 1
+    cooldown: 7
   xpName: ["xp", "Опыт"]
   coinsName: ["cns", "Монетки"]

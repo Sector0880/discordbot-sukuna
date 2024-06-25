@@ -74,6 +74,11 @@ def get_commands_list(interaction: discord.Interaction, category):
 			{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
 			'desc': 'Забанить юзера'}
 		]
+	elif category == 'economy':
+		return [
+			{'command': '</test:1249658668958482445>',           'permission': None,
+			'desc': 'Нету'},
+		]
 	else: return [{'command': 'не найден список команд', 'permission': None, 'desc': 'None'}]
 
 class CmdHelp_CategoryList(discord.ui.View):
@@ -85,7 +90,8 @@ class CmdHelp_CategoryList(discord.ui.View):
 		discord.SelectOption(label = "Информация", value = 1),
 		discord.SelectOption(label = "Веселье", value = 2),
 		discord.SelectOption(label = "Настройки", value = 3),
-		discord.SelectOption(label = "Модерация", value = 4)
+		discord.SelectOption(label = "Модерация", value = 4),
+		discord.SelectOption(label = "Экономика", value = 5)
 	])
 	async def select_category(self, interaction: discord.Interaction, select: discord.ui.Select):
 		try:
@@ -93,11 +99,13 @@ class CmdHelp_CategoryList(discord.ui.View):
 			list_cmds_fun = get_commands_list(interaction, 'fun')
 			list_cmds_settings = get_commands_list(interaction, 'settings')
 			list_cmds_moderation = get_commands_list(interaction, 'moderation')
+			list_cmds_economy = get_commands_list(interaction, 'economy')
 
 			filtered_list_cmds_info = []
 			filtered_list_cmds_fun = []
 			filtered_list_cmds_settings = []
 			filtered_list_cmds_moderation = []
+			filtered_list_cmds_economy = []
 			for cmd in list_cmds_info:
 				if bool(cmd['permission']) or cmd['permission'] is None:
 					filtered_list_cmds_info.append(cmd)
@@ -110,6 +118,9 @@ class CmdHelp_CategoryList(discord.ui.View):
 			for cmd in list_cmds_moderation:
 				if bool(cmd['permission']) or cmd['permission'] is None:
 					filtered_list_cmds_moderation.append(cmd)
+			for cmd in list_cmds_economy:
+				if bool(cmd['permission']) or cmd['permission'] is None:
+					filtered_list_cmds_economy.append(cmd)
 
 			if select.values[0] == '1':
 				emb = discord.Embed(
@@ -143,6 +154,14 @@ class CmdHelp_CategoryList(discord.ui.View):
 					])
 				)
 				emb.set_footer(text = "Категория: Модерация")
+			if select.values[0] == '5':
+				emb = discord.Embed(
+					title = f"Доступные техники ({len(filtered_list_cmds_economy)})",
+					description = '\n'.join([
+						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_economy
+					])
+				)
+				emb.set_footer(text = "Категория: Экономика")
 			emb.color = 0x2b2d31
 			emb.set_thumbnail(url = self.bot.user.avatar)
 			await interaction.response.send_message(embed = emb, ephemeral = True)
@@ -223,6 +242,7 @@ class Info(commands.Cog):
 				list_cmds_fun = get_commands_list(interaction, 'fun')
 				list_cmds_settings = get_commands_list(interaction, 'settings')
 				list_cmds_moderation = get_commands_list(interaction, 'moderation')
+				list_cmds_economy = get_commands_list(interaction, 'economy')
 
 				"""
 				filtered_list_cmds_info = [cmd for cmd in list_cmds_info if cmd['permission'] is None or getattr(interaction.user.guild_permissions, str(cmd['permission']))]
@@ -235,6 +255,7 @@ class Info(commands.Cog):
 				filtered_list_cmds_fun = []
 				filtered_list_cmds_settings = []
 				filtered_list_cmds_moderation = []
+				filtered_list_cmds_economy = []
 				for cmd in list_cmds_info:
 					if bool(cmd['permission']) or cmd['permission'] is None:
 						filtered_list_cmds_info.append(cmd)
@@ -247,6 +268,9 @@ class Info(commands.Cog):
 				for cmd in list_cmds_moderation:
 					if bool(cmd['permission']) or cmd['permission'] is None:
 						filtered_list_cmds_moderation.append(cmd)
+				for cmd in list_cmds_economy:
+					if bool(cmd['permission']) or cmd['permission'] is None:
+						filtered_list_cmds_economy.append(cmd)
 				
 			
 
@@ -281,6 +305,11 @@ class Info(commands.Cog):
 						value=' '.join([cmd['command'] for cmd in filtered_list_cmds_moderation]),
 						inline = False
 					)
+				emb.add_field(
+					name = f'Экономика ({len(filtered_list_cmds_economy)})',
+					value=' '.join([cmd['command'] for cmd in filtered_list_cmds_economy]),
+					inline = False
+				)
 				emb.set_thumbnail(url = self.bot.user.avatar)
 				iam = self.bot.get_user(980175834373562439)
 				emb.set_footer(text = "dev: Sectormain, 2024", icon_url = iam.avatar)
@@ -417,7 +446,7 @@ class Info(commands.Cog):
 				name = "Экономика",
 				value = '\n'.join([
 					f'**Уровни:** {level_range}',
-					f'**Награда за сообщение:** `{cspl_get_param(interaction, "g", "msgAward", "economy")["xp"]}{cspl_get_param(interaction, "g", "xpName", "economy")[0]}, {cspl_get_param(interaction, "g", "msgAward", "economy")["coins"]}{cspl_get_param(interaction, "g", "coinsName", "economy")[0]} / {cspl_get_param(interaction, "g", "msgAward", "economy")["cooldown"]} сек.`',
+					f'**Награда за сообщение:** `{cspl_get_param(interaction, "g", "xp", "economy", "msgAward")}{cspl_get_param(interaction, "g", "xpName", "economy")[0]}, {cspl_get_param(interaction, "g", "coins", "economy", "msgAward")}{cspl_get_param(interaction, "g", "coinsName", "economy")[0]} / {cspl_get_param(interaction, "g", "cooldown", "economy", "msgAward")} сек.`',
 				]),
 				inline=False
 			)
@@ -546,18 +575,21 @@ class Info(commands.Cog):
 			emb.set_thumbnail(url = user.avatar)
 			if user != self.bot.user:
 				bio_list = []
-				if cspl_get_param(interaction, 'u', 'about', 'biography', user):
-					bio_list.append(f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', user)}")
-				if cspl_get_param(interaction, 'u', 'age', 'biography', user):
-					bio_list.append(f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', user)}")
-				if cspl_get_param(interaction, 'u', 'city', 'biography', user):
-					bio_list.append(f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', user)}")
-				if cspl_get_param(interaction, 'u', 'vk', 'biography', user):
-					bio_list.append(f"**VK:** {cspl_get_param(interaction, 'u', 'vk', 'biography', user)}")
-				if cspl_get_param(interaction, 'u', 'tg', 'biography', user):
-					bio_list.append(f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', user)}")
+				if cspl_get_param(interaction, 'u', 'about', 'biography', None, user):
+					bio_list.append(f"**О себе:** {cspl_get_param(interaction, 'u', 'about', 'biography', None, user)}")
+				if cspl_get_param(interaction, 'u', 'age', 'biography', None, user):
+					bio_list.append(f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', 'biography', None, user)}")
+				if cspl_get_param(interaction, 'u', 'city', 'biography', None, user):
+					bio_list.append(f"**Город:** {cspl_get_param(interaction, 'u', 'city', 'biography', None, user)}")
+				if cspl_get_param(interaction, 'u', 'vk', 'biography', None, user):
+					bio_list.append(f"**VK:** {cspl_get_param(interaction, 'u', 'vk', 'biography', None, user)}")
+				if cspl_get_param(interaction, 'u', 'tg', 'biography', None, user):
+					bio_list.append(f"**TG:** {cspl_get_param(interaction, 'u', 'tg', 'biography', None, user)}")
 				if len(bio_list) > 0:
 					emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
+					bio_txt_send_message = ''
+				else:
+					bio_txt_send_message = 'Создайте свою биографию с помощью команды </biography set:1251828637473439767>'
 			else:
 				emb.add_field(name = 'Биография', value = '\n'.join([
 					f"**О себе:** 3990см хуй блять нахуй",
@@ -592,7 +624,7 @@ class Info(commands.Cog):
 
 				return current_level, next_level, percent_to_next_level
 
-			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy', user))
+			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy', None, user))
 
 			progress_bar_length = 10
 			filled_blocks = int(percent_to_next_level / 100 * progress_bar_length)
@@ -604,15 +636,15 @@ class Info(commands.Cog):
 			current_xp_needed = economy_levels[current_level - 1]["xp"]
 			if next_level is not None:
 				next_xp_needed = economy_levels[next_level - 1]["xp"]
-				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` \n`{progress_bar}{percent_to_next_level:02d}%` \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', 'economy', user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}` до `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`"
+				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` \n`{progress_bar}{percent_to_next_level:02d}%` \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}` до `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`"
 			else:
-				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` \n`{progress_bar}{percent_to_next_level:02d}%` \n`Макс. уровень достигнут`"
+				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` \n`{progress_bar}{percent_to_next_level:02d}%` \n`Макс. уровень достигнут`"
 
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
 					economy_lvl_txt,
-					f"**{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy', user)}{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[0]}`"
+					f"**{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy', None, user)}{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[0]}`"
 				])
 			)
 			emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
@@ -621,8 +653,8 @@ class Info(commands.Cog):
 			emb.set_footer(text = f'ID: {user.id}')
 			emb.timestamp = datetime.now()
 			if user.id == 980175834373562439:
-				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=66704425&is=666ef2a5&hm=6fbe760673a386e62f00964be5c1422cf6df10cb6dd8da2a4cccd37a5d3fbdae&')
-				emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=6678d5e5&is=66778465&hm=84845127e2c75af4dbcb1058a483656704885ba47f8f045646f1c236443135ca&')
+				emb.set_image(url = 'https://media1.tenor.com/m/aW1paWTKpZMAAAAd/%D1%85%D0%B0%D0%BA%D0%B5%D1%80%D1%8B-hackers.gif')
+				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=6678d5e5&is=66778465&hm=84845127e2c75af4dbcb1058a483656704885ba47f8f045646f1c236443135ca&')
 				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1221372466350522368/D82A2342.jpg?ex=667142bf&is=666ff13f&hm=7cd87d621f9cb941e5d301b9abbd3f4a914873d9faa9fdad53b731705002bc41&')
 				#emb.set_image(url = "attachment://.db/content/owner/wlp1.jpeg")
 			else:
@@ -632,7 +664,7 @@ class Info(commands.Cog):
 					banner_url = f"https://cdn.discordapp.com/banners/{user.id}/{banner_id}?size=1024"
 					emb.set_image(url = banner_url)
 
-			await interaction.response.send_message(content = "Создайте свою биографию с помощью команды </biography set:1251828637473439767>" if interaction.user == member or not member else None, embed = emb, ephemeral = False)
+			await interaction.response.send_message(content = bio_txt_send_message, embed = emb, ephemeral = False)
 		except Exception as e:
 			await interaction.response.send_message(repr(e), ephemeral = False)
 	
