@@ -18,7 +18,7 @@ from botFunctions import *
 import botConfig
 
 def get_commands_list(interaction: discord.Interaction, category):
-	module = cspl_get_param(interaction, 'g', 'modules').get(category, {})
+	module = cspl_get_param_with_merge(interaction, 'g', 'modules').get(category, {})
 	if not module:
 		return [{'command': 'не найден список команд', 'desc': 'None', 'permission': None}]
 
@@ -49,7 +49,7 @@ class CmdHelp_CategoryList(discord.ui.View):
 	])
 	async def select_category(self, interaction: discord.Interaction, select: discord.ui.Select):
 		try:
-			modules = cspl_get_param(interaction, 'g', 'modules')
+			modules = cspl_get_param_with_merge(interaction, 'g', 'modules')
 			
 			selected_category = select.values[0]
 			module = modules.get(selected_category, {})
@@ -89,17 +89,17 @@ class DashboardBtns(discord.ui.View):
 		try:
 			emb = discord.Embed()
 			
-			for module in cspl_get_param(interaction, 'g', 'modules'):
+			for module in cspl_get_param_with_merge(interaction, 'g', 'modules'):
 				module_cmds = get_commands_list(interaction, module)
 
 				module_cmds_str = '\n'.join([
-					('<:switch_on:818125506309652490> ' if cmd['status'] and cspl_get_param(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cmd['id']
+					('<:switch_on:818125506309652490> ' if cmd['status'] and cspl_get_param_with_merge(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cmd['id']
 					for cmd in module_cmds
 				])
 				
 				try:
 					emb.add_field(
-						name = ('<:switch_on:818125506309652490> ' if cspl_get_param(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cspl_get_param(interaction, 'g', 'name', ['modules', module]),
+						name = ('<:switch_on:818125506309652490> ' if cspl_get_param_with_merge(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cspl_get_param_with_merge(interaction, 'g', 'name', ['modules', module]),
 						value = module_cmds_str
 					)
 				except Exception: pass
@@ -120,7 +120,7 @@ class DashboardBtns(discord.ui.View):
 			await interaction.response.send_message(f"Произошла ошибка: {repr(e)}", ephemeral=True)
 	
 	@discord.ui.button(label="Экономика", style=discord.ButtonStyle.gray)
-	async def ecomony(self, interaction: discord.Interaction, button: discord.ui.Button):
+	async def economy(self, interaction: discord.Interaction, button: discord.ui.Button):
 		try:
 			await interaction.response.send_message("Скоро", ephemeral=True)
 		except discord.InteractionResponded:
@@ -139,7 +139,7 @@ class Info(commands.Cog):
 	async def help(self, interaction: discord.Interaction, command: str = None):
 		try:
 			if command == None:
-				modules = cspl_get_param(interaction, 'g', 'modules')
+				modules = cspl_get_param_with_merge(interaction, 'g', 'modules')
 
 				categories = {
 					"info": "Информация",
@@ -179,7 +179,7 @@ class Info(commands.Cog):
 				#emb.set_footer(text = "creators: Sectormain, minus7yingzi | 2024")
 				await interaction.response.send_message(embed=emb, ephemeral=True, view=CmdHelp_CategoryList(self.bot))
 			elif command:
-				modules = cspl_get_param(interaction, 'g', 'modules')
+				modules = cspl_get_param_with_merge(interaction, 'g', 'modules')
 				command_name = command
 				command_info = None
 
@@ -265,11 +265,11 @@ class Info(commands.Cog):
 		try:
 			modules_on = []
 			modules_off = []
-			for module in cspl_get_param(interaction, 'g', 'modules'):
-				if cspl_get_param(interaction, 'g', 'modules')[module]['status']:
-					modules_on.append(cspl_get_param(interaction, 'g', 'modules')[module]['name'])
+			for module in cspl_get_param_with_merge(interaction, 'g', 'modules'):
+				if cspl_get_param_with_merge(interaction, 'g', 'status', ['modules', module]):
+					modules_on.append(cspl_get_param_with_merge(interaction, 'g', 'name', ['modules', module]))
 				else:
-					modules_off.append(cspl_get_param(interaction, 'g', 'modules')[module]['name'])
+					modules_off.append(cspl_get_param_with_merge(interaction, 'g', 'name', ['modules', module]))
 
 			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
 			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
@@ -284,6 +284,8 @@ class Info(commands.Cog):
 					'<:switch_off:818125535951323177> ' + modules_off_str
 				])
 			)
+
+
 			economy_data = cspl_get_param(interaction, "g", "lvls", ["economy"])
 			economy_data.insert(0, {"lvl": 1, "xp": 0})
 			first_lvl = economy_data[0]['lvl']

@@ -1,1 +1,14 @@
-{}
+{
+    "815119789110198293": {
+        "modules": {
+            "info": {
+                "status": false,
+                "commands": {
+                    "about": {
+                        "status": false
+                    }
+                }
+            }
+        }
+    }
+}

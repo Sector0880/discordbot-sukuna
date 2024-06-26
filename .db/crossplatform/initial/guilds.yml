@@ -117,8 +117,8 @@ premium:
 economy:
   lvls:
     [
-    {lvl: 2, xp: 120, awards: {coins: 500, roles: ['<@&1255080775431491675>', '<@&1255080797279490160>', '<@&1255080817198239787>']}},
-    {lvl: 3, xp: 240, awards: {coins: 1000}},
+    {lvl: 2, xp: 120},
+    {lvl: 3, xp: 240},
     {lvl: 4, xp: 480, awards: {coins: 2500}},
     {lvl: 5, xp: 720, awards: {coins: 2500, role: '<@&1255072896167055393>'}},
     {lvl: 6, xp: 1000, awards: {coins: 3000}},

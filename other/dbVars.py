@@ -14,7 +14,16 @@ cspl_initial_users = lambda: yaml.safe_load(open('./.db/crossplatform/initial/us
 cspl_custom_guilds = lambda interaction: json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))
 cspl_custom_users = lambda interaction: json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
 
-# берет объект из базы данных, если в json он существует то он берет именно его из json
+"""
+* обновить
+Метод получения параметра из бд
+1. Для чего: Можно получить определенный параметр из базы данных кроссплатформера
+2. Как работает: cspl_get_param(!interaction, !ветка кроссплатформера, !параметр, дополнительный путь до параметра)
+Примеры: 
+cspl_get_param(interaction, 'guilds', 'prefix')
+cspl_get_param(interaction, 'guilds', 'status', 'premium')
+3. Особенности: Идет проверка на наличие кастомного параметра
+"""
 def cspl_get_param(interaction, branch, param, path = None, user: discord.Member = None):
 	if path: path_len = len(path)
 	match branch:
@@ -84,48 +93,3 @@ def cspl_get_param(interaction, branch, param, path = None, user: discord.Member
 							return json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))[str(interaction.author.id)][str(interaction.guild.id)][param]
 						else:
 							return yaml.safe_load(open('./.db/crossplatform/initial/users.yml', 'r', encoding='utf-8'))[param]
-
-
-def merge_data(default_data, custom_data):
-    if isinstance(default_data, dict) and isinstance(custom_data, dict):
-        merged = default_data.copy()
-        for key, value in custom_data.items():
-            if key in default_data:
-                merged[key] = merge_data(default_data[key], value)
-            else:
-                merged[key] = value
-        return merged
-    return custom_data
-
-# берет объект из базы данных, но складывает json и yaml, таким образом yaml и json сливаются вместе, и измененные параметры
-# в json заменяются в выдаваемом объекте
-def cspl_get_param_with_merge(interaction, branch, param, path=None, user: discord.Member = None):
-    if path:
-        path_len = len(path)
-    else:
-        path_len = 0
-    
-    match branch:
-        case 'g':
-            initial_data = cspl_initial_guilds()
-            custom_data = cspl_custom_guilds(interaction).get(str(interaction.guild.id), {})
-            merged_data = merge_data(initial_data, custom_data)
-
-            if path_len == 2:
-                return merged_data[path[0]][path[1]].get(param)
-            elif path_len == 1:
-                return merged_data[path[0]].get(param)
-            else:
-                return merged_data.get(param)
-
-        case 'u':
-            initial_data = cspl_initial_users()
-            custom_data = cspl_custom_users(interaction).get(str(user.id), {}).get(str(interaction.guild.id), {})
-            merged_data = merge_data(initial_data, custom_data)
-
-            if path_len == 2:
-                return merged_data[path[0]][path[1]].get(param)
-            elif path_len == 1:
-                return merged_data[path[0]].get(param)
-            else:
-                return merged_data.get(param)

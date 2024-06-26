@@ -147,7 +147,7 @@ class Economy(commands.Cog):
 								await message.author.add_roles(role)
 								awards_txt += f'Роль: <@&{role_id}> '
 
-					awarded = True
+				awarded = True
 			else: # проверка
 				# проверка наличия валидного уровня
 				await self.check_lvl_validate(message)
