@@ -14,8 +14,10 @@ class RepeatCancel(discord.ui.View):
 	
 	@discord.ui.button(label="Отменить", style=discord.ButtonStyle.gray)
 	async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+		if interaction.user.id not in sf_sp(): return await interaction.response.send_message("Нету прав.", ephemeral = False) # на автора сообщения
+
 		self.cancelled = True
-		await interaction.response.send_message('Команда отменена.', ephemeral=False)
+		await interaction.response.send_message('Команда отменена.', ephemeral = False)
 		#interaction.message.view.stop() должно скрывать кнопку после нажатия но не скрывает
 		self.stop()
 
@@ -26,6 +28,8 @@ class DialogCancel(discord.ui.View):
 	
 	@discord.ui.button(label="Остановить", style=discord.ButtonStyle.gray)
 	async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+		if interaction.user.id not in sf_sp(): return await interaction.response.send_message("Нету прав.", ephemeral = False) # на автора сообщения
+
 		self.cancelled = True
 		await interaction.response.send_message('Диалог прекращен.', ephemeral=False)
 		#interaction.message.view.stop() должно скрывать кнопку после нажатия но не скрывает

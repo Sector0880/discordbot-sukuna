@@ -8,6 +8,7 @@ import locale
 from typing import Any, Dict, Generic, List, TYPE_CHECKING, Optional, TypeVar, Union
 from time import *
 import requests
+import enum
 from bs4 import BeautifulSoup
 
 from botConfig import *
@@ -16,187 +17,94 @@ from dbVars import *
 from botFunctions import *
 import botConfig
 
-locale.setlocale(
-	category=locale.LC_ALL,
-	locale="Russian"  # Note: do not use "de_DE" as it doesn't work
-)
-
 def get_commands_list(interaction: discord.Interaction, category):
-	if category == 'info':
-		return [
-			{'command': '</help:1250144368837529692>',              'permission': None,
-			'desc': 'Информация о командах бота'},
-			{'command': '</ping:1249321143983145034>',              'permission': None,
-			'desc': 'Время отклика бота'},
-			{'command': '</dashboard:1254395126633992233>',  'permission': interaction.user.guild_permissions.administrator,
-			'desc': 'Панель управления настройками бота'},
-			{'command': '</about:1250159784683114496>',             'permission': None,
-			'desc': 'Информация о боте'},
-			{'command': '</serverinfo:1250362239341301760>',        'permission': None,
-			'desc': 'Информация о сервере'},
-			{'command': '</member:1251828637473439765>',        'permission': None,
-			'desc': 'Информация об участнике'},
-			{'command': '</avatar:1249321144469950546>',            'permission': None,
-			'desc': 'Аватарка участника сервера'},
-			{'command': '</myowner:1250743777077755915>',           'permission': None,
-			'desc': 'А сейчас о моем разработчике))'},
-		]
-	elif category == 'fun':
-		return [
-			{'command': '</time:1250150935280357376>',              'permission': None,
-			'desc': 'Время'},
-			{'command': '</fact:1250150935280357377>',              'permission': None,
-			'desc': 'Рандомный факт'},
-			{'command': '</battle:1250720060344107019>',            'permission': None,
-			'desc': 'Батл с участником сервера'},
-			{'command': '</opinion:1251281683001643139>',           'permission': None,
-			'desc': 'Мнение бота'}
-		]
-	elif category == 'settings':
-		return [
-			{'command': '</switch:1251498351816478760>',  'permission': interaction.user.guild_permissions.administrator,
-			'desc': 'Изменить состояние переключателей настроек бота'},
-			{'command': '</biography set:1251828637473439767>', 'permission': None,
-			'desc': 'Добавить информацию для своей биографии'},
-			{'command': '</biography del:1251828637473439767>', 'permission': None,
-			'desc': 'Удалить информацию из своей биографии'},
-		]
-	elif category == 'moderation':
-		return [
-			{'command': '</mute:1251497656266526730>',           'permission': interaction.user.guild_permissions.mute_members,
-			'desc': 'Замутить юзера'},
-			{'command': '</unmute:1251497656266526731>',         'permission': interaction.user.guild_permissions.mute_members,
-			'desc': 'Размьютить юзера'},
-			{'command': '</timeout:1251267335613059296>',           'permission': interaction.user.guild_permissions.mute_members,
-			'desc': 'Временная блокировка разрешений писать/подключаться в чат/войс'},
-			{'command': '</untimeout:1251267335613059297>',         'permission': interaction.user.guild_permissions.mute_members,
-			'desc': 'Отменить блокировку разрешений писать/подключаться в чат/войс'},
-			{'command': '</ban:1250456425742995457>',               'permission': interaction.user.guild_permissions.ban_members,
-			'desc': 'Забанить юзера'}
-		]
-	elif category == 'economy':
-		return [
-			{'command': '</test:1249658668958482445>',           'permission': None,
-			'desc': 'Нету'},
-		]
-	else: return [{'command': 'не найден список команд', 'permission': None, 'desc': 'None'}]
+	module = cspl_get_param(interaction, 'g', 'modules').get(category, {})
+	if not module:
+		return [{'command': 'не найден список команд', 'desc': 'None', 'permission': None}]
+
+	commands = []
+	for command_name, command_info in module.get('commands', {}).items():
+		command = {
+			'status': command_info['status'],
+			'id': command_info['id'],
+			'desc': command_info['desc'],
+			'permission': command_info.get('permission', None)
+		}
+		commands.append(command)
+	
+	return commands
 
 class CmdHelp_CategoryList(discord.ui.View):
 	def __init__(self, bot: commands.Bot):
-		super().__init__(timeout=None)
+		super().__init__(timeout=120)
 		self.bot = bot
 	
-	@discord.ui.select(placeholder="Выберите категорию...", options= [
-		discord.SelectOption(label = "Информация", value = 1),
-		discord.SelectOption(label = "Веселье", value = 2),
-		discord.SelectOption(label = "Настройки", value = 3),
-		discord.SelectOption(label = "Модерация", value = 4),
-		discord.SelectOption(label = "Экономика", value = 5)
+	@discord.ui.select(placeholder="Выберите категорию...", options=[
+		discord.SelectOption(label="Информация", value="info"),
+		discord.SelectOption(label="Веселье", value="fun"),
+		discord.SelectOption(label="Настройки", value="settings"),
+		discord.SelectOption(label="Модерация", value="moderation"),
+		discord.SelectOption(label="Экономика", value="economy"),
+		discord.SelectOption(label="Аудит", value="audit")
 	])
 	async def select_category(self, interaction: discord.Interaction, select: discord.ui.Select):
 		try:
-			list_cmds_info = get_commands_list(interaction, 'info')
-			list_cmds_fun = get_commands_list(interaction, 'fun')
-			list_cmds_settings = get_commands_list(interaction, 'settings')
-			list_cmds_moderation = get_commands_list(interaction, 'moderation')
-			list_cmds_economy = get_commands_list(interaction, 'economy')
+			modules = cspl_get_param(interaction, 'g', 'modules')
+			
+			selected_category = select.values[0]
+			module = modules.get(selected_category, {})
 
-			filtered_list_cmds_info = []
-			filtered_list_cmds_fun = []
-			filtered_list_cmds_settings = []
-			filtered_list_cmds_moderation = []
-			filtered_list_cmds_economy = []
-			for cmd in list_cmds_info:
-				if bool(cmd['permission']) or cmd['permission'] is None:
-					filtered_list_cmds_info.append(cmd)
-			for cmd in list_cmds_fun:
-				if bool(cmd['permission']) or cmd['permission'] is None:
-					filtered_list_cmds_fun.append(cmd)
-			for cmd in list_cmds_settings:
-				if bool(cmd['permission']) or cmd['permission'] is None:
-					filtered_list_cmds_settings.append(cmd)
-			for cmd in list_cmds_moderation:
-				if bool(cmd['permission']) or cmd['permission'] is None:
-					filtered_list_cmds_moderation.append(cmd)
-			for cmd in list_cmds_economy:
-				if bool(cmd['permission']) or cmd['permission'] is None:
-					filtered_list_cmds_economy.append(cmd)
+			commands = module.get('commands', {})
+			filtered_commands = [
+				{'command': cmd_info['id'], 'desc': cmd_info['desc']}
+				for cmd_info in commands.values()
+				if not cmd_info.get('permission') or getattr(interaction.user.guild_permissions, cmd_info.get('permission', ''), False)
+			]
+			
+			if not filtered_commands:
+				await interaction.response.send_message("Нет доступных команд в этой категории.", ephemeral=True)
+				return
 
-			if select.values[0] == '1':
-				emb = discord.Embed(
-					title = f"Доступные техники ({len(filtered_list_cmds_info)})",
-					description = '\n'.join([
-						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_info
-					])
-				)
-				emb.set_footer(text = "Категория: Информация")
-			if select.values[0] == '2':
-				emb = discord.Embed(
-					title = f"Доступные техники ({len(filtered_list_cmds_fun)})",
-					description = '\n'.join([
-						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_fun
-					])
-				)
-				emb.set_footer(text = "Категория: Веселье")
-			if select.values[0] == '3':
-				emb = discord.Embed(
-					title = f"Доступные техники ({len(filtered_list_cmds_settings)})",
-					description = '\n'.join([
-						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_settings
-					])
-				)
-				emb.set_footer(text = "Категория: Настройки")
-			if select.values[0] == '4':
-				emb = discord.Embed(
-					title = f"Доступные техники ({len(filtered_list_cmds_moderation)})",
-					description = '\n'.join([
-						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_moderation
-					])
-				)
-				emb.set_footer(text = "Категория: Модерация")
-			if select.values[0] == '5':
-				emb = discord.Embed(
-					title = f"Доступные техники ({len(filtered_list_cmds_economy)})",
-					description = '\n'.join([
-						f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_list_cmds_economy
-					])
-				)
-				emb.set_footer(text = "Категория: Экономика")
-			emb.color = 0x2b2d31
-			emb.set_thumbnail(url = self.bot.user.avatar)
-			await interaction.response.send_message(embed = emb, ephemeral = True)
+			emb = discord.Embed(
+				title=f"Доступные команды ({len(filtered_commands)})",
+				description='\n'.join([f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_commands]),
+				color=0x2b2d31
+			)
+			emb.set_footer(text=f"Категория: {module['name']}")
+			emb.set_thumbnail(url=self.bot.user.avatar)
+
+			await interaction.response.send_message(embed=emb, ephemeral=True)
 		except discord.InteractionResponded:
 			await interaction.response.send_message("Это взаимодействие устарело. Пожалуйста, повторите команду.", ephemeral=True)
 		except Exception as e:
 			await interaction.response.send_message(f"Произошла ошибка: {repr(e)}", ephemeral=True)
 
-class PanelDialogs(discord.ui.View):
+class DashboardBtns(discord.ui.View):
 	def __init__(self, bot: commands.Bot):
-		super().__init__()
+		super().__init__(timeout=120)
 		self.bot = bot
 	
 	@discord.ui.button(label="Модули", style=discord.ButtonStyle.gray)
 	async def modules(self, interaction: discord.Interaction, button: discord.ui.Button):
 		try:
-			modules_on = []
-			modules_off = []
+			emb = discord.Embed()
+			
 			for module in cspl_get_param(interaction, 'g', 'modules'):
-				if cspl_get_param(interaction, 'g', 'modules')[module]:
-					modules_on.append(module)
-				else:
-					modules_off.append(module)
+				module_cmds = get_commands_list(interaction, module)
 
-			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
-			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
-
-			emb = discord.Embed(
-				title = "Модули",
-				description = "\n".join([
-					'<:switch_on:818125506309652490> ' + modules_on_str,
-					'<:switch_off:818125535951323177> ' + modules_off_str
+				module_cmds_str = '\n'.join([
+					('<:switch_on:818125506309652490> ' if cmd['status'] and cspl_get_param(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cmd['id']
+					for cmd in module_cmds
 				])
-			)
+				
+				try:
+					emb.add_field(
+						name = ('<:switch_on:818125506309652490> ' if cspl_get_param(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cspl_get_param(interaction, 'g', 'name', ['modules', module]),
+						value = module_cmds_str
+					)
+				except Exception: pass
 			emb.set_thumbnail(url = self.bot.user.avatar)
+			emb.set_footer(text = f"/ Панель управления / Модули")
 
 			txt = '\n'.join([
 				"**Включить модуль:** `/switch on:module`",
@@ -228,134 +136,83 @@ class Info(commands.Cog):
 		name = "help",
 		description = "Информация о командах бота",
 	)
-	@app_commands.choices(
-		command = [
-			app_commands.Choice(name = "help", value = 1),
-			app_commands.Choice(name = "about", value = 2),
-			app_commands.Choice(name = "serverinfo", value = 3),
-		]
-	)
-	async def help(self, interaction: discord.Interaction, command: app_commands.Choice[int] = None):
+	async def help(self, interaction: discord.Interaction, command: str = None):
 		try:
 			if command == None:
-				list_cmds_info = get_commands_list(interaction, 'info')
-				list_cmds_fun = get_commands_list(interaction, 'fun')
-				list_cmds_settings = get_commands_list(interaction, 'settings')
-				list_cmds_moderation = get_commands_list(interaction, 'moderation')
-				list_cmds_economy = get_commands_list(interaction, 'economy')
+				modules = cspl_get_param(interaction, 'g', 'modules')
 
-				filtered_list_cmds_info = []
-				filtered_list_cmds_fun = []
-				filtered_list_cmds_settings = []
-				filtered_list_cmds_moderation = []
-				filtered_list_cmds_economy = []
-				for cmd in list_cmds_info:
-					if bool(cmd['permission']) or cmd['permission'] is None:
-						filtered_list_cmds_info.append(cmd)
-				for cmd in list_cmds_fun:
-					if bool(cmd['permission']) or cmd['permission'] is None:
-						filtered_list_cmds_fun.append(cmd)
-				for cmd in list_cmds_settings:
-					if bool(cmd['permission']) or cmd['permission'] is None:
-						filtered_list_cmds_settings.append(cmd)
-				for cmd in list_cmds_moderation:
-					if bool(cmd['permission']) or cmd['permission'] is None:
-						filtered_list_cmds_moderation.append(cmd)
-				for cmd in list_cmds_economy:
-					if bool(cmd['permission']) or cmd['permission'] is None:
-						filtered_list_cmds_economy.append(cmd)
-				
-			
+				categories = {
+					"info": "Информация",
+					"fun": "Веселье",
+					"settings": "Настройки",
+					"moderation": "Модерация",
+					"economy": "Экономика"
+				}
 
-				lists_len = len(filtered_list_cmds_info) + len(filtered_list_cmds_fun) + len(filtered_list_cmds_settings) + len(filtered_list_cmds_moderation)
 				emb = discord.Embed(
-					title = f"Доступные техники ({lists_len})",
-					description = '\n'.join([
-						#"Есть сложности использования моих техник? Не расстраивайся, постарайся все запомнить.",
-						f"Мои техники начинаются с префиксов `/` и `{cspl_get_param(interaction, 'g', 'prefix')}`. Для получения доп. информации по категории выберите её из списка."
-						#"Я разделил свои команды на несколько модулей, чтобы твоя бошка тыквенная не сдохла от моей гениальности :)))"
-					]),
-					color = 0x2b2d31
+					title="Доступные техники",
+					description=f"Мои техники начинаются с префиксов `/` и `{cspl_get_param(interaction, 'g', 'prefix')}`. Для получения доп. информации по категории выберите её из списка.",
+					color=0x2b2d31
 				)
-				emb.add_field(
-					name = f'Информация ({len(filtered_list_cmds_info)})', 
-					value = ' '.join([cmd['command'] for cmd in filtered_list_cmds_info]),
-					inline = False
-				)
-				emb.add_field(
-					name = f'Веселье ({len(filtered_list_cmds_fun)})', 
-					value = ' '.join([cmd['command'] for cmd in filtered_list_cmds_fun]),
-					inline = False
-				)
-				emb.add_field(
-					name = f'<:UtilitySettings:1250376547958001734> Настройки ({len(filtered_list_cmds_settings)})',
-					value=' '.join([cmd['command'] for cmd in filtered_list_cmds_settings]),
-					inline = False
-				)
-				if len(filtered_list_cmds_moderation) > 0:
-					emb.add_field(
-						name=f'<:Mod_Shield:1142795808945745970> Модерация ({len(filtered_list_cmds_moderation)})',
-						value=' '.join([cmd['command'] for cmd in filtered_list_cmds_moderation]),
-						inline = False
-					)
-				emb.add_field(
-					name = f'Экономика ({len(filtered_list_cmds_economy)})',
-					value=' '.join([cmd['command'] for cmd in filtered_list_cmds_economy]),
-					inline = False
-				)
-				emb.set_thumbnail(url = self.bot.user.avatar)
+				emb.set_thumbnail(url=self.bot.user.avatar)
+
+				total_commands = 0
+				for category, category_name in categories.items():
+					module = modules.get(category, {})
+					commands = module.get('commands', {})
+					filtered_commands = [
+						{'command': cmd['id'], 'desc': cmd['desc']}
+						for cmd in commands.values()
+						if not cmd.get('permission') or getattr(interaction.user.guild_permissions, cmd.get('permission', ''), False)
+					]
+					if filtered_commands:
+						emb.add_field(
+							name=f'{category_name} ({len(filtered_commands)})',
+							value=' '.join([cmd['command'] for cmd in filtered_commands]),
+							inline=False
+						)
+						total_commands += len(filtered_commands)
+
+				emb.title += f" ({total_commands})"
 				iam = self.bot.get_user(980175834373562439)
-				emb.set_footer(text = "dev: Sectormain, 2024", icon_url = iam.avatar)
+				emb.set_footer(text="dev: Sectormain, 2024", icon_url=iam.avatar)
 				#emb.set_footer(text = "creators: Sectormain, minus7yingzi | 2024")
-				await interaction.response.send_message(embed = emb, ephemeral = True, view = CmdHelp_CategoryList(self.bot))
-			elif command.name:
-				self.text_footer = False
-				with open(f"./.db/docs/commands/{command.name}.yml", encoding="utf-8") as read_file: cmd = yaml.safe_load(read_file)
+				await interaction.response.send_message(embed=emb, ephemeral=True, view=CmdHelp_CategoryList(self.bot))
+			elif command:
+				modules = cspl_get_param(interaction, 'g', 'modules')
+				command_name = command
+				command_info = None
+
+				for category, module in modules.items():
+					commands = module.get('commands', {})
+					if command_name in commands:
+						command_info = commands[command_name]
+						break
+
+				if not command_info:
+					return await interaction.response.send_message("Команда не найдена.", ephemeral=True)
+
+				formatted_text = ' '.join([f"`{key}`" for key in command_info.get("describe", {}).keys()])
 				
-				if "describe" in cmd:
-					keys = list(cmd["describe"].keys())
-					text = ' '.join(keys)
-					def add_color_markers(text):
-						words = text.split()  # Разделяем текст на отдельные слова
-						result = ""
-						for word in words:
-							if word.endswith("!"):
-								# Если слово заканчивается "*", добавляем закрашивающие маркеры
-								result += "\u001b[0;31m" + word + "\u001b[0;0m" + " "
-								self.text_footer = True
-							else:
-								result += word + " "
-						return result.strip()  # Удаляем лишний пробел в конце строки
-					formatted_text = add_color_markers(text)
-				else:
-					formatted_text = ""
-				emb = discord.Embed(title = f'Команда: {command.name}', color = 0x2b2d31)
+				emb = discord.Embed(title=f'Команда: {command_info["id"]}', color=0x2b2d31)
 				emb.add_field(
-					name = "Информация",
-					value = cmd["description"],
+					name="Информация",
+					value=command_info["desc"],
 					inline=False
 				)
-				if "prefix" in cmd["type"]:
-					pattern_value = f'\n```ansi\n{cspl_get_param(interaction, "g", "prefix")}{command.name} {formatted_text}\n```'
-				elif "hybrid" in cmd["type"]:
-					pattern_value = '\n'.join([
-						f'\n```ansi\n/{command.name} {formatted_text}',
-						f'{cspl_get_param(interaction, "g", "prefix")}{command.name} {formatted_text}\n```'
-					])
-				else:
-					pattern_value = f'\n```ansi\n/{command.name} {formatted_text}\n```'
+				pattern_value = f'\n```ansi\n/{command} {formatted_text}\n```'
 				emb.add_field(
-					name = "Паттерн",
-					value = pattern_value,
+					name="Паттерн",
+					value=pattern_value,
 					inline=False
 				)
-				if "describe" in cmd: emb.add_field(
-					name = "Параметры",
-					value = "\n".join([f"`{key}` — {value}" for key, value in cmd["describe"].items()]),
-					inline=False
-				)
-				if self.text_footer: emb.set_footer(text = "! — обязательный параметр")
-				await interaction.response.send_message(embed = emb, ephemeral = False)
+				if "describe" in command_info:
+					emb.add_field(
+						name="Параметры",
+						value="\n".join([f"`{key}` — {value}" for key, value in command_info["describe"].items()]),
+						inline=False
+					)
+				await interaction.response.send_message(embed=emb, ephemeral=False)
 			else:
 				return await interaction.response.send_message("Команда не найдена.", ephemeral = True)
 		except Exception as e:
@@ -409,10 +266,10 @@ class Info(commands.Cog):
 			modules_on = []
 			modules_off = []
 			for module in cspl_get_param(interaction, 'g', 'modules'):
-				if cspl_get_param(interaction, 'g', 'modules')[module]:
-					modules_on.append(module)
+				if cspl_get_param(interaction, 'g', 'modules')[module]['status']:
+					modules_on.append(cspl_get_param(interaction, 'g', 'modules')[module]['name'])
 				else:
-					modules_off.append(module)
+					modules_off.append(cspl_get_param(interaction, 'g', 'modules')[module]['name'])
 
 			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
 			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
@@ -444,8 +301,8 @@ class Info(commands.Cog):
 				inline=False
 			)
 			emb.set_thumbnail(url = self.bot.user.avatar)
-			emb.set_footer(text = f"Панель управления {self.bot.user}")
-			await interaction.response.send_message(content="Для изменения настроек воспользуйтесь кнопками.", embed = emb, ephemeral = True, view = PanelDialogs(self.bot))
+			emb.set_footer(text = f"/ Панель управления")
+			await interaction.response.send_message(content="Для изменения настроек воспользуйтесь кнопками.", embed = emb, ephemeral = True, view = DashboardBtns(self.bot))
 		except Exception as e:
 			await interaction.response.send_message(repr(e))
 	
@@ -543,6 +400,9 @@ class Info(commands.Cog):
 	)
 	async def serverinfo(self, interaction: discord.Interaction):
 		try:
+			emb = discord.Embed(
+				title = f'Сервер: {interaction.guild.name}'
+			)
 			await interaction.response.send_message("скоро...", ephemeral = False)
 		except Exception as e:
 			await interaction.response.send_message(repr(e))
@@ -656,7 +516,7 @@ class Info(commands.Cog):
 			)
 			emb.set_footer(text = f'ID: {user.id}')
 			emb.timestamp = datetime.now()
-			if user.id == 980175834373562439:
+			if user.id == 980175834373562439 or user.id == 522136072151367691:
 				emb.set_image(url = 'https://media1.tenor.com/m/aW1paWTKpZMAAAAd/%D1%85%D0%B0%D0%BA%D0%B5%D1%80%D1%8B-hackers.gif')
 				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=6678d5e5&is=66778465&hm=84845127e2c75af4dbcb1058a483656704885ba47f8f045646f1c236443135ca&')
 				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1221372466350522368/D82A2342.jpg?ex=667142bf&is=666ff13f&hm=7cd87d621f9cb941e5d301b9abbd3f4a914873d9faa9fdad53b731705002bc41&')

@@ -8,7 +8,7 @@ class Moderation(commands.Cog):
 		self.bot = bot
 	
 	# Проверка и создание роли "Muted_Sukuna"
-	async def ensure_mute_role(self, guild):
+	async def ensure_mute_role(self, guild: discord.Guild):
 		role_name = "Muted_Sukuna"
 		role = discord.utils.get(guild.roles, name=role_name)
 		if role is None:
@@ -26,9 +26,9 @@ class Moderation(commands.Cog):
 	
 	# Событие на присоединение к серверу
 	@commands.Cog.listener()
-	async def on_guild_join(self, guild):
+	async def on_guild_join(self, guild: discord.Guild):
 		await self.ensure_mute_role(guild)
-		self.bot.tree.copy_global_to(guild=discord.Object(id=guild.id))
+		self.bot.tree.copy_global_to(guild=discord.Object(id = guild.id))
 
 	# Команда mute
 	@app_commands.command(

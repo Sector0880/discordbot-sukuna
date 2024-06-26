@@ -1,10 +1,10 @@
 all:
-  use: 2
+  use: 3
   success: 2
   lose: 0
   error: 0
 repeat:
-  use: 1
+  use: 2
   success: 1
   lose: 0
   error: 0
