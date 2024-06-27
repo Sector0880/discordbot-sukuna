@@ -18,12 +18,12 @@ from botFunctions import *
 import botConfig
 import botDecorators
 
-def get_items_list(interaction: discord.Interaction, category, item_type):
+def get_items_list(interaction: discord.Interaction, _module, item_type):
 	valid_item_types = ['commands', 'events']
 	if item_type not in valid_item_types:
 		return [{'error': 'Неверный тип элемента', 'desc': 'None'}]
 
-	module = cspl_get_param_with_merge(interaction, 'g', 'modules').get(category, {})
+	module = cspl_get_param_with_merge(interaction, 'g', 'modules').get(_module, {})
 	if not module:
 		return [{'error': f'Не найден список {item_type}', 'desc': 'None'}]
 
@@ -48,7 +48,7 @@ class CmdHelp_CategoryList(discord.ui.View):
 		super().__init__(timeout=120)
 		self.bot = bot
 	
-	@discord.ui.select(placeholder="Выберите категорию...", options=[
+	@discord.ui.select(placeholder="Выберите модуль...", options=[
 		discord.SelectOption(label="Информация", value="info"),
 		discord.SelectOption(label="Веселье", value="fun"),
 		discord.SelectOption(label="Настройки", value="settings"),
@@ -75,11 +75,11 @@ class CmdHelp_CategoryList(discord.ui.View):
 				return
 
 			emb = discord.Embed(
-				title=f"Доступные команды ({len(filtered_commands)})",
+				title=f"Доступные техники ({len(filtered_commands)})",
 				description='\n'.join([f"{cmd['command']} — {cmd['desc']}" for cmd in filtered_commands]),
 				color=0x2b2d31
 			)
-			emb.set_footer(text=f"Категория: {module['name']}")
+			emb.set_footer(text=f"Модуль: {module['name']}")
 			emb.set_thumbnail(url=self.bot.user.avatar)
 
 			await interaction.response.send_message(embed=emb, ephemeral=True)
@@ -160,14 +160,6 @@ class Info(commands.Cog):
 			if command == None:
 				modules = cspl_get_param_with_merge(interaction, 'g', 'modules')
 
-				categories = {
-					"info": "Информация",
-					"fun": "Веселье",
-					"settings": "Настройки",
-					"moderation": "Модерация",
-					"economy": "Экономика"
-				}
-
 				emb = discord.Embed(
 					title="Доступные техники",
 					description=f"Мои техники начинаются с префикса `/`. Для получения доп. информации по категории выберите её из списка.",
@@ -176,8 +168,8 @@ class Info(commands.Cog):
 				emb.set_thumbnail(url=self.bot.user.avatar)
 
 				total_commands = 0
-				for category, category_name in categories.items():
-					module = modules.get(category, {})
+				for i, module in modules.items():
+					module_name = module.get('name', 'Без названия')
 					commands = module.get('commands', {})
 					filtered_commands = [
 						{'command': cmd['txt'], 'desc': cmd['desc']}
@@ -186,7 +178,7 @@ class Info(commands.Cog):
 					]
 					if filtered_commands:
 						emb.add_field(
-							name=f'{category_name} ({len(filtered_commands)})',
+							name=f'{module_name} ({len(filtered_commands)})',
 							value=' '.join([cmd['command'] for cmd in filtered_commands]),
 							inline=False
 						)
