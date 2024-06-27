@@ -16,23 +16,32 @@ from datetime import *
 from dbVars import *
 from botFunctions import *
 import botConfig
+import botDecorators
 
-def get_commands_list(interaction: discord.Interaction, category):
+def get_items_list(interaction: discord.Interaction, category, item_type):
+	valid_item_types = ['commands', 'events']
+	if item_type not in valid_item_types:
+		return [{'error': 'Неверный тип элемента', 'desc': 'None'}]
+
 	module = cspl_get_param_with_merge(interaction, 'g', 'modules').get(category, {})
 	if not module:
-		return [{'command': 'не найден список команд', 'desc': 'None', 'permission': None}]
+		return [{'error': f'Не найден список {item_type}', 'desc': 'None'}]
 
-	commands = []
-	for command_name, command_info in module.get('commands', {}).items():
-		command = {
-			'status': command_info['status'],
-			'id': command_info['id'],
-			'desc': command_info['desc'],
-			'permission': command_info.get('permission', None)
+	items = []
+	for item_name, item_info in module.get(item_type, {}).items():
+		item = {
+			'status': item_info['status']
 		}
-		commands.append(command)
-	
-	return commands
+		if item_type == 'commands':
+			item['txt'] = item_info.get('txt', 'Без текста') 
+			item['desc'] = item_info.get('desc', 'Без описания') 
+			item['permission'] = item_info.get('permission', None)
+		elif item_type == 'events':
+			item['txt'] = item_info.get('txt', 'Без текста') 
+			item['desc'] = item_info.get('desc', 'Без описания') 
+		items.append(item)
+
+	return items
 
 class CmdHelp_CategoryList(discord.ui.View):
 	def __init__(self, bot: commands.Bot):
@@ -56,7 +65,7 @@ class CmdHelp_CategoryList(discord.ui.View):
 
 			commands = module.get('commands', {})
 			filtered_commands = [
-				{'command': cmd_info['id'], 'desc': cmd_info['desc']}
+				{'command': cmd_info['txt'], 'desc': cmd_info['desc']}
 				for cmd_info in commands.values()
 				if not cmd_info.get('permission') or getattr(interaction.user.guild_permissions, cmd_info.get('permission', ''), False)
 			]
@@ -90,29 +99,38 @@ class DashboardBtns(discord.ui.View):
 			emb = discord.Embed()
 			
 			for module in cspl_get_param_with_merge(interaction, 'g', 'modules'):
-				module_cmds = get_commands_list(interaction, module)
+				module_cmds = get_items_list(interaction, module, 'commands')
+				module_events = get_items_list(interaction, module, 'events')
 
 				module_cmds_str = '\n'.join([
-					('<:switch_on:818125506309652490> ' if cmd['status'] and cspl_get_param_with_merge(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cmd['id']
+					('<:switch_on:818125506309652490> ' if cmd['status'] and cspl_get_param_with_merge(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cmd['txt']
 					for cmd in module_cmds
 				])
-				
+
+				module_events_str = '\n'.join([
+					('<:switch_on:818125506309652490> ' if event['status'] and cspl_get_param_with_merge(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + event['txt']
+					for event in module_events
+				])
+
 				try:
 					emb.add_field(
 						name = ('<:switch_on:818125506309652490> ' if cspl_get_param_with_merge(interaction, 'g', 'status', ['modules', module]) else '<:switch_off:818125535951323177> ') + cspl_get_param_with_merge(interaction, 'g', 'name', ['modules', module]),
-						value = module_cmds_str
+						value = module_cmds_str + '\n' + module_events_str
 					)
-				except Exception: pass
+				except Exception:
+					pass
 			emb.set_thumbnail(url = self.bot.user.avatar)
 			emb.set_footer(text = f"/ Панель управления / Модули")
 
-			txt = '\n'.join([
+			interaction_txt = '\n'.join([
 				"**Включить модуль:** `/switch on:module`",
 				"**Выключить модуль:** `/switch off:module`",
 				"\n**Включить команду:** `/switch on:command`",
-				"**Выключить команду:** `/switch off:command`"
+				"**Выключить команду:** `/switch off:command`",
+				"\n**Включить событие:** `/switch on:event`",
+				"**Выключить событие:** `/switch off:event`"
 			])
-			await interaction.response.send_message(content = txt, embed = emb, ephemeral = True)
+			await interaction.response.send_message(content = interaction_txt, embed = emb, ephemeral = True)
 			#interaction.message.view.stop() должно скрывать кнопку после нажатия но не скрывает
 		except discord.InteractionResponded:
 			await interaction.response.send_message("Это взаимодействие устарело. Пожалуйста, повторите команду.", ephemeral=True)
@@ -136,6 +154,7 @@ class Info(commands.Cog):
 		name = "help",
 		description = "Информация о командах бота",
 	)
+	@botDecorators.check_cmd_work()
 	async def help(self, interaction: discord.Interaction, command: str = None):
 		try:
 			if command == None:
@@ -151,7 +170,7 @@ class Info(commands.Cog):
 
 				emb = discord.Embed(
 					title="Доступные техники",
-					description=f"Мои техники начинаются с префиксов `/` и `{cspl_get_param(interaction, 'g', 'prefix')}`. Для получения доп. информации по категории выберите её из списка.",
+					description=f"Мои техники начинаются с префикса `/`. Для получения доп. информации по категории выберите её из списка.",
 					color=0x2b2d31
 				)
 				emb.set_thumbnail(url=self.bot.user.avatar)
@@ -161,7 +180,7 @@ class Info(commands.Cog):
 					module = modules.get(category, {})
 					commands = module.get('commands', {})
 					filtered_commands = [
-						{'command': cmd['id'], 'desc': cmd['desc']}
+						{'command': cmd['txt'], 'desc': cmd['desc']}
 						for cmd in commands.values()
 						if not cmd.get('permission') or getattr(interaction.user.guild_permissions, cmd.get('permission', ''), False)
 					]
@@ -194,7 +213,7 @@ class Info(commands.Cog):
 
 				formatted_text = ' '.join([f"`{key}`" for key in command_info.get("describe", {}).keys()])
 				
-				emb = discord.Embed(title=f'Команда: {command_info["id"]}', color=0x2b2d31)
+				emb = discord.Embed(title=f'Команда: {command_info["txt"]}', color=0x2b2d31)
 				emb.add_field(
 					name="Информация",
 					value=command_info["desc"],
@@ -222,6 +241,7 @@ class Info(commands.Cog):
 		name = 'ping',
 		description = 'Время отклика бота'
 	)
+	@botDecorators.check_cmd_work()
 	async def ping(self, interaction: discord.Interaction):
 		try:
 			await interaction.response.defer(ephemeral = False, thinking = True)
@@ -261,6 +281,7 @@ class Info(commands.Cog):
 	)
 	@app_commands.checks.has_permissions(administrator = True)
 	@app_commands.default_permissions(administrator = True)
+	@botDecorators.check_cmd_work()
 	async def dashboard(self, interaction: discord.Interaction):
 		try:
 			modules_on = []
@@ -314,6 +335,7 @@ class Info(commands.Cog):
 		name = "about",
 		description = 'Информация о боте'
 	)
+	@botDecorators.check_cmd_work()
 	async def about(self, interaction: discord.Interaction):
 		try:
 			guilds = 0
@@ -400,6 +422,7 @@ class Info(commands.Cog):
 		name = "serverinfo",
 		description="Информация о сервере"
 	)
+	@botDecorators.check_cmd_work()
 	async def serverinfo(self, interaction: discord.Interaction):
 		try:
 			emb = discord.Embed(
@@ -413,6 +436,7 @@ class Info(commands.Cog):
 		name = "member",
 		description = 'Информация об участнике'
 	)
+	@botDecorators.check_cmd_work()
 	async def member(self, interaction: discord.Interaction, member: discord.Member = None):
 		try:
 			user = interaction.user if not member else member
@@ -538,6 +562,7 @@ class Info(commands.Cog):
 		name = "avatar",
 		description = 'Аватарка участника сервера'
 	)
+	@botDecorators.check_cmd_work()
 	async def avatar(self, interaction: discord.Interaction, user: discord.Member = None):
 		try:
 			user = interaction.user if not user else user
@@ -554,6 +579,7 @@ class Info(commands.Cog):
 		name = "myowner",
 		description="А сейчас о моем разработчике))"
 	)
+	@botDecorators.check_cmd_work()
 	async def myowner(self, interaction: discord.Interaction):
 		try:
 			await interaction.response.send_message('скоро', ephemeral=True)

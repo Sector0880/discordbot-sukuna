@@ -8,8 +8,9 @@
                 "vk": "https://vk.com/sectormain"
             },
             "economy": {
-                "xp": 64,
-                "coins": 24
+                "xp": 442,
+                "coins": 162,
+                "lvl": 3
             }
         }
     },

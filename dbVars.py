@@ -95,6 +95,13 @@ def merge_data(default_data, custom_data):
             else:
                 merged[key] = value
         return merged
+    elif isinstance(default_data, list) and isinstance(custom_data, list):
+        # Assuming lists are merged by adding custom_data items to the default_data list
+        merged = default_data.copy()
+        for item in custom_data:
+            if item not in merged:
+                merged.append(item)
+        return merged
     return custom_data
 
 # берет объект из базы данных, но складывает json и yaml, таким образом yaml и json сливаются вместе, и измененные параметры

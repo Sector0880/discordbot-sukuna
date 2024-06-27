@@ -7,6 +7,7 @@ import enum
 import re
 from dbVars import *
 from botFunctions import *
+import botDecorators
 
 class Biography(commands.GroupCog, name = "biography"):
 	def __init__(self, bot: commands.Bot):
@@ -64,6 +65,7 @@ class Biography(commands.GroupCog, name = "biography"):
 		name = "set",
 		description = 'Добавить информацию для своей биографии'
 	)
+	@botDecorators.check_cmd_work()
 	async def set(self, interaction: discord.Interaction, *, about: str = None, age: int = None, city: str = None, vk: str = None, tg: str = None):
 		try:
 			if about:
@@ -103,6 +105,7 @@ class Biography(commands.GroupCog, name = "biography"):
 		app_commands.Choice(name = 'tg', value = 5),
 		app_commands.Choice(name = 'all', value = 6)
 	])
+	@botDecorators.check_cmd_work()
 	async def delete(self, interaction: discord.Interaction, parameter: app_commands.Choice[int]):
 		try:
 			if parameter.name == 'about':
@@ -144,14 +147,19 @@ class Settings(commands.Cog):
 		self.bot = bot
 		self.biography_commands = Biography(bot)
 	
-	class ChoiceModules(enum.Enum):
-		module_info = 1
-		module_fun = 2
-		module_settings = 3
-		module_moderation = 4
-		module_economy = 5
-		module_audit = 6
-		module_music = 7
+	class SwitchChoice(enum.Enum):
+		module_info = 'module-info'
+		module_fun = 'module-fun'
+		module_settings = 'module-settings'
+		module_moderation = 'module-moderation'
+		module_economy = 'module-economy'
+		module_audit = 'module-audit'
+		command_help = 'command-help'
+		command_ping = 'command-ping'
+		command_dashboard = 'command-dashboard'
+		command_about = 'command-dashboard'
+		command_serverinfo = 'command-serverinfo'
+		command_member = 'command-member'
 
 	@app_commands.command(
 		name = "switch",
@@ -159,8 +167,12 @@ class Settings(commands.Cog):
 	)
 	@app_commands.checks.has_permissions(administrator = True)
 	@app_commands.default_permissions(administrator = True)
-	async def switch(self, interaction: discord.Interaction, on: ChoiceModules = None, off: ChoiceModules = None):
-		await interaction.response.send_message("Скоро...", ephemeral=True)
+	@botDecorators.check_cmd_work()
+	async def switch(self, interaction: discord.Interaction, on: SwitchChoice = None, off: SwitchChoice = None):
+		interaction_txt = ''
+		if on: interaction_txt += on.value
+		if off: interaction_txt += off.value
+		await interaction.response.send_message(interaction_txt, ephemeral=True)
 	
 	
 	async def setup_biography_commands(self):

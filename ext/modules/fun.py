@@ -10,6 +10,7 @@ import random
 
 from datetime import *
 import botFunctions
+import botDecorators
 
 class Fun(commands.Cog):
 	def __init__(self, bot: commands.Bot):
@@ -19,6 +20,7 @@ class Fun(commands.Cog):
 		name = 'time', 
 		description = 'Время'
 	)
+	@botDecorators.check_cmd_work()
 	async def time(self, interaction: discord.Interaction):
 		try:
 			botFunctions.add_command_usage_counter(interaction, 1)
@@ -38,6 +40,7 @@ class Fun(commands.Cog):
 		name = "fact",
 		description="Рандомный факт"
 	)
+	@botDecorators.check_cmd_work()
 	async def fact(self, interaction: discord.Interaction):
 		facts = nekos.fact()
 
@@ -54,6 +57,7 @@ class Fun(commands.Cog):
 	@app_commands.describe(
 		member = "Юзер сервера"
     )
+	@botDecorators.check_cmd_work()
 	async def battle(self, interaction: discord.Interaction, member: discord.Member):
 		try:
 			a = random.randint(1,2)
@@ -84,6 +88,7 @@ class Fun(commands.Cog):
 		name = "opinion",
 		description = 'Мнение бота'
 	)
+	@botDecorators.check_cmd_work()
 	async def opinion(self, interaction: discord.Interaction, *, arg: str):
 		try:
 			a = random.randint(1, 3)

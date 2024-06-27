@@ -3,6 +3,8 @@ from discord.ext import commands
 from discord import app_commands
 import datetime
 
+import botDecorators
+
 class Moderation(commands.Cog):
 	def __init__(self, bot: commands.Bot):
 		self.bot = bot
@@ -37,6 +39,7 @@ class Moderation(commands.Cog):
 	)
 	@app_commands.checks.has_permissions(mute_members=True)
 	@app_commands.default_permissions(mute_members=True)
+	@botDecorators.check_cmd_work()
 	async def mute(self, interaction: discord.Interaction, member: discord.Member, reason: str = None):
 		role = await self.ensure_mute_role(interaction.guild)
 		if role in member.roles:
@@ -52,6 +55,7 @@ class Moderation(commands.Cog):
 	)
 	@app_commands.checks.has_permissions(mute_members=True)
 	@app_commands.default_permissions(mute_members=True)
+	@botDecorators.check_cmd_work()
 	async def unmute(self, interaction: discord.Interaction, member: discord.Member, reason: str = None):
 		role = await self.ensure_mute_role(interaction.guild)
 		if role not in member.roles:
@@ -68,6 +72,7 @@ class Moderation(commands.Cog):
 	)
 	@app_commands.checks.has_permissions(mute_members=True)
 	@app_commands.default_permissions(mute_members=True)
+	@botDecorators.check_cmd_work()
 	async def timeout(self, interaction: discord.Interaction, member: discord.Member, seconds: int = 0, minutes: int = 0, hours: int = 0, days: int = 0, reason: str = None):
 		try:
 			# сделать проверки на 0, на исп команды на людей с такими же правами как и у тебя
@@ -105,6 +110,7 @@ class Moderation(commands.Cog):
 	)
 	@app_commands.checks.has_permissions(mute_members=True)
 	@app_commands.default_permissions(mute_members=True)
+	@botDecorators.check_cmd_work()
 	async def untimeout(self, interaction: discord.Interaction, member: discord.Member):
 		try:
 			if not member.timed_out_until:
@@ -122,6 +128,7 @@ class Moderation(commands.Cog):
 	)
 	@app_commands.checks.has_permissions(ban_members=True)
 	@app_commands.default_permissions(ban_members=True)
+	@botDecorators.check_cmd_work()
 	async def ban(self, interaction: discord.Interaction):
 		await interaction.response.send_message(content='Скоро...')
 
