@@ -9,7 +9,7 @@ from botFunctions import *
 
 class RepeatCancel(discord.ui.View):
 	def __init__(self):
-		super().__init__(timeout=60)
+		super().__init__(timeout=None)
 		self.cancelled = False
 	
 	@discord.ui.button(label="Отменить", style=discord.ButtonStyle.gray)
@@ -23,7 +23,7 @@ class RepeatCancel(discord.ui.View):
 
 class DialogCancel(discord.ui.View):
 	def __init__(self):
-		super().__init__(timeout=60)
+		super().__init__(timeout=None)
 		self.cancelled = False
 	
 	@discord.ui.button(label="Остановить", style=discord.ButtonStyle.gray)
@@ -42,9 +42,8 @@ class ForADA(commands.Cog):
 	@commands.command(aliases = ["повтори", "п", "rp"])
 	async def repeat(self, ctx: discord.Message, channel = None):
 		try:
-			add_command_usage_counter(ctx, 1)
 			# проверки
-			if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения
+			if ctx.author.id not in sf_sp(): return
 			if channel is None: 
 				await ctx.message.add_reaction('❌')
 				return await ctx.send("❌ Напиши id чата вместе с командой.\n```!rp [id чата]```") # на наличие channel_id
@@ -70,10 +69,8 @@ class ForADA(commands.Cog):
 					await ctx.send(f"Успешно, сообщение: {message_output.jump_url}")
 			except asyncio.TimeoutError:
 				await ctx.send(f"Время ожидания истекло ({time_waiting} секунд)")
-			add_command_usage_counter(ctx, 2)
 		except Exception as e:
 			await ctx.send(e)
-			add_command_usage_counter(ctx, 3)
 	
 	@commands.command(aliases = ['dg', 'диалог'])
 	async def dialog(self, ctx: discord.Message, channel = None):

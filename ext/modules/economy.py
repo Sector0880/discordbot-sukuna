@@ -72,7 +72,7 @@ class Economy(commands.Cog):
 			custom_users[user_id][guild_id]["economy"] = {}
 
 		economy_levels = dbVars.cspl_get_param(message, 'g', 'lvls', ['economy'])
-		economy_levels.insert(0, {"lvl": 1, "xp": 0})
+		economy_levels.insert(0, dbVars.cspl_get_param(message, 'g', 'lvlFirst', ['economy']))
 
 		def find_current_level_xp(xp):
 			current_level = 1  # Начальный уровень 1
@@ -113,7 +113,7 @@ class Economy(commands.Cog):
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
 
 		lvls = dbVars.cspl_get_param(message, 'g', 'lvls', ['economy'])
-		lvls.insert(0, {"lvl": 1, "xp": 0})
+		lvls.insert(0, dbVars.cspl_get_param(message, 'g', 'lvlFirst', ['economy']))
 		member_xp = dbVars.cspl_get_param(message, 'u', 'xp', ['economy'])
 		member_lvl = dbVars.cspl_get_param(message, 'u', 'lvl', ['economy'])
 
@@ -125,6 +125,10 @@ class Economy(commands.Cog):
 
 		for lvl in lvls:
 			if member_xp >= lvl['xp'] and member_lvl < lvl['lvl']:
+				# проверка наличия валидного уровня
+				# добавить этот метод когда будет команда изменения уровней
+				#await self.check_lvl_validate(message)
+
 				# Обновление уровня пользователя
 				custom_users[user_id][guild_id]["economy"]['lvl'] = lvl['lvl']
 				if 'awards' in lvl and lvl['awards']:
@@ -132,25 +136,30 @@ class Economy(commands.Cog):
 					awards = lvl.get('awards', {})
 					if 'coins' in awards:
 						custom_users[user_id][guild_id]["economy"]['coins'] += awards['coins']
-						awards_txt += f"`{awards['coins']}{dbVars.cspl_get_param(message, 'g', 'coinsName', ['economy'])[0]}` "
-					if 'role' in awards:
-						role_id = int(awards['role'].strip('<@&>'))
+						awards_txt += f"`{awards['coins']}{dbVars.cspl_get_param(message, 'g', 'coinsTxt', ['economy'])[0]}` "
+					if 'remove_role' in awards:
+						role_id = awards['remove_role']
+						role = message.guild.get_role(role_id)
+						if role:
+							await message.author.remove_roles(role)
+							awards_txt += f'Удалена роль: <@&{role_id}> '
+					if 'add_role' in awards:
+						role_id = awards['add_role']
 						role = message.guild.get_role(role_id)
 						if role:
 							await message.author.add_roles(role)
-							awards_txt += f'Роль: <@&{role_id}> '
-					if 'roles' in awards:
-						for role_mention in awards['roles']:
-							role_id = int(role_mention.strip('<@&>'))
+							awards_txt += f'Добавлена роль: <@&{role_id}> '
+					if 'add_roles' in awards:
+						for role_mention in awards['add_roles']:
+							role_id = role_mention
 							role = message.guild.get_role(role_id)
 							if role:
 								await message.author.add_roles(role)
 								awards_txt += f'Роль: <@&{role_id}> '
-
+				if 'output' in lvl:
+					awards_txt += lvl['output']
+					
 				awarded = True
-			else: # проверка
-				# проверка наличия валидного уровня
-				await self.check_lvl_validate(message)
 
 		if awarded:
 			with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file:
@@ -172,7 +181,8 @@ class Economy(commands.Cog):
 	async def on_message(self, message: discord.Message):
 		try:
 			if message.author.bot: return
-			await self.start_economy_system(message)
+			if dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy']) and dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']):
+				await self.start_economy_system(message)
 		except Exception as e:
 			print(repr(e))
 	
@@ -219,7 +229,7 @@ elif dbVars.cspl_get_param(message, 'u', 'xp', 'economy') == 100:
 #u_xp = dbVars.cspl_get_param(message, 'u', 'xp', 'economy')
 		#u_lvl = dbVars.cspl_get_param(message, 'u', 'lvl', 'economy')
 		#lvls_list = dbVars.cspl_get_param(message, 'g', 'lvls', 'economy')
-		#lvls_list.insert(0, {"lvl": 1, "xp": 0})
+		#lvls_list.insert(0, cspl_get_param(message, 'g', 'lvlFirst', ['economy']))
 
 		#for level_data in lvls_list:
 			#if u_xp >= level_data['xp'] and u_lvl < level_data['lvl']:

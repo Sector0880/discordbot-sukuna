@@ -11,6 +11,10 @@ modules:
         status: true
         txt: '</help:1250144368837529692>'
         desc: 'Информация о командах бота'
+        parameters:
+          selected_command: "Укажите если хотите получить информацию о команде"
+        # \u001b[0;31m   \u001b[0;0m
+        example: ['/help', '/help selected_command']
       ping: 
         status: true
         txt: '</ping:1249321143983145034>'
@@ -36,9 +40,9 @@ modules:
         status: true
         txt: '</avatar:1249321144469950546>'
         desc: 'Аватарка участника сервера'
-      myowner: 
+      dev: 
         status: true
-        txt: '</myowner:1250743777077755915>'
+        txt: '</dev:1259118851073769512>'
         desc: 'А сейчас о моем разработчике))'
   fun:
     status: true
@@ -117,48 +121,74 @@ modules:
   audit:
     status: false
     name: "Аудит"
-    #events:
-      #block_badwords:
-        #status: false
-        #txt: 'Блокировка плохих слов'
+    events:
+      block_badwords:
+        status: false
+        txt: 'Блокировка плохих слов'
+        desc: "Блокировка плохих слов"
 premium:
   status: true
-economy:
-  lvls:
-    [
-    {lvl: 2, xp: 120},
-    {lvl: 3, xp: 240},
-    {lvl: 4, xp: 480, awards: {coins: 2500}},
-    {lvl: 5, xp: 720, awards: {coins: 2500, role: '<@&1255072896167055393>'}},
-    {lvl: 6, xp: 1000, awards: {coins: 3000}},
-    {lvl: 7, xp: 1200, awards: {coins: 3500}},
-    {lvl: 8, xp: 1440, awards: {coins: 4000}},
-    {lvl: 9, xp: 1680, awards: {coins: 4500}},
-    {lvl: 10, xp: 1920, awards: {coins: 5000, role: '<@&123>'}},
-    {lvl: 11, xp: 2160, awards: {coins: 5500}},
-    {lvl: 12, xp: 2400, awards: {coins: 6000}},
-    {lvl: 13, xp: 2640, awards: {coins: 6500}},
-    {lvl: 14, xp: 2880, awards: {coins: 7000}},
-    {lvl: 15, xp: 3120, awards: {coins: 7500, role: '<@&123>'}},
-    {lvl: 16, xp: 3360, awards: {coins: 8000}},
-    {lvl: 17, xp: 3600, awards: {coins: 8500}},
-    {lvl: 18, xp: 3840, awards: {coins: 9000}},
-    {lvl: 19, xp: 4080, awards: {coins: 9500}},
-    {lvl: 20, xp: 4320, awards: {coins: 10000, role: '<@&123>'}},
-    {lvl: 21, xp: 4560, awards: {coins: 10500}},
-    {lvl: 22, xp: 4800, awards: {coins: 11000}},
-    {lvl: 23, xp: 5040, awards: {coins: 11500}},
-    {lvl: 24, xp: 5280, awards: {coins: 12000}},
-    {lvl: 25, xp: 5520, awards: {coins: 12500, role: '<@&123>'}},
-    {lvl: 26, xp: 5760, awards: {coins: 13000}},
-    {lvl: 27, xp: 6000, awards: {coins: 13500}},
-    {lvl: 28, xp: 6240, awards: {coins: 14000}},
-    {lvl: 29, xp: 6480, awards: {coins: 14500}},
-    {lvl: 30, xp: 6720, awards: {coins: 15000, role: '<@&123>'}}
-    ]
-  msgAward:
-    xp: 8
-    coins: 3
-    cooldown: 7
-  xpName: ["curen", "Проклятая энергия"]
-  coinsName: ["grb", "Гербы магической школы"]
+economy_options:
+  # структура уровня
+  # {lvl*: int, xp*: int, lvlName: str(10), awards: {coins: int, remove_role: int, add_role: int, add_roles: [...int]}, output: str}
+  option1: &economyOption1
+    lvlFirst: {lvl: 1, xp: 0}
+    lvls:
+      [
+        {lvl: 2, xp: 120},
+        {lvl: 3, xp: 240},
+        {lvl: 4, xp: 480},
+        {lvl: 5, xp: 720},
+        {lvl: 6, xp: 1000},
+        {lvl: 7, xp: 1200},
+        {lvl: 8, xp: 1440},
+        {lvl: 9, xp: 1680},
+        {lvl: 10, xp: 1920},
+        {lvl: 11, xp: 2160},
+        {lvl: 12, xp: 2400},
+        {lvl: 13, xp: 2640},
+        {lvl: 14, xp: 2880},
+        {lvl: 15, xp: 3120},
+        {lvl: 16, xp: 3360},
+        {lvl: 17, xp: 3600},
+        {lvl: 18, xp: 3840},
+        {lvl: 19, xp: 4080},
+        {lvl: 20, xp: 4320},
+        {lvl: 21, xp: 4560},
+        {lvl: 22, xp: 4800},
+        {lvl: 23, xp: 5040},
+        {lvl: 24, xp: 5280},
+        {lvl: 25, xp: 5520},
+        {lvl: 26, xp: 5760},
+        {lvl: 27, xp: 6000},
+        {lvl: 28, xp: 6240},
+        {lvl: 29, xp: 6480},
+        {lvl: 30, xp: 6720}
+      ]
+    msgAward:
+      xp: 8
+      coins: 3
+      cooldown: 7
+    lvlTxt: ["ур.", "Уровень", "Уровни"]
+    xpTxt: ["xp", "Очки опыта"]
+    coinsTxt: ["coins", "Монетки"]
+  option2: &economyOption2
+    lvlFirst: {lvl: 1, xp: 0, lvlName: "4 ранг"}
+    lvls:
+      [
+        {lvl: 2, xp: 120, lvlName: "3 ранг", awards: {coins: 500}},
+        {lvl: 3, xp: 240, lvlName: "2,5 ранг", awards: {coins: 1500}},
+        {lvl: 4, xp: 480, lvlName: "2 ранг", awards: {coins: 2500}},
+        {lvl: 5, xp: 720, lvlName: "1,5 ранг", awards: {coins: 2500}},
+        {lvl: 6, xp: 1000, lvlName: "1 ранг", awards: {coins: 3000}},
+        {lvl: 7, xp: 1200, lvlName: "особый 1 ранг", awards: {coins: 3500}},
+        {lvl: 8, xp: 1440, lvlName: "особый ранг", awards: {coins: 4000}},
+      ]
+    msgAward:
+      xp: 8
+      coins: 3
+      cooldown: 7
+    lvlTxt: ["ур.", "Уровень", "Уровни"]
+    xpTxt: ["curen", "Проклятая энергия"]
+    coinsTxt: ["grb", "Гербы магической школы"]
+economy: *economyOption2

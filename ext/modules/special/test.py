@@ -23,6 +23,7 @@ class Test(commands.Cog):
 		try:
 			if interaction.user.id not in sf_sp(): return await interaction.response.send_message("Нету прав.")
 			await interaction.response.send_message('тест', ephemeral=True, delete_after=3)
+			print(cspl_get_param(interaction, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']))
 		except Exception as e:
 			print(repr(e))
 

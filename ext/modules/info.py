@@ -43,7 +43,7 @@ def get_items_list(interaction: discord.Interaction, _module, item_type):
 
 	return items
 
-class CmdHelp_CategoryList(discord.ui.View):
+class CmdHelp_ModuleList(discord.ui.View):
 	def __init__(self, bot: commands.Bot):
 		super().__init__(timeout=120)
 		self.bot = bot
@@ -56,8 +56,10 @@ class CmdHelp_CategoryList(discord.ui.View):
 		discord.SelectOption(label="Экономика", value="economy"),
 		discord.SelectOption(label="Аудит", value="audit")
 	])
-	async def select_category(self, interaction: discord.Interaction, select: discord.ui.Select):
+	async def select_module(self, interaction: discord.Interaction, select: discord.ui.Select):
 		try:
+			await interaction.response.defer(ephemeral = True, thinking = True)
+
 			modules = cspl_get_param_with_merge(interaction, 'g', 'modules')
 			
 			selected_category = select.values[0]
@@ -65,13 +67,14 @@ class CmdHelp_CategoryList(discord.ui.View):
 
 			commands = module.get('commands', {})
 			filtered_commands = [
-				{'command': cmd_info['txt'], 'desc': cmd_info['desc']}
+				{'command': cmd_info['txt'], 'desc': cmd_info['desc'], 'status': cmd_info['status']}
 				for cmd_info in commands.values()
+				if cmd_info['status']
 				if not cmd_info.get('permission') or getattr(interaction.user.guild_permissions, cmd_info.get('permission', ''), False)
 			]
 			
 			if not filtered_commands:
-				await interaction.response.send_message("Нет доступных команд в этой категории.", ephemeral=True)
+				await interaction.edit_original_response(content="Нет доступных команд в этом модуле.")
 				return
 
 			emb = discord.Embed(
@@ -82,11 +85,11 @@ class CmdHelp_CategoryList(discord.ui.View):
 			emb.set_footer(text=f"Модуль: {module['name']}")
 			emb.set_thumbnail(url=self.bot.user.avatar)
 
-			await interaction.response.send_message(embed=emb, ephemeral=True)
+			await interaction.edit_original_response(embed = emb)
 		except discord.InteractionResponded:
-			await interaction.response.send_message("Это взаимодействие устарело. Пожалуйста, повторите команду.", ephemeral=True)
+			await interaction.edit_original_response(content = "Это взаимодействие устарело. Пожалуйста, повторите команду.")
 		except Exception as e:
-			await interaction.response.send_message(f"Произошла ошибка: {repr(e)}", ephemeral=True)
+			await interaction.edit_original_response(content = f"Произошла ошибка: {repr(e)}")
 
 class DashboardBtns(discord.ui.View):
 	def __init__(self, bot: commands.Bot):
@@ -96,6 +99,8 @@ class DashboardBtns(discord.ui.View):
 	@discord.ui.button(label="Модули", style=discord.ButtonStyle.gray)
 	async def modules(self, interaction: discord.Interaction, button: discord.ui.Button):
 		try:
+			await interaction.response.defer(ephemeral = True, thinking = True)
+
 			emb = discord.Embed()
 			
 			for module in cspl_get_param_with_merge(interaction, 'g', 'modules'):
@@ -123,28 +128,26 @@ class DashboardBtns(discord.ui.View):
 			emb.set_footer(text = f"/ Панель управления / Модули")
 
 			interaction_txt = '\n'.join([
-				"**Включить модуль:** `/switch on:module`",
-				"**Выключить модуль:** `/switch off:module`",
-				"\n**Включить команду:** `/switch on:command`",
-				"**Выключить команду:** `/switch off:command`",
-				"\n**Включить событие:** `/switch on:event`",
-				"**Выключить событие:** `/switch off:event`"
+				"**Включить / Выключить модуль:**  `/switch on:module`  `/switch off:module`",
+				"**Включить / Выключить команду:** `/switch on:command` `/switch off:command`",
+				"**Включить / Выключить событие:** `/switch on:event`   `/switch off:event`",
 			])
-			await interaction.response.send_message(content = interaction_txt, embed = emb, ephemeral = True)
+			await interaction.edit_original_response(content = interaction_txt, embed = emb)
 			#interaction.message.view.stop() должно скрывать кнопку после нажатия но не скрывает
 		except discord.InteractionResponded:
-			await interaction.response.send_message("Это взаимодействие устарело. Пожалуйста, повторите команду.", ephemeral=True)
+			await interaction.edit_original_response(content = "Это взаимодействие устарело. Пожалуйста, повторите команду.")
 		except Exception as e:
-			await interaction.response.send_message(f"Произошла ошибка: {repr(e)}", ephemeral=True)
+			await interaction.edit_original_response(content = f"Произошла ошибка: {repr(e)}")
 	
 	@discord.ui.button(label="Экономика", style=discord.ButtonStyle.gray)
 	async def economy(self, interaction: discord.Interaction, button: discord.ui.Button):
 		try:
-			await interaction.response.send_message("Скоро", ephemeral=True)
+			await interaction.response.defer(ephemeral = True, thinking = True)
+			await interaction.edit_original_response(content = "Скоро")
 		except discord.InteractionResponded:
-			await interaction.response.send_message("Это взаимодействие устарело. Пожалуйста, повторите команду.", ephemeral=True)
+			await interaction.edit_original_response("Это взаимодействие устарело. Пожалуйста, повторите команду.")
 		except Exception as e:
-			await interaction.response.send_message(f"Произошла ошибка: {repr(e)}", ephemeral=True)
+			await interaction.edit_original_response(f"Произошла ошибка: {repr(e)}")
 
 class Info(commands.Cog):
 	def __init__(self, bot: commands.Bot):
@@ -155,9 +158,9 @@ class Info(commands.Cog):
 		description = "Информация о командах бота",
 	)
 	@botDecorators.check_cmd_work()
-	async def help(self, interaction: discord.Interaction, command: str = None):
+	async def help(self, interaction: discord.Interaction, selected_command: str = None):
 		try:
-			if command == None:
+			if selected_command == None:
 				modules = cspl_get_param_with_merge(interaction, 'g', 'modules')
 
 				emb = discord.Embed(
@@ -172,8 +175,9 @@ class Info(commands.Cog):
 					module_name = module.get('name', 'Без названия')
 					commands = module.get('commands', {})
 					filtered_commands = [
-						{'command': cmd['txt'], 'desc': cmd['desc']}
+						{'command': cmd['txt'], 'desc': cmd['desc'], 'status': cmd['status']}
 						for cmd in commands.values()
+						if cmd['status']
 						if not cmd.get('permission') or getattr(interaction.user.guild_permissions, cmd.get('permission', ''), False)
 					]
 					if filtered_commands:
@@ -188,22 +192,21 @@ class Info(commands.Cog):
 				iam = self.bot.get_user(980175834373562439)
 				emb.set_footer(text="dev: Sectormain, 2024", icon_url=iam.avatar)
 				#emb.set_footer(text = "creators: Sectormain, minus7yingzi | 2024")
-				await interaction.response.send_message(embed=emb, ephemeral=True, view=CmdHelp_CategoryList(self.bot))
-			elif command:
+				await interaction.response.send_message(embed=emb, ephemeral=True, view=CmdHelp_ModuleList(self.bot))
+			elif selected_command:
 				modules = cspl_get_param_with_merge(interaction, 'g', 'modules')
-				command_name = command
+				selected_command_name = selected_command
 				command_info = None
+				command_patterns = None
 
 				for category, module in modules.items():
 					commands = module.get('commands', {})
-					if command_name in commands:
-						command_info = commands[command_name]
+					if selected_command_name in commands:
+						command_info = commands[selected_command_name]
 						break
 
 				if not command_info:
 					return await interaction.response.send_message("Команда не найдена.", ephemeral=True)
-
-				formatted_text = ' '.join([f"`{key}`" for key in command_info.get("describe", {}).keys()])
 				
 				emb = discord.Embed(title=f'Команда: {command_info["txt"]}', color=0x2b2d31)
 				emb.add_field(
@@ -211,16 +214,19 @@ class Info(commands.Cog):
 					value=command_info["desc"],
 					inline=False
 				)
-				pattern_value = f'\n```ansi\n/{command} {formatted_text}\n```'
-				emb.add_field(
-					name="Паттерн",
-					value=pattern_value,
-					inline=False
-				)
-				if "describe" in command_info:
+
+				if "parameters" in command_info:
 					emb.add_field(
 						name="Параметры",
-						value="\n".join([f"`{key}` — {value}" for key, value in command_info["describe"].items()]),
+						value="\n".join([f"`{key}` — {value}" for key, value in command_info["parameters"].items()]),
+						inline=False
+					)
+				
+				exmp_value = ' '.join([f'```ansi\n{exmp}\n```' for exmp in command_info.get("example", {})])
+				if len(exmp_value) > 0:
+					emb.add_field(
+						name="Примеры",
+						value=exmp_value,
 						inline=False
 					)
 				await interaction.response.send_message(embed=emb, ephemeral=False)
@@ -276,6 +282,8 @@ class Info(commands.Cog):
 	@botDecorators.check_cmd_work()
 	async def dashboard(self, interaction: discord.Interaction):
 		try:
+			await interaction.response.defer(ephemeral = True, thinking = True)
+
 			modules_on = []
 			modules_off = []
 			for module in cspl_get_param_with_merge(interaction, 'g', 'modules'):
@@ -300,26 +308,32 @@ class Info(commands.Cog):
 
 
 			economy_data = cspl_get_param(interaction, "g", "lvls", ["economy"])
-			economy_data.insert(0, {"lvl": 1, "xp": 0})
+			economy_data.insert(0, cspl_get_param(interaction, "g", "lvlFirst", ["economy"]))
 			first_lvl = economy_data[0]['lvl']
 			first_lvl_xp = economy_data[0]['xp']
+			first_lvl_name = economy_data[0].get('lvlName', False)
+			first_lvl_name_text = f' {first_lvl_name}' if first_lvl_name else ''
+
 			last_lvl = economy_data[-1]['lvl']
 			last_lvl_xp = economy_data[-1]['xp']
-			level_range = f'`{first_lvl}ур. ({first_lvl_xp}{cspl_get_param(interaction, "g", "xpName", ["economy"])[0]})` → `{last_lvl}ур. ({last_lvl_xp}{cspl_get_param(interaction, "g", "xpName", ["economy"])[0]})`'
+			last_lvl_name = economy_data[-1].get('lvlName', False)
+			last_lvl_name_text = f' {last_lvl_name}' if last_lvl_name else ''
+			level_range = f'`{first_lvl}{cspl_get_param(interaction, "g", "lvlTxt", ["economy"])[0]}{first_lvl_name_text} ({first_lvl_xp}{cspl_get_param(interaction, "g", "xpTxt", ["economy"])[0]})` → `{last_lvl}{cspl_get_param(interaction, "g", "lvlTxt", ["economy"])[0]}{last_lvl_name_text} ({last_lvl_xp}{cspl_get_param(interaction, "g", "xpTxt", ["economy"])[0]})`'
 			
-			emb.add_field(
-				name = "Экономика",
-				value = '\n'.join([
-					f'**Уровни:** {level_range}',
-					f'**Награда за сообщение:** `{cspl_get_param(interaction, "g", "xp", ["economy", "msgAward"])}{cspl_get_param(interaction, "g", "xpName", ["economy"])[0]}, {cspl_get_param(interaction, "g", "coins", ["economy", "msgAward"])}{cspl_get_param(interaction, "g", "coinsName", ["economy"])[0]} / {cspl_get_param(interaction, "g", "cooldown", ["economy", "msgAward"])} сек.`',
-				]),
-				inline=False
-			)
+			if cspl_get_param(interaction, 'g', 'status', ['modules', 'economy']) and cspl_get_param(interaction, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']):
+				emb.add_field(
+					name = "Экономика",
+					value = '\n'.join([
+						f"**{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[2]}:** {level_range}",
+						f'**Награда за сообщение:** `{cspl_get_param(interaction, "g", "xp", ["economy", "msgAward"])}{cspl_get_param(interaction, "g", "xpTxt", ["economy"])[0]}, {cspl_get_param(interaction, "g", "coins", ["economy", "msgAward"])}{cspl_get_param(interaction, "g", "coinsTxt", ["economy"])[0]} / {cspl_get_param(interaction, "g", "cooldown", ["economy", "msgAward"])} сек.`',
+					]),
+					inline=False
+				)
 			emb.set_thumbnail(url = self.bot.user.avatar)
 			emb.set_footer(text = f"/ Панель управления")
-			await interaction.response.send_message(content="Для изменения настроек воспользуйтесь кнопками.", embed = emb, ephemeral = True, view = DashboardBtns(self.bot))
+			await interaction.edit_original_response(embed = emb, view = DashboardBtns(self.bot))
 		except Exception as e:
-			await interaction.response.send_message(repr(e))
+			await interaction.edit_original_response(repr(e))
 	
 	
 	# Получить детальную информацию о боте
@@ -444,6 +458,7 @@ class Info(commands.Cog):
 			emb = discord.Embed(colour = 0x2b2d31)
 			emb.set_author(name = f'{user}', icon_url = user.avatar)
 			emb.set_thumbnail(url = user.avatar)
+			bio_txt_send_message = ''
 			if user != self.bot.user:
 				bio_list = []
 				if cspl_get_param(interaction, 'u', 'about', ['biography'], user):
@@ -460,7 +475,7 @@ class Info(commands.Cog):
 					emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
 					bio_txt_send_message = ''
 				else:
-					bio_txt_send_message = 'Создайте свою биографию с помощью команды </biography set:1251828637473439767>'
+					bio_txt_send_message = '||Создайте свою биографию с помощью команды </biography set:1251828637473439767>||'
 			else:
 				emb.add_field(name = 'Биография', value = '\n'.join([
 					f"**О себе:** 3990см хуй блять нахуй",
@@ -470,7 +485,7 @@ class Info(commands.Cog):
 			#emb.add_field(name = 'Статус', value = status)
 
 			economy_levels = cspl_get_param(interaction, 'g', 'lvls', ['economy'])
-			economy_levels.insert(0, {"lvl": 1, "xp": 0})
+			economy_levels.insert(0, cspl_get_param(interaction, 'g', 'lvlFirst', ['economy']))
 
 			def find_current_level_xp(xp):
 				current_level = 1  # Начальный уровень 1
@@ -501,22 +516,25 @@ class Info(commands.Cog):
 			filled_blocks = int(percent_to_next_level / 100 * progress_bar_length)
 			empty_blocks = progress_bar_length - filled_blocks
 
-			#progress_bar = f"\n`[{'▰' * filled_blocks}{'═' * empty_blocks}]{percent_to_next_level:02d}%`"
-			progress_bar = ''
-			#progress_bar = f"[{'▰' * filled_blocks}{'▱' * empty_blocks}]"
+			progress_bar = f"\n`[{'▰' * filled_blocks}{'═' * empty_blocks}]{percent_to_next_level:02d}%`"
+			#progress_bar = ''
 
 			current_xp_needed = economy_levels[current_level - 1]["xp"]
+			current_level_name = economy_levels[current_level - 1].get("lvlName", False)
+			current_level_name_text = f" {current_level_name}" if current_level_name else ""
 			if next_level is not None:
 				next_xp_needed = economy_levels[next_level - 1]["xp"]
-				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})` {progress_bar} \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]}` до `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})`"
+				next_level_name = economy_levels[next_level - 1].get("lvlName", False)
+				next_level_name_text = f" {next_level_name}" if next_level_name else ""
+				economy_lvl_txt = f"**{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[1]}:** `{current_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]}{current_level_name_text} ({cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpTxt', ['economy'])[0]})` {progress_bar} \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpTxt', ['economy'])[0]}` до `{next_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]}{next_level_name_text} ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpTxt', ['economy'])[0]})`"
 			else:
-				economy_lvl_txt = f"**Уровень:** `{current_level}ур. ({cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpName', ['economy'])[0]})` {progress_bar} \n`Макс. уровень достигнут`"
+				economy_lvl_txt = f"**{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[1]}:** `{current_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]}{current_level_name_text} ({cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpTxt', ['economy'])[0]})` {progress_bar} \n`Макс. {cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[1].lower()} достигнут`"
 
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
 					economy_lvl_txt,
-					f"**{cspl_get_param(interaction, 'g', 'coinsName', ['economy'])[1]}:** `{cspl_get_param(interaction, 'u', 'coins', ['economy'], user)}{cspl_get_param(interaction, 'g', 'coinsName', ['economy'])[0]}`"
+					f"**{cspl_get_param(interaction, 'g', 'coinsTxt', ['economy'])[1]}:** `{cspl_get_param(interaction, 'u', 'coins', ['economy'], user)}{cspl_get_param(interaction, 'g', 'coinsTxt', ['economy'])[0]}`"
 				])
 			)
 			emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
@@ -546,7 +564,7 @@ class Info(commands.Cog):
 					banner_url = f"https://cdn.discordapp.com/banners/{user.id}/{banner_id}?size=1024"
 					emb.set_image(url = banner_url)
 
-			await interaction.response.send_message(content = bio_txt_send_message, embed = emb, ephemeral = False)
+			await interaction.response.send_message(content = bio_txt_send_message if user == interaction.user else '', embed = emb, ephemeral = False)
 		except Exception as e:
 			await interaction.response.send_message(repr(e), ephemeral = False)
 	
@@ -568,11 +586,11 @@ class Info(commands.Cog):
 			await interaction.response.send_message(e, ephemeral=True)
 	
 	@app_commands.command(
-		name = "myowner",
+		name = "dev",
 		description="А сейчас о моем разработчике))"
 	)
 	@botDecorators.check_cmd_work()
-	async def myowner(self, interaction: discord.Interaction):
+	async def dev(self, interaction: discord.Interaction):
 		try:
 			await interaction.response.send_message('скоро', ephemeral=True)
 		except Exception as e:
@@ -646,9 +664,9 @@ def find_current_level_xp(xp):
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
-					f"**Уровень:** \n`{current_level}ур. ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}ур. ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]})`",
-					f"**{cspl_get_param(interaction, 'g', 'xpName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'xp', 'economy')}{cspl_get_param(interaction, 'g', 'xpName', 'economy')[0]}`",
-					f"**{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy')}{cspl_get_param(interaction, 'g', 'coinsName', 'economy')[0]}`"
+					f"**Уровень:** \n`{current_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]} ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]} ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]})`",
+					f"**{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'xp', 'economy')}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]}`",
+					f"**{cspl_get_param(interaction, 'g', 'coinsTxt', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy')}{cspl_get_param(interaction, 'g', 'coinsTxt', 'economy')[0]}`"
 				])
 			)
 """
