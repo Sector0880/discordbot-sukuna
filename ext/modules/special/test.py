@@ -7,9 +7,12 @@ import re
 import os
 import json
 import yaml
+import postgrest
 
 from dbVars import *
 import botDecorators
+
+from supabase import create_client, Client
 
 class Test(commands.Cog):
 	def __init__(self, bot):
@@ -29,20 +32,9 @@ class Test(commands.Cog):
 
 	@commands.command()
 	@commands.is_owner()
-	async def t(self, ctx: discord.Message):
+	async def t(self, ctx):
 		try:
-			em = discord.Embed(
-				title="Слеш команды",
-				description="Список всех слеш команд бота",
-				color=discord.Color.blurple())
-
-			for slash_command in self.bot.tree.walk_commands():
-				em.add_field(name=slash_command.name, 
-							value=slash_command.description if slash_command.description else slash_command.name, 
-							inline=False) 
-			#await ctx.send(embed = em)
-
-			print(cspl_get_param(ctx, 'g', 'prefix'))
+			await ctx.send(supabase_get_data('crossplatform_initial_guilds', '*')[0]['economy']['lvls'])
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:

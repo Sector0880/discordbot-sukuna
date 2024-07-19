@@ -66,10 +66,10 @@ class Biography(commands.GroupCog, name = "biography"):
 		description = 'Добавить информацию для своей биографии'
 	)
 	@botDecorators.check_cmd_work()
-	async def set(self, interaction: discord.Interaction, *, about: str = None, age: int = None, city: str = None, vk: str = None, tg: str = None):
+	async def set(self, interaction: discord.Interaction, *, phrase: str = None, age: int = None, city: str = None, vk: str = None, tg: str = None):
 		try:
-			if about:
-				self.set_biography_param(interaction, "about", about)
+			if phrase:
+				self.set_biography_param(interaction, "phrase", phrase)
 			if age:
 				self.set_biography_param(interaction, "age", age)
 			if city:
@@ -81,7 +81,7 @@ class Biography(commands.GroupCog, name = "biography"):
 			emb = discord.Embed(
 				title = "Успешно",
 				description = f"Вы изменили свои данные в биографии:\n" + '\n'.join([
-					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'about', ['biography'], interaction.user) else "**О себе:** `нету`",
+					f"**О себе:** {cspl_get_param(interaction, 'u', 'phrase', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'phrase', ['biography'], interaction.user) else "**О себе:** `нету`",
 					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user) else "**Возраст:** `нету`",
 					f"**Город:** {cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user) else "**Город:** `нету`",
 					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user) else "**VK:** `нету`",
@@ -98,7 +98,7 @@ class Biography(commands.GroupCog, name = "biography"):
 		description = 'Удалить информацию из своей биографии'
 	)
 	@app_commands.choices(parameter = [
-		app_commands.Choice(name = 'about', value = 1),
+		app_commands.Choice(name = 'phrase', value = 1),
 		app_commands.Choice(name = 'age', value = 2),
 		app_commands.Choice(name = 'city', value = 3),
 		app_commands.Choice(name = 'vk', value = 4),
@@ -108,8 +108,8 @@ class Biography(commands.GroupCog, name = "biography"):
 	@botDecorators.check_cmd_work()
 	async def delete(self, interaction: discord.Interaction, parameter: app_commands.Choice[int]):
 		try:
-			if parameter.name == 'about':
-				await self.del_biography_param(interaction, "about")
+			if parameter.name == 'phrase':
+				await self.del_biography_param(interaction, "phrase")
 			if parameter.name == 'age':
 				await self.del_biography_param(interaction, "age")
 			if parameter.name == 'city':
@@ -119,7 +119,7 @@ class Biography(commands.GroupCog, name = "biography"):
 			if parameter.name == 'tg':
 				await self.del_biography_param(interaction, "tg")
 			if parameter.name == 'all':
-				await self.del_biography_param(interaction, "about", True)
+				await self.del_biography_param(interaction, "phrase", True)
 				await self.del_biography_param(interaction, "age", True)
 				await self.del_biography_param(interaction, "city", True)
 				await self.del_biography_param(interaction, "vk", True)
@@ -130,7 +130,7 @@ class Biography(commands.GroupCog, name = "biography"):
 			emb = discord.Embed(
 				title = "Успешно",
 				description = f"Вы удалили свои данные из биографии:\n" + '\n'.join([
-					f"**О себе:** {cspl_get_param(interaction, 'u', 'about', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'about', ['biography'], interaction.user) else "**О себе:** `нету`",
+					f"**О себе:** {cspl_get_param(interaction, 'u', 'phrase', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'phrase', ['biography'], interaction.user) else "**О себе:** `нету`",
 					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user) else "**Возраст:** `нету`",
 					f"**Город:** {cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user) else "**Город:** `нету`",
 					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user) else "**VK:** `нету`",

@@ -1,0 +1,17 @@
+mute:
+  status: false
+biography:
+  phrase: false
+  age: false
+  city: false
+  vk: false
+  tg: false
+statistic:
+  send_messages: 0
+  connecting_to_voice: 0
+economy:
+  xp: 0
+  lvl: 1
+  coins: 0
+social:
+  likes: 0

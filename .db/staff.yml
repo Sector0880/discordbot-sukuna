@@ -1,5 +1,5 @@
 dev:
-  name: "sectormain_"
+  name: "sectormain"
   id1: &creator_id1 980175834373562439 # revampcroot
   id2: &creator_id2 522136072151367691 # restart
 administrators:

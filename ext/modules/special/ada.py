@@ -4,7 +4,11 @@ from discord import app_commands, interactions
 
 import asyncio
 import re
+import os
+from io import BytesIO
+from PIL import Image, ImageDraw, ImageFont
 from dbVars import *
+import botDecorators
 from botFunctions import *
 
 class RepeatCancel(discord.ui.View):
@@ -36,7 +40,7 @@ class DialogCancel(discord.ui.View):
 		self.stop()
 
 class ForADA(commands.Cog):
-	def __init__(self, bot):
+	def __init__(self, bot: commands.Bot):
 		self.bot = bot
 	
 	@commands.command(aliases = ["повтори", "п", "rp"])
@@ -109,6 +113,8 @@ class ForADA(commands.Cog):
 			await channel.send(f'Пользователь {member.name} присоединился к серверу!')
 		else:
 			print(f'Канал с ID {channel_id} не найден.')
+
+
 			
 async def setup(bot):
 	await bot.add_cog(ForADA(bot))

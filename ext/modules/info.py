@@ -10,6 +10,11 @@ from time import *
 import requests
 import enum
 from bs4 import BeautifulSoup
+from io import BytesIO
+from PIL import Image, ImageDraw, ImageFont
+
+import asyncio
+import asyncpg
 
 from botConfig import *
 from datetime import *
@@ -23,7 +28,7 @@ def get_items_list(interaction: discord.Interaction, _module, item_type):
 	if item_type not in valid_item_types:
 		return [{'error': 'Неверный тип элемента', 'desc': 'None'}]
 
-	module = cspl_get_param_with_merge(interaction, 'g', 'modules').get(_module, {})
+	module = dict(cspl_get_param_with_merge(interaction, 'g', 'modules')).get(_module, {})
 	if not module:
 		return [{'error': f'Не найден список {item_type}', 'desc': 'None'}]
 
@@ -165,7 +170,7 @@ class Info(commands.Cog):
 
 				emb = discord.Embed(
 					title="Доступные техники",
-					description=f"Мои техники начинаются с префикса `/`. Для получения доп. информации по категории выберите её из списка.",
+					description=f"Мои техники начинаются с префикса `/`. Для получения доп. информации по модулю выберите её из списка.",
 					color=0x2b2d31
 				)
 				emb.set_thumbnail(url=self.bot.user.avatar)
@@ -197,7 +202,6 @@ class Info(commands.Cog):
 				modules = cspl_get_param_with_merge(interaction, 'g', 'modules')
 				selected_command_name = selected_command
 				command_info = None
-				command_patterns = None
 
 				for category, module in modules.items():
 					commands = module.get('commands', {})
@@ -211,7 +215,10 @@ class Info(commands.Cog):
 				emb = discord.Embed(title=f'Команда: {command_info["txt"]}', color=0x2b2d31)
 				emb.add_field(
 					name="Информация",
-					value=command_info["desc"],
+					value='\n'.join([
+						command_info["desc"],
+						'<:switch_on:818125506309652490> Команда включена' if command_info['status'] else '<:switch_off:818125535951323177> Команда выключена'
+					]),
 					inline=False
 				)
 
@@ -227,6 +234,13 @@ class Info(commands.Cog):
 					emb.add_field(
 						name="Примеры",
 						value=exmp_value,
+						inline=False
+					)
+				
+				if 'support' in command_info:
+					emb.add_field(
+						name="Помощь",
+						value=command_info['support'],
 						inline=False
 					)
 				await interaction.response.send_message(embed=emb, ephemeral=False)
@@ -306,7 +320,6 @@ class Info(commands.Cog):
 				])
 			)
 
-
 			economy_data = cspl_get_param(interaction, "g", "lvls", ["economy"])
 			economy_data.insert(0, cspl_get_param(interaction, "g", "lvlFirst", ["economy"]))
 			first_lvl = economy_data[0]['lvl']
@@ -319,7 +332,7 @@ class Info(commands.Cog):
 			last_lvl_name = economy_data[-1].get('lvlName', False)
 			last_lvl_name_text = f' {last_lvl_name}' if last_lvl_name else ''
 			level_range = f'`{first_lvl}{cspl_get_param(interaction, "g", "lvlTxt", ["economy"])[0]}{first_lvl_name_text} ({first_lvl_xp}{cspl_get_param(interaction, "g", "xpTxt", ["economy"])[0]})` → `{last_lvl}{cspl_get_param(interaction, "g", "lvlTxt", ["economy"])[0]}{last_lvl_name_text} ({last_lvl_xp}{cspl_get_param(interaction, "g", "xpTxt", ["economy"])[0]})`'
-			
+
 			if cspl_get_param(interaction, 'g', 'status', ['modules', 'economy']) and cspl_get_param(interaction, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']):
 				emb.add_field(
 					name = "Экономика",
@@ -333,7 +346,7 @@ class Info(commands.Cog):
 			emb.set_footer(text = f"/ Панель управления")
 			await interaction.edit_original_response(embed = emb, view = DashboardBtns(self.bot))
 		except Exception as e:
-			await interaction.edit_original_response(repr(e))
+			await interaction.edit_original_response(content=repr(e))
 	
 	
 	# Получить детальную информацию о боте
@@ -390,11 +403,32 @@ class Info(commands.Cog):
 			shard_id = interaction.guild.shard_id
 			shard = self.bot.get_shard(shard_id)
 			shard_ping = f'{ping_emoji}  `{round(shard.latency * 1000)}ms`'
-			bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
+			bot_shard_name = lambda: supabase_get_data('shards', 'name')[0]['name']
 
 			emb.add_field(name = 'Шард', value = f"{bot_shard_name()}#{shard.id}", inline = True)
 			emb.add_field(name = 'Пинг', value = shard_ping, inline = True)
-		
+			"""
+			async def check_connection():
+				conn = None
+				try:
+					conn = await asyncpg.connect(
+						user='postgres.arsyftsiyroyjcaohmqn',
+						password='Taratestamojack13542',
+						database='sukuna-db',
+						host='aws-0-eu-central-1.pooler.supabase.com',
+						port='6543'
+					)
+					# Execute a simple query to check the connection
+					await conn.execute('SELECT 1')
+					print("Connection is successful!")
+				except Exception as e:
+					print(f"Failed to connect to the database: {e}")
+				finally:
+					if conn:
+						await conn.close()
+			result2 = await check_connection()
+			emb.add_field(name = 'Пинг бд', value = result2, inline = True)
+			"""
 			def choose_correct_word(number, form1, form2, form3):
 				if 10 <= number % 100 <= 20:
 					return form3
@@ -445,40 +479,33 @@ class Info(commands.Cog):
 	@botDecorators.check_cmd_work()
 	async def member(self, interaction: discord.Interaction, member: discord.Member = None):
 		try:
+			await interaction.response.defer()
+
 			user = interaction.user if not member else member
 			roles = user.roles
 
-			role_list = ''
-			role_list_number = 0
-			for role in reversed(roles):
-				if role != interaction.guild.default_role:
-					role_list += f'<@&{role.id}> '
-					role_list_number += 1
-			
-			emb = discord.Embed(colour = 0x2b2d31)
-			emb.set_author(name = f'{user}', icon_url = user.avatar)
+			emb = discord.Embed(title=user.name, colour = 0x2b2d31)
+			#emb.set_author(name = f'{user}', icon_url = user.avatar)
 			emb.set_thumbnail(url = user.avatar)
+			emb.set_footer(text = f'ID: {user.id}')
+			emb.timestamp = datetime.now()
+			
 			bio_txt_send_message = ''
 			if user != self.bot.user:
 				bio_list = []
-				if cspl_get_param(interaction, 'u', 'about', ['biography'], user):
-					bio_list.append(f"**О себе:** {cspl_get_param(interaction, 'u', 'about', ['biography'], user)}")
+				if cspl_get_param(interaction, 'u', 'phrase', ['biography'], user):
+					emb.description = f"—ㅤ{cspl_get_param(interaction, 'u', 'phrase', ['biography'], user)}"
 				if cspl_get_param(interaction, 'u', 'age', ['biography'], user):
-					bio_list.append(f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', ['biography'], user)}")
+					bio_list.append(f"Возраст: {cspl_get_param(interaction, 'u', 'age', ['biography'], user)}")
 				if cspl_get_param(interaction, 'u', 'city', ['biography'], user):
-					bio_list.append(f"**Город:** {cspl_get_param(interaction, 'u', 'city', ['biography'], user)}")
+					bio_list.append(f"Город: {cspl_get_param(interaction, 'u', 'city', ['biography'], user)}")
 				if cspl_get_param(interaction, 'u', 'vk', ['biography'], user):
-					bio_list.append(f"**VK:** {cspl_get_param(interaction, 'u', 'vk', ['biography'], user)}")
+					vk_link = cspl_get_param(interaction, 'u', 'vk', ['biography'], user)
 				if cspl_get_param(interaction, 'u', 'tg', ['biography'], user):
-					bio_list.append(f"**TG:** {cspl_get_param(interaction, 'u', 'tg', ['biography'], user)}")
-				if len(bio_list) > 0:
-					emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
-					bio_txt_send_message = ''
-				else:
-					bio_txt_send_message = '||Создайте свою биографию с помощью команды </biography set:1251828637473439767>||'
+					tg_link = cspl_get_param(interaction, 'u', 'tg', ['biography'], user)
 			else:
 				emb.add_field(name = 'Биография', value = '\n'.join([
-					f"**О себе:** 3990см хуй блять нахуй",
+					f"**Фраза:** 3990см хуй блять нахуй",
 					f"**Возраст:** 2000+",
 					f"**Город:** Залупа",
 				]), inline = False)
@@ -529,7 +556,8 @@ class Info(commands.Cog):
 				economy_lvl_txt = f"**{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[1]}:** `{current_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]}{current_level_name_text} ({cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpTxt', ['economy'])[0]})` {progress_bar} \n`{next_xp_needed - cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpTxt', ['economy'])[0]}` до `{next_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]}{next_level_name_text} ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpTxt', ['economy'])[0]})`"
 			else:
 				economy_lvl_txt = f"**{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[1]}:** `{current_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]}{current_level_name_text} ({cspl_get_param(interaction, 'u', 'xp', ['economy'], user)}{cspl_get_param(interaction, 'g', 'xpTxt', ['economy'])[0]})` {progress_bar} \n`Макс. {cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[1].lower()} достигнут`"
-
+			
+			"""
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
@@ -537,37 +565,147 @@ class Info(commands.Cog):
 					f"**{cspl_get_param(interaction, 'g', 'coinsTxt', ['economy'])[1]}:** `{cspl_get_param(interaction, 'u', 'coins', ['economy'], user)}{cspl_get_param(interaction, 'g', 'coinsTxt', ['economy'])[0]}`"
 				])
 			)
-			emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
+			"""
+			
+
+			role_list = ''
+			role_list_number = 0
+			for role in reversed(roles):
+				if role != interaction.guild.default_role:
+					role_list += f'<@&{role.id}> '
+					role_list_number += 1
+			if role_list_number > 0:
+				emb.add_field(name = f'Роли ({role_list_number})', value = 'Отсутствуют' if role_list == '' else role_list, inline = False)
+
+
+
 			# Время создания пользователя в Discord
 			created_at_timestamp = int(interaction.user.created_at.timestamp())
 			emb.add_field(
 				name = 'В Discord', 
-				value = f'**Дата:** <t:{created_at_timestamp}:d>\n**Время:** <t:{created_at_timestamp}:T>'
+				value = f'<t:{created_at_timestamp}:d> <t:{created_at_timestamp}:T>'
 			)
 			# Время присоединения пользователя к серверу
 			joined_at_timestamp = int(interaction.user.joined_at.timestamp())
 			emb.add_field(
 				name = 'На сервере', 
-				value = f'**Дата:** <t:{joined_at_timestamp}:d>\n**Время:** <t:{joined_at_timestamp}:T>'
+				value = f'<t:{joined_at_timestamp}:d> <t:{joined_at_timestamp}:T>'
 			)
-			emb.set_footer(text = f'ID: {user.id}')
-			emb.timestamp = datetime.now()
+			"""
 			if user.id == 980175834373562439 or user.id == 522136072151367691:
 				emb.set_image(url = 'https://media1.tenor.com/m/aW1paWTKpZMAAAAd/%D1%85%D0%B0%D0%BA%D0%B5%D1%80%D1%8B-hackers.gif')
-				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=6678d5e5&is=66778465&hm=84845127e2c75af4dbcb1058a483656704885ba47f8f045646f1c236443135ca&')
-				#emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1221372466350522368/D82A2342.jpg?ex=667142bf&is=666ff13f&hm=7cd87d621f9cb941e5d301b9abbd3f4a914873d9faa9fdad53b731705002bc41&')
-				#emb.set_image(url = "attachment://.db/content/owner/wlp1.jpeg")
+				emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1251902055375831080/photo1718438465.jpeg?ex=6678d5e5&is=66778465&hm=84845127e2c75af4dbcb1058a483656704885ba47f8f045646f1c236443135ca&')
+				emb.set_image(url = 'https://cdn.discordapp.com/attachments/817116435351863306/1221372466350522368/D82A2342.jpg?ex=667142bf&is=666ff13f&hm=7cd87d621f9cb941e5d301b9abbd3f4a914873d9faa9fdad53b731705002bc41&')
+				emb.set_image(url = "attachment://.db/content/owner/wlp1.jpeg")
 			else:
 				req = await self.bot.http.request(discord.http.Route("GET", f"/users/{user.id}"))
 				banner_id = req["banner"]
 				if banner_id:
 					banner_url = f"https://cdn.discordapp.com/banners/{user.id}/{banner_id}?size=1024"
 					emb.set_image(url = banner_url)
+			"""
 
-			await interaction.response.send_message(content = bio_txt_send_message if user == interaction.user else '', embed = emb, ephemeral = False)
+
+			"""
+			# Dummy data for economy_level and coins for demonstration
+			economy_level = "5"
+			coins = "1000"
+
+			# Draw the text
+			try:
+				draw.text((30, 30), f"Name: {user}", (0, 0, 0), font=font)
+				draw.text((50, 80), f"ID: {user.id}", (0, 0, 0), font=font)
+				draw.text((50, 140), f"Economy Level: {economy_level}", (0, 0, 0), font=font)
+				draw.text((50, 170), f"Coins: {coins}", (0, 0, 0), font=font)
+			except Exception as e:
+				print(e)
+			"""
+
+			template_path = "./.db/content/card/template.png"
+			circle_path = "./.db/content/card/circle.png"
+
+			img = Image.open(template_path)
+			draw_img = ImageDraw.Draw(img)
+
+			draw_img.text((1210, 85), '[Карточка участника]', 'black', ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans.ttf", 30))
+
+			draw_img.text((98, 390), f"ID: {user.id}", 'black', font=ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans.ttf", 20))
+			draw_img.text((95, 400), f"{user}", 'black', font=ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans-Bold.ttf", 80))
+
+			if len(bio_list) > 0:
+				#emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
+				draw_img.text((95, 520), ' • '.join(bio_list), 'black', ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans.ttf", 30, encoding="UTF-8"))
+			else:
+				bio_txt_send_message = '||Создайте свою биографию с помощью команды </biography set:1251828637473439767>||'
+
+			avatar = Image.open(BytesIO(await user.avatar.read()))
+			avatar = avatar.resize((570, 570))
+
+			if interaction.guild.icon:
+				def prepare_mask(size, antialias=2):
+					mask = Image.new('L', (size[0] * antialias, size[1] * antialias), 0)
+					ImageDraw.Draw(mask).ellipse((0, 0) + mask.size, fill=255)
+					return mask.resize(size, Image.LANCZOS)
+
+				def crop(im, s):
+					w, h = im.size
+					k = w / s[0] - h / s[1]
+					if k > 0: im = im.crop(((w - h) / 2, 0, (w + h) / 2, h))
+					elif k < 0: im = im.crop((0, (h - w) / 2, w, (h + w) / 2))
+					return im.resize(s, Image.LANCZOS)
+
+				server_logo = Image.open(BytesIO(requests.get(interaction.guild.icon.url).content))
+				server_logo = server_logo.resize((100, 100))
+				server_logo = crop(server_logo, (100, 100))
+				server_logo.putalpha(prepare_mask((100, 100), 4))
+				img.paste(server_logo, (50, 50), server_logo)
+
+				draw_img.text((180, 65), f'{interaction.guild.name[:32]}...' if len(interaction.guild.name) > 35 else interaction.guild.name, 'black', ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans-Bold.ttf", 50))
+
+			avatar_circle_img = Image.open(circle_path)
+			draw_avatar_circle = ImageDraw.Draw(avatar_circle_img)
+			draw_avatar_circle.text((30, 25), '影', (0, 0, 0), font=ImageFont.truetype("./.db/content/card/simsun.ttc", 150))
+
+			lvl_circle_img = Image.open(circle_path)
+			draw_lvl_circle_img = ImageDraw.Draw(lvl_circle_img)
+			arial = ImageFont.truetype("arial.ttf", 9)
+			lvl_msg = '10'
+			#w,h = arial.getsize(lvl_msg)
+			#draw_lvl_circle_img.text(((W-w)/2,(H-h)/2), lvl_msg, (0, 0, 0), font=ImageFont.truetype("./.db/content/card/simsun.ttc", 150))
+
+
+			img.paste(avatar, (img.width - avatar.width - 50, img.height - avatar.height - 50))
+			img.paste(avatar_circle_img, (img.width - avatar.width - 140, img.height - avatar.height - 70), mask=avatar_circle_img)
+			img.paste(lvl_circle_img, (50, 650), mask=lvl_circle_img)
+
+			avatar_url = str(user.avatar.url).split('?')[0]  # Remove URL parameters
+			avatar_format = avatar_url.split('.')[-1].upper()
+
+			with BytesIO() as image_binary:
+				if avatar_format == 'GIF':
+					img.save(image_binary, 'GIF')
+					file_format = 'gif'
+				else:
+					img.save(image_binary, 'PNG')
+					file_format = 'png'
+				image_binary.seek(0)
+				picture = discord.File(fp=image_binary, filename=f'card-output.{file_format}')
+				emb.set_image(url=f"attachment://card-output.{file_format}")  # Specify the filename for the embedded image
+
+			# Создаем view для кнопок
+			view = discord.ui.View()
+			if 'vk_link' in locals():
+				view.add_item(discord.ui.Button(label="VK", url=vk_link))
+			if 'tg_link' in locals():
+				view.add_item(discord.ui.Button(label="Telegram", url=tg_link))
+			
+			await interaction.edit_original_response(content=bio_txt_send_message if user == interaction.user else '',
+                                       embed=emb,
+                                       attachments=[picture],
+									   view=view)
 		except Exception as e:
-			await interaction.response.send_message(repr(e), ephemeral = False)
-	
+			await interaction.edit_original_response(content=repr(e))
+
 	@app_commands.command(
 		name = "avatar",
 		description = 'Аватарка участника сервера'

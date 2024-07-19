@@ -2,10 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-import nekos
-from googletrans import Translator
 import requests
-from bs4 import BeautifulSoup
 import random
 import json
 import yaml
@@ -181,8 +178,8 @@ class Economy(commands.Cog):
 	async def on_message(self, message: discord.Message):
 		try:
 			if message.author.bot: return
-			if dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy']) and dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']):
-				await self.start_economy_system(message)
+			#if dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy']) and dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']):
+				#await self.start_economy_system(message)
 		except Exception as e:
 			print(repr(e))
 	

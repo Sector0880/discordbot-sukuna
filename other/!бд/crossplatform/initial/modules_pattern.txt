@@ -1,0 +1,20 @@
+modules: {}
+  module:
+    status*: true / false
+    name*: str
+    commands: {}
+      command: {}
+        status*: true / false
+        permission: str(discord_permission)
+        txt*: str
+        desc*: str
+        parameters: {}
+          parameter_name: str
+        example: [ex1, ex2, ex3]
+    events: {}
+      event: {}
+        status*: true / false
+        name*: str
+        desc*: str
+
+* - обязательно

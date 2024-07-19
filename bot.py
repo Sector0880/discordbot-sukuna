@@ -12,7 +12,7 @@ from botFunctions import *
 # инициализация бота
 bot = commands.AutoShardedBot(
 	shard_count = 1,
-	command_prefix = get_bot_prefix,
+	command_prefix = '!',
 	intents = discord.Intents.all(),
 	help_command=None
 )
@@ -37,7 +37,7 @@ async def sync(ctx):
 		copied = bot.tree.copy_global_to(guild = discord.Object(id = guild_id))
 	await ctx.send(f'Copied {len(copied)} global to!')
 
-@bot.command(aliases = ["rle", 'рле', 'кду']) 
+@bot.command(aliases = ["rle", 'рле', 'кду', 'КДУ', 'RLE']) 
 async def reload_exts(ctx):
 	try:
 		if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения сообщения

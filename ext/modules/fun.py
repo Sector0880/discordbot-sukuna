@@ -2,10 +2,6 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-import nekos
-from googletrans import Translator
-import requests
-from bs4 import BeautifulSoup
 import random
 
 from datetime import *
@@ -35,20 +31,6 @@ class Fun(commands.Cog):
 		except Exception as e:
 			await interaction.response.send_message(e)
 			botFunctions.add_command_usage_counter(interaction, 3)
-	
-	@app_commands.command(
-		name = "fact",
-		description="Рандомный факт"
-	)
-	@botDecorators.check_cmd_work()
-	async def fact(self, interaction: discord.Interaction):
-		facts = nekos.fact()
-
-		tra = Translator()
-
-		result = tra.translate(facts, dest = 'ru')
-
-		await interaction.response.send_message(embed = discord.Embed(description = f'{result.text}.', color = 0xffff6c))
 	
 	@app_commands.command(
 		name = "battle",
