@@ -15,7 +15,8 @@ class Biography(commands.GroupCog, name = "biography"):
 		super().__init__()
 		self.stop = False
 	
-	def set_biography_param(self, interaction, param: str, content):
+	def set_biography_param(self, interaction: discord.Interaction, param: str, content):
+		"""
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
 		if str(interaction.user.id) not in custom_users:
 			custom_users[str(interaction.user.id)] = {}
@@ -26,7 +27,35 @@ class Biography(commands.GroupCog, name = "biography"):
 			custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"] = {}
 		custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"][param] = str(content)
 		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii = False, indent = 4)
-	
+		"""
+		identification_key = f'{interaction.user.id}&{interaction.guild.id}'
+
+		single_user = get_single_user(interaction.user.id, interaction.guild.id)
+
+		biography = single_user.get('biography', {})
+
+		if identification_key == single_user['identification']:
+			biography[param] = str(content)  # обновляем локально
+
+			supabase_update_data(
+				'crossplatform_custom_users', 
+				{'biography': biography},  # сохраняем весь объект JSON
+				[('user_id', interaction.user.id), ('guild_id', interaction.guild.id)]
+			)
+			print('обновление успешно')
+		else:
+			biography[param] = str(content)  # добавляем новый параметр
+			supabase_insert_data(
+				'crossplatform_custom_users', 
+				{
+					'user_id': interaction.user.id, 
+					'guild_id': interaction.guild.id, 
+					'identification': f'{interaction.user.id}&{interaction.guild.id}', 
+					'biography': biography
+				}
+			)
+			print('добавление успешно')
+		
 	async def del_biography_param(self, interaction, param: str, all = False):
 		try:
 			custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
@@ -68,6 +97,8 @@ class Biography(commands.GroupCog, name = "biography"):
 	@botDecorators.check_cmd_work()
 	async def set(self, interaction: discord.Interaction, *, phrase: str = None, age: int = None, city: str = None, vk: str = None, tg: str = None):
 		try:
+			await interaction.response.defer(ephemeral=True, thinking=True)
+
 			if phrase:
 				self.set_biography_param(interaction, "phrase", phrase)
 			if age:
@@ -81,15 +112,15 @@ class Biography(commands.GroupCog, name = "biography"):
 			emb = discord.Embed(
 				title = "Успешно",
 				description = f"Вы изменили свои данные в биографии:\n" + '\n'.join([
-					f"**О себе:** {cspl_get_param(interaction, 'u', 'phrase', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'phrase', ['biography'], interaction.user) else "**О себе:** `нету`",
-					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'age', ['biography'], interaction.user) else "**Возраст:** `нету`",
-					f"**Город:** {cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'city', ['biography'], interaction.user) else "**Город:** `нету`",
-					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'vk', ['biography'], interaction.user) else "**VK:** `нету`",
-					f"**TG:** {cspl_get_param(interaction, 'u', 'tg', ['biography'], interaction.user)}" if cspl_get_param(interaction, 'u', 'tg', ['biography'], interaction.user) else "**TG:** `нету`",
+					f"**О себе:** {cspl_get_param(interaction, 'u', 'phrase', ['biography'])}" if cspl_get_param(interaction, 'u', 'phrase', ['biography']) else "**О себе:** `нету`",
+					f"**Возраст:** {cspl_get_param(interaction, 'u', 'age', ['biography'])}" if cspl_get_param(interaction, 'u', 'age', ['biography']) else "**Возраст:** `нету`",
+					f"**Город:** {cspl_get_param(interaction, 'u', 'city', ['biography'])}" if cspl_get_param(interaction, 'u', 'city', ['biography']) else "**Город:** `нету`",
+					f"**VK:** {cspl_get_param(interaction, 'u', 'vk', ['biography'])}" if cspl_get_param(interaction, 'u', 'vk', ['biography']) else "**VK:** `нету`",
+					f"**TG:** {cspl_get_param(interaction, 'u', 'tg', ['biography'])}" if cspl_get_param(interaction, 'u', 'tg', ['biography']) else "**TG:** `нету`",
 				]),
 				color=discord.Color.green()
 			)
-			await interaction.response.send_message(embed = emb, ephemeral = True)
+			await interaction.edit_original_response(embed = emb)
 		except Exception as e:
 			print(repr(e))
 	

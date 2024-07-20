@@ -34,7 +34,7 @@ class Test(commands.Cog):
 	@commands.is_owner()
 	async def t(self, ctx):
 		try:
-			await ctx.send(supabase_get_data('crossplatform_initial_guilds', '*')[0]['economy']['lvls'])
+			await ctx.send(cspl_get_param(ctx, 'u', 'phrase', ['biography']))
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:

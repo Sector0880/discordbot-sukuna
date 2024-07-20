@@ -27,6 +27,19 @@ def supabase_insert_data(table_name: str, insert: dict):
 		return response.data
 	except Exception as e:
 		print(repr(e))
+def supabase_update_data(table_name: str, update: dict, eq: list = None):
+	response = supabase.table(table_name).update(update)
+
+	if eq:
+		for column, value in eq:
+			response = response.eq(column, value)
+	
+	try:
+		response = response.execute()
+		return response.data
+	except Exception as e:
+		print(repr(e))
+
 
 bot_presence = lambda: supabase_get_data('bot', 'presence')[0]['presence']
 
@@ -41,110 +54,119 @@ cspl_initial_users = lambda: supabase_get_data('crossplatform_initial_users', '*
 cspl_custom_guilds = lambda interaction: supabase_get_data('crossplatform_custom_guilds', '*')
 cspl_custom_users = lambda interaction: supabase_get_data('crossplatform_custom_users', '*')
 
+def get_single_user(user_id, guild_id):
+	single_user = supabase_get_data('crossplatform_custom_users', '*', [('user_id', user_id), ('guild_id', guild_id)])
+	if single_user: return single_user[0]
+	else: return dict(single_user)
+		
+def get_single_guild(guild_id):
+	single_guild = supabase_get_data('crossplatform_custom_guilds', '*', [('guild_id', guild_id)])
+	if single_guild: return single_guild[0]
+	else: return dict(single_guild)
+
+
 # берет объект из базы данных, если в json он существует то он берет именно его из json
 def cspl_get_param(interaction, branch: str, param: str, path: list = None, user: discord.Member = None, guild = None):
-	if path: path_len = len(path)
-	else: path_len = 0
+	try:
+		if path: path_len = len(path)
+		else: path_len = 0
 
-	if guild:
-		guild_id = str(guild)
-	else: 
-		guild_id = str(interaction.guild.id)
-	
-	if user:
-		user_id = user.id
-	else:
-		if type(interaction) == discord.Interaction:
-			user_id = interaction.user.id
+		if guild:
+			guild_id = guild
+		else: 
+			guild_id = interaction.guild.id
+		
+		if user:
+			user_id = user.id
 		else:
-			user_id = interaction.author.id
-	
-	single_user = supabase_get_data('crossplatform_custom_users', '*', [('user_id', user_id), ('guild_id', guild_id)])
-	if single_user: single_user = single_user[0]
-	else: single_user = dict(single_user)
-
-	single_guild = supabase_get_data('crossplatform_custom_guilds', '*', [('guild_id', guild_id)])
-	if single_guild: single_guild = single_guild[0]
-	else: single_guild = dict(single_guild)
-	
-	match branch:
-		case 'g':
-			if path and path_len == 4:
-				#if guild_id in cspl_custom_guilds(interaction).keys() and path[0] in cspl_custom_guilds(interaction)[guild_id].keys() and path[1] in cspl_custom_guilds(interaction)[guild_id][path[0]].keys() and path[2] in cspl_custom_guilds(interaction)[guild_id][path[0]][path[1]].keys() and path[3] in cspl_custom_guilds(interaction)[guild_id][path[0]][path[1]][path[2]].keys() and param in cspl_custom_guilds(interaction)[guild_id][path[0]][path[1]][path[2]][path[3]].keys():
-				if (single_guild 
-				and path[0] in single_guild
-				and path[1] in single_guild[path[0]]
-				and path[2] in single_guild[path[0]][path[1]]
-				and path[3] in single_guild[path[0]][path[1]][path[2]]
-				and param in single_guild[path[0]][path[1]][path[2]][path[3]]
-				):
-					return single_guild[path[0]][path[1]][path[2]][path[3]][param]
-				else:
-					return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][path[1]][path[2]][path[3]][param]
-			if path and path_len == 3:
-				if (single_guild 
-				and path[0] in single_guild
-				and path[1] in single_guild[path[0]]
-				and path[2] in single_guild[path[0]][path[1]]
-				and param in single_guild[path[0]][path[1]][path[2]]
-				):
-					return single_guild[path[0]][path[1]][path[2]][param]
-				else:
-					return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][path[1]][path[2]][param]
-			if path and path_len == 2:
-				if (single_guild 
-				and path[0] in single_guild
-				and path[1] in single_guild[path[0]]
-				and param in single_guild[path[0]][path[1]]
-				):
-					return single_guild[path[0]][path[1]][param]
-				else:
-					return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][path[1]][param]
-			elif path and path_len == 1:
-				if (single_guild 
-				and path[0] in single_guild
-				and param in single_guild[path[0]]
-				):
-					return single_guild[path[0]][param]
-				else:
-					return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][param]
+			if type(interaction) == discord.Interaction:
+				user_id = interaction.user.id
 			else:
-				if (single_guild 
-				and param in single_guild
-				):
-					return single_guild[param]
-				else:
-					return supabase_get_data('crossplatform_initial_guilds', '*')[0][param]
-		case 'u':
-			if path and path_len == 2:
-				#if user_id in cspl_custom_users(interaction).keys() and guild_id in cspl_custom_users(interaction)[user_id].keys() and path[0] in cspl_custom_users(interaction)[user_id][guild_id].keys() and path[1] in cspl_custom_users(interaction)[user_id][guild_id][path[0]].keys() and param in cspl_custom_users(interaction)[user_id][guild_id][path[0]][path[1]].keys():
-					#return supabase_get_data('crossplatform_custom_users', '*')[user_id][guild_id][path[0]][path[1]][param]
-				#else:
-					#return supabase_get_data('crossplatform_initial_users', '*', True)[path[0]][path[1]][param]
-				if (single_user
-				and path[0] in single_user
-				and path[1] in single_user[path[0]]
-				and param in single_user[path[0]][path[1]]
-				):
-					return single_user[path[0]][path[1]][param]
-				else:
-					return supabase_get_data('crossplatform_initial_users', '*')[0][path[0]][path[1]][param]
-			elif path and path_len == 1:
-				if (single_user
-				and path[0] in single_user
-				and param in single_user[path[0]]
-				):
-					return single_user[path[0]][param]
-				else:
-					return supabase_get_data('crossplatform_initial_users', '*')[0][path[0]][param]
-			else:
-				if (single_user
-				and param in single_user
-				):
-					return single_user[param]
-				else:
-					return supabase_get_data('crossplatform_initial_users', '*')[0][param]
+				user_id = interaction.author.id
+		
+		single_user = get_single_user(user_id, guild_id)
 
+		single_guild = get_single_guild(guild_id)
+		
+		match branch:
+			case 'g':
+				if path and path_len == 4:
+					#if guild_id in cspl_custom_guilds(interaction).keys() and path[0] in cspl_custom_guilds(interaction)[guild_id].keys() and path[1] in cspl_custom_guilds(interaction)[guild_id][path[0]].keys() and path[2] in cspl_custom_guilds(interaction)[guild_id][path[0]][path[1]].keys() and path[3] in cspl_custom_guilds(interaction)[guild_id][path[0]][path[1]][path[2]].keys() and param in cspl_custom_guilds(interaction)[guild_id][path[0]][path[1]][path[2]][path[3]].keys():
+					if (single_guild 
+					and path[0] in single_guild
+					and path[1] in single_guild[path[0]]
+					and path[2] in single_guild[path[0]][path[1]]
+					and path[3] in single_guild[path[0]][path[1]][path[2]]
+					and param in single_guild[path[0]][path[1]][path[2]][path[3]]
+					):
+						return single_guild[path[0]][path[1]][path[2]][path[3]][param]
+					else:
+						return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][path[1]][path[2]][path[3]][param]
+				if path and path_len == 3:
+					if (single_guild 
+					and path[0] in single_guild
+					and path[1] in single_guild[path[0]]
+					and path[2] in single_guild[path[0]][path[1]]
+					and param in single_guild[path[0]][path[1]][path[2]]
+					):
+						return single_guild[path[0]][path[1]][path[2]][param]
+					else:
+						return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][path[1]][path[2]][param]
+				if path and path_len == 2:
+					if (single_guild 
+					and path[0] in single_guild
+					and path[1] in single_guild[path[0]]
+					and param in single_guild[path[0]][path[1]]
+					):
+						return single_guild[path[0]][path[1]][param]
+					else:
+						return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][path[1]][param]
+				elif path and path_len == 1:
+					if (single_guild 
+					and path[0] in single_guild
+					and param in single_guild[path[0]]
+					):
+						return single_guild[path[0]][param]
+					else:
+						return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][param]
+				else:
+					if (single_guild 
+					and param in single_guild
+					):
+						return single_guild[param]
+					else:
+						return supabase_get_data('crossplatform_initial_guilds', '*')[0][param]
+			case 'u':
+				if path and path_len == 2:
+					#if user_id in cspl_custom_users(interaction).keys() and guild_id in cspl_custom_users(interaction)[user_id].keys() and path[0] in cspl_custom_users(interaction)[user_id][guild_id].keys() and path[1] in cspl_custom_users(interaction)[user_id][guild_id][path[0]].keys() and param in cspl_custom_users(interaction)[user_id][guild_id][path[0]][path[1]].keys():
+						#return supabase_get_data('crossplatform_custom_users', '*')[user_id][guild_id][path[0]][path[1]][param]
+					#else:
+						#return supabase_get_data('crossplatform_initial_users', '*', True)[path[0]][path[1]][param]
+					if (single_user
+					and path[0] in single_user
+					and path[1] in single_user[path[0]]
+					and param in single_user[path[0]][path[1]]
+					):
+						return single_user[path[0]][path[1]][param]
+					else:
+						return supabase_get_data('crossplatform_initial_users', '*')[0][path[0]][path[1]][param]
+				elif path and path_len == 1:
+					if (single_user
+					and path[0] in single_user
+					and param in single_user[path[0]]
+					):
+						return single_user[path[0]][param]
+					else:
+						return supabase_get_data('crossplatform_initial_users', '*')[0][path[0]][param]
+				else:
+					if (single_user
+					and param in single_user
+					):
+						return single_user[param]
+					else:
+						return supabase_get_data('crossplatform_initial_users', '*')[0][param]
+	except Exception as e:
+		print(f'Ошибка cspl_get_param: {repr(e)}')
 
 def merge_data(default_data, custom_data):
 	if isinstance(default_data, dict) and isinstance(custom_data, dict):
