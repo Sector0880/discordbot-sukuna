@@ -41,15 +41,15 @@ async def sync(ctx):
 async def reload_exts(ctx):
 	try:
 		if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения сообщения
-		for filename in os.listdir("./ext"):
+		for filename in os.listdir(f"{botConfig.path_start}ext"):
 			if filename.endswith(".py"):
 				await bot.reload_extension(f"ext.{filename[:-3]}")
 				print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m перезагружен.')
-		for filename in os.listdir("./ext/modules"):
+		for filename in os.listdir(f"{{botConfig.path_start}}ext/modules"):
 			if filename.endswith(".py"):
 				await bot.reload_extension(f"ext.modules.{filename[:-3]}")
 				print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m перезагружен.')
-		for filename in os.listdir("./ext/modules/special"):
+		for filename in os.listdir(f"{{botConfig.path_start}}ext/modules/special"):
 			if filename.endswith(".py"):
 				await bot.reload_extension(f"ext.modules.special.{filename[:-3]}")
 				print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m перезагружен.')
@@ -69,15 +69,15 @@ print("\n".join([
 ]))
 
 async def func_load_cogs():
-	for filename in os.listdir("./ext"):
+	for filename in os.listdir(f"{{botConfig.path_start}}ext"):
 		if filename.endswith(".py"):
 			await bot.load_extension(f"ext.{filename[:-3]}")
 			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
-	for filename in os.listdir("./ext/modules"):
+	for filename in os.listdir(f"{{botConfig.path_start}}ext/modules"):
 		if filename.endswith(".py"):
 			await bot.load_extension(f"ext.modules.{filename[:-3]}")
 			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
-	for filename in os.listdir("./ext/modules/special"):
+	for filename in os.listdir(f"{{botConfig.path_start}}ext/modules/special"):
 		if filename.endswith(".py"):
 			await bot.load_extension(f"ext.modules.special.{filename[:-3]}")
 			print(f'\x1b[30;47m{datetime.now()}\x1b[0m Файл \x1b[1;32m{", ".join([filename])}\x1b[0m загружен.')
