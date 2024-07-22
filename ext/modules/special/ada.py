@@ -49,8 +49,8 @@ class ForADA(commands.Cog):
 			# проверки
 			if ctx.author.id not in sf_sp(): return
 			if channel is None: 
-				await ctx.message.add_reaction('❌')
-				return await ctx.send("❌ Напиши id чата вместе с командой.\n```!rp [id чата]```") # на наличие channel_id
+				await ctx.message.add_reaction('<a:mark_error:815121144016404500>')
+				return await ctx.send("<a:mark_error:815121144016404500> Напиши id чата вместе с командой.\n```!rp [id чата]```") # на наличие channel_id
 			if not isinstance(channel, int) and not channel.isdigit(): # слава богам всевышним что пока этот try except работает, раньше команда и без него нормально выводила ошибку если написано str но ожидали int, но чтото сломалось и пизда
 				return await ctx.send("Я понимаю только id чата, не ссылку или имя, ID!") # на тип channel_id
 			else: channel = int(channel)
@@ -82,8 +82,8 @@ class ForADA(commands.Cog):
 			# проверки
 			if ctx.author.id not in sf_sp(): return await ctx.send("Нету прав.") # на автора сообщения
 			if channel is None: 
-				#await ctx.message.add_reaction('❌')
-				return await ctx.send("❌ Напиши id чата вместе с командой.\n```!rp [id чата]```") # на наличие channel_id
+				#await ctx.message.add_reaction('<a:mark_error:815121144016404500>')
+				return await ctx.send("<a:mark_error:815121144016404500> Напиши id чата вместе с командой.\n```!rp [id чата]```") # на наличие channel_id
 			if not isinstance(channel, int) and not channel.isdigit(): # слава богам всевышним что пока этот try except работает, раньше команда и без него нормально выводила ошибку если написано str но ожидали int, но чтото сломалось и пизда
 				return await ctx.send("Я понимаю только id чата, не ссылку или имя, ID!") # на тип channel_id
 			else: channel = int(channel)

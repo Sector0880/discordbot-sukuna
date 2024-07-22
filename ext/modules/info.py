@@ -8,8 +8,6 @@ import locale
 from typing import Any, Dict, Generic, List, TYPE_CHECKING, Optional, TypeVar, Union
 from time import *
 import requests
-import enum
-from bs4 import BeautifulSoup
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
@@ -129,7 +127,8 @@ class DashboardBtns(discord.ui.View):
 					)
 				except Exception:
 					pass
-			emb.set_thumbnail(url = self.bot.user.avatar)
+			"""self.bot.user.avatar"""
+			emb.set_thumbnail(url = interaction.guild.icon)
 			emb.set_footer(text = f"/ Панель управления / Модули")
 
 			interaction_txt = '\n'.join([
@@ -342,7 +341,7 @@ class Info(commands.Cog):
 					]),
 					inline=False
 				)
-			emb.set_thumbnail(url = self.bot.user.avatar)
+			emb.set_thumbnail(url = interaction.guild.icon)
 			emb.set_footer(text = f"/ Панель управления")
 			await interaction.edit_original_response(embed = emb, view = DashboardBtns(self.bot))
 		except Exception as e:
@@ -403,7 +402,7 @@ class Info(commands.Cog):
 			shard_id = interaction.guild.shard_id
 			shard = self.bot.get_shard(shard_id)
 			shard_ping = f'{ping_emoji}  `{round(shard.latency * 1000)}ms`'
-			bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
+			bot_shard_name = lambda: yaml.safe_load(open(path_db_shards, 'r', encoding='utf-8'))[shard_id]
 
 			emb.add_field(name = 'Шард', value = f"{bot_shard_name()}#{shard.id}", inline = True)
 			emb.add_field(name = 'Пинг', value = shard_ping, inline = True)
@@ -621,20 +620,20 @@ class Info(commands.Cog):
 				print(e)
 			"""
 
-			template_path = "./.db/content/card/template.png"
-			circle_path = "./.db/content/card/circle.png"
+			template_path = f"{path_start}.db/content/card/template.png"
+			circle_path = f"{path_start}.db/content/card/circle.png"
 
 			img = Image.open(template_path)
 			draw_img = ImageDraw.Draw(img)
 
-			draw_img.text((1210, 85), '[Карточка участника]', 'black', ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans.ttf", 30))
+			draw_img.text((1210, 85), '[Карточка участника]', 'black', ImageFont.truetype(f"{path_start}.db/content/card/DejaVuSans/DejaVuSans.ttf", 30))
 
-			draw_img.text((98, 390), f"ID: {user.id}", 'black', font=ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans.ttf", 20))
-			draw_img.text((95, 400), f"{user}", 'black', font=ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans-Bold.ttf", 80))
+			draw_img.text((98, 390), f"ID: {user.id}", 'black', font=ImageFont.truetype(f"{path_start}.db/content/card/DejaVuSans/DejaVuSans.ttf", 20))
+			draw_img.text((95, 400), f"{user}", 'black', font=ImageFont.truetype(f"{path_start}.db/content/card/DejaVuSans/DejaVuSans-Bold.ttf", 80))
 
 			if len(bio_list) > 0:
 				#emb.add_field(name = 'Биография', value = '\n'.join(bio_list), inline = False)
-				draw_img.text((95, 520), ' • '.join(bio_list), 'black', ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans.ttf", 30, encoding="UTF-8"))
+				draw_img.text((95, 520), ' • '.join(bio_list), 'black', ImageFont.truetype(f"{path_start}.db/content/card/DejaVuSans/DejaVuSans.ttf", 30, encoding="UTF-8"))
 			else:
 				bio_txt_send_message = '||Создайте свою биографию с помощью команды </biography set:1251828637473439767>||'
 
@@ -660,11 +659,11 @@ class Info(commands.Cog):
 				server_logo.putalpha(prepare_mask((100, 100), 4))
 				img.paste(server_logo, (50, 50), server_logo)
 
-				draw_img.text((180, 65), f'{interaction.guild.name[:32]}...' if len(interaction.guild.name) > 35 else interaction.guild.name, 'black', ImageFont.truetype("./.db/content/card/DejaVuSans/DejaVuSans-Bold.ttf", 50))
+				draw_img.text((180, 65), f'{interaction.guild.name[:32]}...' if len(interaction.guild.name) > 35 else interaction.guild.name, 'black', ImageFont.truetype(f"{path_start}.db/content/card/DejaVuSans/DejaVuSans-Bold.ttf", 50))
 
 			avatar_circle_img = Image.open(circle_path)
 			draw_avatar_circle = ImageDraw.Draw(avatar_circle_img)
-			draw_avatar_circle.text((30, 25), '影', (0, 0, 0), font=ImageFont.truetype("./.db/content/card/simsun.ttc", 150))
+			draw_avatar_circle.text((30, 25), '影', (0, 0, 0), font=ImageFont.truetype(f"{path_start}.db/content/card/simsun.ttc", 150))
 
 			lvl_circle_img = Image.open(circle_path)
 			draw_lvl_circle_img = ImageDraw.Draw(lvl_circle_img)
@@ -697,7 +696,7 @@ class Info(commands.Cog):
 			if 'vk_link' in locals():
 				view.add_item(discord.ui.Button(label="VK", url=vk_link))
 			if 'tg_link' in locals():
-				view.add_item(discord.ui.Button(label="Telegram", url=tg_link))
+				view.add_item(discord.ui.Button(label="TG", url=tg_link))
 			
 			await interaction.edit_original_response(content=bio_txt_send_message if user == interaction.user else '',
                                        embed=emb,

@@ -44,22 +44,25 @@ class Owner(commands.Cog):
 	@commands.is_owner()
 	async def owner_get_guild(self, ctx: discord.Message, guild_id: int = None):
 		try:
+			msg = await ctx.send('Проверка сервера...')
 			if not guild_id: guild_id = ctx.guild.id
 			if not isinstance(guild_id, int): return await ctx.send("Введите ID сервера")
+			get_guild = self.bot.get_guild(guild_id)
+			if not get_guild: return await ctx.send("Сервер не найден")
+
+			msg = await msg.edit(content='Проверка завершена, сборка команды...')
+
 			modules_on = []
 			modules_off = []
-			for module in cspl_get_param_with_merge(ctx, 'g', 'modules', None, None, guild_id):
+			for module in cspl_get_param_with_merge(ctx, 'g', 'modules', None, None, guild=guild_id):
 				if cspl_get_param_with_merge(ctx, 'g', 'status', ['modules', module]):
-					modules_on.append(cspl_get_param_with_merge(ctx, 'g', 'name', ['modules', module], None, guild_id))
+					modules_on.append(cspl_get_param_with_merge(ctx, 'g', 'name', ['modules', module], None, guild=guild_id))
 				else:
-					modules_off.append(cspl_get_param_with_merge(ctx, 'g', 'name', ['modules', module], None, guild_id))
+					modules_off.append(cspl_get_param_with_merge(ctx, 'g', 'name', ['modules', module], None, guild=guild_id))
 
 			modules_on_str = ', '.join([f'**{module}**' for module in modules_on])
 			modules_off_str = ', '.join([f'**{module}**' for module in modules_off])
 
-
-			get_guild = self.bot.get_guild(guild_id)
-			if not get_guild: return await ctx.send("Сервер не найден")
 			emb = discord.Embed(
 				title=get_guild
 			)
@@ -72,8 +75,8 @@ class Owner(commands.Cog):
 			)
 
 
-			economy_data = cspl_get_param(ctx, "g", "lvls", ["economy"], None, guild_id)
-			economy_data.insert(0, cspl_get_param(ctx, "g", "lvlFirst", ["economy"], None, guild_id))
+			economy_data = cspl_get_param(ctx, "g", "lvls", ["economy"], None, guild=guild_id)
+			economy_data.insert(0, cspl_get_param(ctx, "g", "lvlFirst", ["economy"], None, guild=guild_id))
 			first_lvl = economy_data[0]['lvl']
 			first_lvl_xp = economy_data[0]['xp']
 			first_lvl_name = economy_data[0].get('lvlName', False)
@@ -83,21 +86,21 @@ class Owner(commands.Cog):
 			last_lvl_xp = economy_data[-1]['xp']
 			last_lvl_name = economy_data[-1].get('lvlName', False)
 			last_lvl_name_text = f' {last_lvl_name}' if last_lvl_name else ''
-			level_range = f'`{first_lvl}{cspl_get_param(ctx, "g", "lvlTxt", ["economy"], None, guild_id)[0]}{first_lvl_name_text} ({first_lvl_xp}{cspl_get_param(ctx, "g", "xpTxt", ["economy"], None, guild_id)[0]})` → `{last_lvl}{cspl_get_param(ctx, "g", "lvlTxt", ["economy"], None, guild_id)[0]}{last_lvl_name_text} ({last_lvl_xp}{cspl_get_param(ctx, "g", "xpTxt", ["economy"], None, guild_id)[0]})`'
+			level_range = f'`{first_lvl}{cspl_get_param(ctx, "g", "lvlTxt", ["economy"], None, guild=guild_id)[0]}{first_lvl_name_text} ({first_lvl_xp}{cspl_get_param(ctx, "g", "xpTxt", ["economy"], None, guild_id)[0]})` → `{last_lvl}{cspl_get_param(ctx, "g", "lvlTxt", ["economy"], None, guild_id)[0]}{last_lvl_name_text} ({last_lvl_xp}{cspl_get_param(ctx, "g", "xpTxt", ["economy"], None, guild_id)[0]})`'
 			
 			emb.add_field(
 				name = "Экономика",
 				value = '\n'.join([
 					f'**Уровни:** {level_range}',
-					f'**Награда за сообщение:** `{cspl_get_param(ctx, "g", "xp", ["economy", "msgAward"], None, guild_id)}{cspl_get_param(ctx, "g", "xpTxt", ["economy"], None, guild_id)[0]}, {cspl_get_param(ctx, "g", "coins", ["economy", "msgAward"], None, guild_id)}{cspl_get_param(ctx, "g", "coinsTxt", ["economy"], None, guild_id)[0]} / {cspl_get_param(ctx, "g", "cooldown", ["economy", "msgAward"], None, guild_id)} сек.`',
+					f'**Награда за сообщение:** `{cspl_get_param(ctx, "g", "xp", ["economy", "msgAward"], None, guild=guild_id)}{cspl_get_param(ctx, "g", "xpTxt", ["economy"], None, guild=guild_id)[0]}, {cspl_get_param(ctx, "g", "coins", ["economy", "msgAward"], None, guild=guild_id)}{cspl_get_param(ctx, "g", "coinsTxt", ["economy"], None, guild=guild_id)[0]} / {cspl_get_param(ctx, "g", "cooldown", ["economy", "msgAward"], None, guild=guild_id)} сек.`',
 				]),
 				inline=False
 			)
-			emb.set_thumbnail(url = self.bot.user.avatar)
+			emb.set_thumbnail(url = ctx.guild.icon)
 			emb.set_footer(text = f"/ Панель управления")
-			await ctx.send(embed = emb, ephemeral = True)
+			await msg.edit(embed = emb)
 		except Exception as e:
-			await ctx.send(repr(e))
+			await msg.edit(repr(e))
 
 
 async def setup(bot):

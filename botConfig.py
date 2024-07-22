@@ -38,7 +38,7 @@ emoji_db_ok = "<:db_ok:815122520411865119>"
 
 emoji_shield = "<:Mod_Shield:1142795808945745970>"
 # -----------------------------------
-
+path_start_new = '/home/container/discordbot-sukuna/'
 path_start = './'
 
 path_db_bot = f'{path_start}.db/bot/bot.yml'

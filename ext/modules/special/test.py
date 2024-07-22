@@ -12,8 +12,6 @@ import postgrest
 from dbVars import *
 import botDecorators
 
-from supabase import create_client, Client
-
 class Test(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
