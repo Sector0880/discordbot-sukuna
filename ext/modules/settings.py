@@ -8,6 +8,7 @@ import re
 from dbVars import *
 from botFunctions import *
 import botDecorators
+import botConfig
 
 class Biography(commands.GroupCog, name = "biography"):
 	def __init__(self, bot: commands.Bot):
@@ -16,7 +17,7 @@ class Biography(commands.GroupCog, name = "biography"):
 		self.stop = False
 	
 	def set_biography_param(self, interaction: discord.Interaction, param: str, content):
-		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
+		custom_users = json.load(open(botConfig.path_db_cspl_custom_users, "r", encoding="utf-8"))
 		if str(interaction.user.id) not in custom_users:
 			custom_users[str(interaction.user.id)] = {}
 		if str(interaction.guild.id) not in custom_users[str(interaction.user.id)]:
@@ -25,11 +26,11 @@ class Biography(commands.GroupCog, name = "biography"):
 		if "biography" not in custom_users[str(interaction.user.id)][str(interaction.guild.id)]:
 			custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"] = {}
 		custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"][param] = str(content)
-		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii = False, indent = 4)
+		with open(botConfig.path_db_cspl_custom_users, "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii = False, indent = 4)
 		
 	async def del_biography_param(self, interaction, param: str, all = False):
 		try:
-			custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
+			custom_users = json.load(open(botConfig.path_db_cspl_custom_users, "r", encoding="utf-8"))
 			if str(interaction.user.id) not in custom_users:
 				custom_users[str(interaction.user.id)] = {}
 			if str(interaction.guild.id) not in custom_users[str(interaction.user.id)]:
@@ -57,7 +58,7 @@ class Biography(commands.GroupCog, name = "biography"):
 			if not custom_users[str(interaction.user.id)]:
 				del custom_users[str(interaction.user.id)]
 			
-			with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
+			with open(botConfig.path_db_cspl_custom_users, "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
 		except KeyError:
 			pass
 	
@@ -68,7 +69,7 @@ class Biography(commands.GroupCog, name = "biography"):
 	@botDecorators.check_cmd_work()
 	async def set(self, interaction: discord.Interaction, *, phrase: str = None, age: int = None, city: str = None, vk: str = None, tg: str = None):
 		try:
-			await interaction.response.defer(ephemeral=True, thinking=True)
+			await interaction.response.defer(ephemeral = True, thinking = True)
 
 			if phrase:
 				self.set_biography_param(interaction, "phrase", phrase)

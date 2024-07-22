@@ -10,6 +10,7 @@ import datetime
 
 import botFunctions
 import dbVars
+import botConfig
 
 class Economy(commands.Cog):
 	def __init__(self, bot: commands.Bot):
@@ -29,7 +30,7 @@ class Economy(commands.Cog):
 			return
 
 		
-		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
+		custom_users = json.load(open(botConfig.path_db_cspl_custom_users, "r", encoding="utf-8"))
 
 		if str(message.author.id) not in custom_users:
 			custom_users[str(message.author.id)] = {}
@@ -51,13 +52,13 @@ class Economy(commands.Cog):
 		else:
 			custom_users[str(message.author.id)][str(message.guild.id)]["economy"]['coins'] += coins_add
 
-		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
+		with open(botConfig.path_db_cspl_custom_users, "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
 
 		self.xp_cooldown[message.author.id][message.guild.id] = current_time
 
 	# рассчитывание правильного уровня для пользователя (готово)
 	async def check_lvl_validate(self, message: discord.Message):
-		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
+		custom_users = json.load(open(botConfig.path_db_cspl_custom_users, "r", encoding="utf-8"))
 
 		user_id = str(message.author.id)
 		guild_id = str(message.guild.id)
@@ -105,10 +106,10 @@ class Economy(commands.Cog):
 			if 'lvl' in custom_users[user_id][guild_id]["economy"]:
 				custom_users[user_id][guild_id]["economy"].pop('lvl')
 
-		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
+		with open(botConfig.path_db_cspl_custom_users, "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
 	
 	async def lvl_award(self, message: discord.Message):
-		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
+		custom_users = json.load(open(botConfig.path_db_cspl_custom_users, "r", encoding="utf-8"))
 
 		lvls = dbVars.cspl_get_param(message, 'g', 'lvls', ['economy'])
 		lvls.insert(0, dbVars.cspl_get_param(message, 'g', 'lvlFirst', ['economy']))
@@ -160,7 +161,7 @@ class Economy(commands.Cog):
 				awarded = True
 
 		if awarded:
-			with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file:
+			with open(botConfig.path_db_cspl_custom_users, "w", encoding="utf-8") as write_file:
 				json.dump(custom_users, write_file, ensure_ascii=False, indent=4)
 
 			await message.channel.send('\n'.join([

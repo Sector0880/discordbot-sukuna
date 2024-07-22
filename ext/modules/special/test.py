@@ -34,7 +34,7 @@ class Test(commands.Cog):
 	@commands.is_owner()
 	async def t(self, ctx):
 		try:
-			await ctx.send(cspl_get_param(ctx, 'u', 'phrase', ['biography']))
+			await ctx.send(cspl_get_param(ctx, 'u', 'xp', ['economy']))
 		except ValueError as e:
 			await ctx.send(str(e))
 		except Exception as e:

@@ -39,6 +39,18 @@ emoji_db_ok = "<:db_ok:815122520411865119>"
 emoji_shield = "<:Mod_Shield:1142795808945745970>"
 # -----------------------------------
 
+path_db_bot = './.db/bot/bot.yml'
+path_db_shards = './.db/bot/shards.yml'
+
+path_db_cspl_initial_guilds = './.db/crossplatform/initial/guilds.yml'
+path_db_cspl_initial_users = './.db/crossplatform/initial/users.yml'
+
+path_db_cspl_custom_guilds = './.db/crossplatform/custom/guilds.json'
+path_db_cspl_custom_users = './.db/crossplatform/custom/users.json'
+
+path_db_staff = './.db/staff.yml'
+
+
 
 # сайт с цветами для красивого вывода в терминал
 ansi_color_codes = "https://talyian.github.io/ansicolors/"

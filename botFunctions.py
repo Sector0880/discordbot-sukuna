@@ -12,12 +12,6 @@ import dbVars
 start_time = datetime.now()
 
 def get_bot_prefix(bot, ctx):
-	#cspl_custom_guilds = lambda ctx: json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))
-
-	#if str(ctx.guild.id) in cspl_custom_guilds(ctx).keys() and 'prefix' in cspl_custom_guilds(ctx)[str(ctx.guild.id)]:
-		#return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(ctx.guild.id)]['prefix']
-	#else:
-		#return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))['prefix']		
 	return dbVars.cspl_get_param(ctx, 'g', 'prefix')
 
 def add_command_usage_counter(interaction, _phase):
@@ -32,3 +26,11 @@ def add_command_usage_counter(interaction, _phase):
 	commandsUsageCounter["all"][phase] += 1 # все команды
 	commandsUsageCounter[command][phase]  += 1 # вызываемая команда
 	with open("./.db/logs/commandsUsageCounter.yml", "w") as write_file: yaml.safe_dump(commandsUsageCounter, write_file, sort_keys = False, allow_unicode = True)
+
+
+#cspl_custom_guilds = lambda ctx: json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))
+
+	#if str(ctx.guild.id) in cspl_custom_guilds(ctx).keys() and 'prefix' in cspl_custom_guilds(ctx)[str(ctx.guild.id)]:
+		#return json.load(open("./.db/crossplatform/custom/guilds.json", "r", encoding="utf-8"))[str(ctx.guild.id)]['prefix']
+	#else:
+		#return yaml.safe_load(open('./.db/crossplatform/initial/guilds.yml', 'r', encoding='utf-8'))['prefix']		

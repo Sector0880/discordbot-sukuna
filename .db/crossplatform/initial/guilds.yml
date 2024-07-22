@@ -51,19 +51,15 @@ modules:
     commands:
       time: 
         status: true
-        txt: '</time:1250150935280357376>'
+        txt: '</time:1263776057874452551>'
         desc: 'Время'
-      fact: 
-        status: true
-        txt: '</fact:1250150935280357377>'
-        desc: 'Рандомный факт'
       battle: 
         status: true
-        txt: '</battle:1250720060344107019>'
+        txt: '</battle:1263776057874452552>'
         desc: 'Батл с участником сервера'
       opinion: 
         status: true
-        txt: '</opinion:1251281683001643139>'
+        txt: '</opinion:1263776057874452553>'
         desc: 'Мнение бота'
   settings:
     status: true
