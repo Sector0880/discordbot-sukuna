@@ -28,6 +28,7 @@ class Economy(commands.Cog):
 		if (current_time - self.xp_cooldown[message.author.id][message.guild.id]).total_seconds() < dbVars.cspl_get_param(message, 'g', 'cooldown', ['economy', 'msgAward']):
 			return
 
+		
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
 
 		if str(message.author.id) not in custom_users:
@@ -178,8 +179,8 @@ class Economy(commands.Cog):
 	async def on_message(self, message: discord.Message):
 		try:
 			if message.author.bot: return
-			#if dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy']) and dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']):
-				#await self.start_economy_system(message)
+			if dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy']) and dbVars.cspl_get_param(message, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']):
+				await self.start_economy_system(message)
 		except Exception as e:
 			print(repr(e))
 	
@@ -237,3 +238,61 @@ elif dbVars.cspl_get_param(message, 'u', 'xp', 'economy') == 100:
 				#await message.channel.send(f"{message.author.mention} ура! вы достигли {lvl}-ого уровня!" + f" Вы получаете {coins} монеток))" if level_data['coins'] else None)
 
 """
+
+
+"""
+		identification_key = f'{message.author.id}&{message.guild.id}'
+
+		single_user = dbVars.get_single_user(message.author.id, message.guild.id)
+
+		economy = single_user.get('economy', {})
+
+		xp_add = dbVars.cspl_get_param(message, 'g', 'xp', ['economy', 'msgAward'])
+		coins_add = dbVars.cspl_get_param(message, 'g', 'coins', ['economy', 'msgAward'])
+		
+		if single_user.get('identification', False):
+			if identification_key == single_user['identification']:
+				# Добавляем XP
+				if 'xp' not in economy:
+					economy['xp'] = xp_add
+				else:
+					economy['xp'] += xp_add
+
+				# Добавляем монеты
+				if 'coins' not in economy:
+					economy['coins'] = coins_add
+				else:
+					economy['coins'] += coins_add
+				
+				print('ik')
+
+				# Обновляем данные в базе данных
+				dbVars.supabase_update_data(
+					'crossplatform_custom_users',
+					{'economy': economy},
+					[('user_id', message.author.id), ('guild_id', message.guild.id)]
+				)
+			else:
+				# Если пользователя нет в базе данных, создаем новую запись
+				economy['xp'] = xp_add
+				economy['coins'] = coins_add
+
+				dbVars.supabase_insert_data(
+					'crossplatform_custom_users',
+					{
+						'user_id': message.author.id,
+						'guild_id': message.guild.id,
+						'identification': identification_key,
+						'economy': economy
+					}
+				)
+		else:
+			dbVars.supabase_insert_data(
+				'crossplatform_custom_users',
+				{
+					'user_id': message.author.id,
+					'guild_id': message.guild.id,
+					'identification': identification_key
+				}
+			)
+		"""

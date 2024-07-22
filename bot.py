@@ -12,7 +12,7 @@ from botFunctions import *
 # инициализация бота
 bot = commands.AutoShardedBot(
 	shard_count = 1,
-	command_prefix = '!',
+	command_prefix = get_bot_prefix,
 	intents = discord.Intents.all(),
 	help_command=None
 )

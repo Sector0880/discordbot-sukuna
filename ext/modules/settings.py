@@ -16,7 +16,6 @@ class Biography(commands.GroupCog, name = "biography"):
 		self.stop = False
 	
 	def set_biography_param(self, interaction: discord.Interaction, param: str, content):
-		"""
 		custom_users = json.load(open("./.db/crossplatform/custom/users.json", "r", encoding="utf-8"))
 		if str(interaction.user.id) not in custom_users:
 			custom_users[str(interaction.user.id)] = {}
@@ -27,34 +26,6 @@ class Biography(commands.GroupCog, name = "biography"):
 			custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"] = {}
 		custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"][param] = str(content)
 		with open("./.db/crossplatform/custom/users.json", "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii = False, indent = 4)
-		"""
-		identification_key = f'{interaction.user.id}&{interaction.guild.id}'
-
-		single_user = get_single_user(interaction.user.id, interaction.guild.id)
-
-		biography = single_user.get('biography', {})
-
-		if identification_key == single_user['identification']:
-			biography[param] = str(content)  # обновляем локально
-
-			supabase_update_data(
-				'crossplatform_custom_users', 
-				{'biography': biography},  # сохраняем весь объект JSON
-				[('user_id', interaction.user.id), ('guild_id', interaction.guild.id)]
-			)
-			print('обновление успешно')
-		else:
-			biography[param] = str(content)  # добавляем новый параметр
-			supabase_insert_data(
-				'crossplatform_custom_users', 
-				{
-					'user_id': interaction.user.id, 
-					'guild_id': interaction.guild.id, 
-					'identification': f'{interaction.user.id}&{interaction.guild.id}', 
-					'biography': biography
-				}
-			)
-			print('добавление успешно')
 		
 	async def del_biography_param(self, interaction, param: str, all = False):
 		try:
@@ -214,3 +185,32 @@ async def setup(bot):
 	settings = Settings(bot)
 	await settings.setup_biography_commands()
 	await bot.add_cog(settings)
+
+
+"""
+		identification_key = f'{interaction.user.id}&{interaction.guild.id}'
+
+		single_user = get_single_user(interaction.user.id, interaction.guild.id)
+
+		biography = single_user.get('biography', {})
+
+		if identification_key == single_user['identification']:
+			biography[param] = str(content)  # обновляем локально
+
+			supabase_update_data(
+				'crossplatform_custom_users', 
+				{'biography': biography},  # сохраняем весь объект JSON
+				[('user_id', interaction.user.id), ('guild_id', interaction.guild.id)]
+			)
+		else:
+			biography[param] = str(content)  # добавляем новый параметр
+			supabase_insert_data(
+				'crossplatform_custom_users', 
+				{
+					'user_id': interaction.user.id, 
+					'guild_id': interaction.guild.id, 
+					'identification': f'{interaction.user.id}&{interaction.guild.id}', 
+					'biography': biography
+				}
+			)
+		"""

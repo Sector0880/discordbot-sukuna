@@ -403,7 +403,7 @@ class Info(commands.Cog):
 			shard_id = interaction.guild.shard_id
 			shard = self.bot.get_shard(shard_id)
 			shard_ping = f'{ping_emoji}  `{round(shard.latency * 1000)}ms`'
-			bot_shard_name = lambda: supabase_get_data('shards', 'name')[0]['name']
+			bot_shard_name = lambda: yaml.safe_load(open('./.db/bot/shards.yml', 'r', encoding='utf-8'))[shard_id]
 
 			emb.add_field(name = 'Шард', value = f"{bot_shard_name()}#{shard.id}", inline = True)
 			emb.add_field(name = 'Пинг', value = shard_ping, inline = True)

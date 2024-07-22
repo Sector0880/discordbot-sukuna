@@ -4,12 +4,13 @@
             "biography": {
                 "phrase": "`я разраб этого шедевра :3`",
                 "age": "18",
-                "city": "Ставрополь",
-                "vk": "https://vk.com/sectormain"
+                "city": "Ставрополье",
+                "vk": "https://vk.com/sectormain",
+                "tg": "gg"
             },
             "economy": {
-                "xp": 3267,
-                "coins": 32994,
+                "xp": 3307,
+                "coins": 33009,
                 "lvl": 8
             }
         },
