@@ -332,7 +332,7 @@ class Info(commands.Cog):
 			last_lvl_name_text = f' {last_lvl_name}' if last_lvl_name else ''
 			level_range = f'`{first_lvl}{cspl_get_param(interaction, "g", "lvlTxt", ["economy"])[0]}{first_lvl_name_text} ({first_lvl_xp}{cspl_get_param(interaction, "g", "xpTxt", ["economy"])[0]})` → `{last_lvl}{cspl_get_param(interaction, "g", "lvlTxt", ["economy"])[0]}{last_lvl_name_text} ({last_lvl_xp}{cspl_get_param(interaction, "g", "xpTxt", ["economy"])[0]})`'
 
-			if cspl_get_param(interaction, 'g', 'status', ['modules', 'economy']) and cspl_get_param(interaction, 'g', 'status', ['modules', 'economy', 'events', 'economy_system']):
+			if cspl_get_param(interaction, 'g', 'status', ['modules', 'economy']) and cspl_get_param(interaction, 'g', 'status', ['modules', 'economy', 'events', 'lvl_system']):
 				emb.add_field(
 					name = "Экономика",
 					value = '\n'.join([

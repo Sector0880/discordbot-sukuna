@@ -28,7 +28,7 @@ class Biography(commands.GroupCog, name = "biography"):
 		custom_users[str(interaction.user.id)][str(interaction.guild.id)]["biography"][param] = str(content)
 		with open(botConfig.path_db_cspl_custom_users, "w", encoding="utf-8") as write_file: json.dump(custom_users, write_file, ensure_ascii = False, indent = 4)
 		
-	async def del_biography_param(self, interaction, param: str, all = False):
+	async def del_biography_param(self, interaction: discord.Interaction, param: str, all = False):
 		try:
 			custom_users = json.load(open(botConfig.path_db_cspl_custom_users, "r", encoding="utf-8"))
 			if str(interaction.user.id) not in custom_users:
@@ -151,18 +151,39 @@ class Settings(commands.Cog):
 		self.biography_commands = Biography(bot)
 	
 	class SwitchChoice(enum.Enum):
-		module_info = 'module-info'
-		module_fun = 'module-fun'
-		module_settings = 'module-settings'
-		module_moderation = 'module-moderation'
-		module_economy = 'module-economy'
-		module_audit = 'module-audit'
-		command_help = 'command-help'
-		command_ping = 'command-ping'
-		command_dashboard = 'command-dashboard'
-		command_about = 'command-dashboard'
-		command_serverinfo = 'command-serverinfo'
-		command_member = 'command-member'
+		module_info = {'name': 'module_info', 'param': 'status', 'path': ['modules', 'info']}
+		module_fun = {'name': 'module_fun', 'param': 'status', 'path': ['modules', 'fun']}
+		module_settings = {'name': 'module_settings', 'param': 'status', 'path': ['modules', 'settings']}
+		module_moderation = {'name': 'module_moderation', 'param': 'status', 'path': ['modules', 'moderation']}
+		module_economy = {'name': 'module_economy', 'param': 'status', 'path': ['modules', 'economy']}
+		module_audit = {'name': 'module_audit', 'param': 'status', 'path': ['modules', 'audit']}
+
+		command_help = {'name': 'command_help', 'param': 'status', 'path': ['modules', 'info', 'commands', 'help']}
+		command_ping = {'name': 'command_ping', 'param': 'status', 'path': ['modules', 'info', 'commands', 'ping']}
+		command_dashboard = {'name': 'command_dashboard', 'param': 'status', 'path': ['modules', 'info', 'commands', 'dashboard']}
+		command_about = {'name': 'command_about', 'param': 'status', 'path': ['modules', 'info', 'commands', 'about']}
+		command_serverinfo = {'name': 'command_serverinfo', 'param': 'status', 'path': ['modules', 'info', 'commands', 'serverinfo']}
+		command_member = {'name': 'command_member', 'param': 'status', 'path': ['modules', 'info', 'commands', 'member']}
+		command_avatar = {'name': 'command_avatar', 'param': 'status', 'path': ['modules', 'info', 'commands', 'avatar']}
+		command_dev = {'name': 'command_avatar', 'param': 'status', 'path': ['modules', 'info', 'commands', 'dev']}
+
+		command_time = {'name': 'command_time', 'param': 'status', 'path': ['modules', 'fun', 'commands', 'time']}
+		command_battle = {'name': 'command_battle', 'param': 'status', 'path': ['modules', 'fun', 'commands', 'battle']}
+		command_opinion = {'name': 'command_opinion', 'param': 'status', 'path': ['modules', 'fun', 'commands', 'opinion']}
+
+		command_switch = {'name': 'command_switch', 'param': 'status', 'path': ['modules', 'settings', 'commands', 'switch']}
+		command_set = {'name': 'command_biography set', 'param': 'status', 'path': ['modules', 'settings', 'commands', 'set']}
+		command_del = {'name': 'command_biography del', 'param': 'status', 'path': ['modules', 'settings', 'commands', 'del']}
+
+		command_mute = {'name': 'command_mute', 'param': 'status', 'path': ['modules', 'moderation', 'commands', 'mute']}
+		command_unmute = {'name': 'command_unmute', 'param': 'status', 'path': ['modules', 'moderation', 'commands', 'unmute']}
+		command_timeout = {'name': 'command_timeout', 'param': 'status', 'path': ['modules', 'moderation', 'commands', 'timeout']}
+		command_untimeout = {'name': 'command_untimeout', 'param': 'status', 'path': ['modules', 'moderation', 'commands', 'untimeout']}
+		command_ban = {'name': 'command_ban', 'param': 'status', 'path': ['modules', 'moderation', 'commands', 'ban']}
+
+		event_lvl_system = {'name': 'event_lvl_system', 'param': 'status', 'path': ['modules', 'economy', 'events', 'lvl_system']}
+
+		event_block_badwords = {'name': 'event_block_badwords', 'param': 'status', 'path': ['modules', 'audit', 'events', 'block_badwords']}
 
 	@app_commands.command(
 		name = "switch",
@@ -172,10 +193,31 @@ class Settings(commands.Cog):
 	@app_commands.default_permissions(administrator = True)
 	@botDecorators.check_cmd_work()
 	async def switch(self, interaction: discord.Interaction, on: SwitchChoice = None, off: SwitchChoice = None):
-		interaction_txt = ''
-		if on: interaction_txt += on.value
-		if off: interaction_txt += off.value
-		await interaction.response.send_message(interaction_txt, ephemeral=True)
+		await interaction.response.defer(ephemeral=True, thinking=True)
+		try:
+			interaction_txt = ''
+			if on:
+				if cspl_get_param(interaction, 'g', on.value['param'], on.value['path']):
+					return await interaction.edit_original_response(content=f'{on.value['name']} уже включен')
+				
+				custom_guilds = json.load(open(botConfig.path_db_cspl_custom_guilds, "r", encoding="utf-8"))
+				if str(interaction.guild.id) not in custom_guilds:
+					custom_guilds[str(interaction.guild.id)] = {}
+				if len(on.value['path']) == 2:
+					if on.value['path'][0] not in custom_guilds[str(interaction.guild.id)]:
+						custom_guilds[str(interaction.guild.id)][on.value['path'][0]] = {}
+					if on.value['path'][1] not in custom_guilds[str(interaction.guild.id)][on.value['path'][0]]:
+						custom_guilds[str(interaction.guild.id)][on.value['path'][0]][on.value['path'][1]] = {}
+					custom_guilds[str(interaction.guild.id)][on.value['path'][0]][on.value['path'][1]][on.value['param']] = True
+				with open(botConfig.path_db_cspl_custom_guilds, "w", encoding="utf-8") as write_file: json.dump(custom_guilds, write_file, ensure_ascii=False, indent=4)
+				interaction_txt += f'{botConfig.emoji_mark_success} Включен {on.value['name']}'
+
+			if off: 
+				interaction_txt += off.value
+
+			await interaction.edit_original_response(content=interaction_txt)
+		except Exception as e:
+			print(repr(e))
 	
 	
 	async def setup_biography_commands(self):

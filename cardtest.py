@@ -13,13 +13,6 @@ from bs4 import BeautifulSoup
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
-from botConfig import *
-from datetime import *
-from dbVars import *
-from botFunctions import *
-import botConfig
-import botDecorators
-
 template_path = "./.db/content/card/template.png"
 circle_path =   "./.db/content/card/circle.png"
 font_path =     "./.db/content/card/arialmt.ttf"

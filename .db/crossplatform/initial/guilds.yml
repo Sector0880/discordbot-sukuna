@@ -46,7 +46,7 @@ modules:
         txt: '</dev:1259118851073769512>'
         desc: 'А сейчас о моем разработчике))'
   fun:
-    status: true
+    status: false
     name: "Веселье"
     commands:
       time: 
@@ -111,7 +111,7 @@ modules:
     status: true
     name: "Экономика"
     events:
-      economy_system:
+      lvl_system:
         status: true
         txt: 'Система уровней'
         desc: "Система уровней"
@@ -175,8 +175,8 @@ economy_options:
     lvlFirst: {lvl: 1, xp: 0, lvlName: "4 ранг"}
     lvls:
       [
-        {lvl: 2, xp: 120, lvlName: "3 ранг", awards: {coins: 500}},
-        {lvl: 3, xp: 240, lvlName: "2,5 ранг", awards: {coins: 1500}},
+        {lvl: 2, xp: 120, lvlName: "3 ранг", awards: {coins: 500, remove_role: 1255072896167055393, add_roles: [1255080775431491675, 1255080797279490160, 1255080817198239787]}},
+        {lvl: 3, xp: 240, lvlName: "2,5 ранг", awards: {coins: 500, add_roles: [1255169475523641476, 1250696124398833685, 1270695668171804742]}},
         {lvl: 4, xp: 480, lvlName: "2 ранг", awards: {coins: 2500}},
         {lvl: 5, xp: 720, lvlName: "1,5 ранг", awards: {coins: 2500}},
         {lvl: 6, xp: 1000, lvlName: "1 ранг", awards: {coins: 3000}},
