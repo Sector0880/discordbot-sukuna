@@ -250,72 +250,72 @@ def get_single_guild(guild_id):
 """
 
 """
-					if (single_guild 
-					and path[0] in single_guild
-					and path[1] in single_guild[path[0]]
-					and path[2] in single_guild[path[0]][path[1]]
-					and path[3] in single_guild[path[0]][path[1]][path[2]]
-					and param in single_guild[path[0]][path[1]][path[2]][path[3]]
-					):
-						return single_guild[path[0]][path[1]][path[2]][path[3]][param]
-					else:
-						return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][path[1]][path[2]][path[3]][param]
-					"""
+if (single_guild 
+and path[0] in single_guild
+and path[1] in single_guild[path[0]]
+and path[2] in single_guild[path[0]][path[1]]
+and path[3] in single_guild[path[0]][path[1]][path[2]]
+and param in single_guild[path[0]][path[1]][path[2]][path[3]]
+):
+	return single_guild[path[0]][path[1]][path[2]][path[3]][param]
+else:
+	return supabase_get_data('crossplatform_initial_guilds', '*')[0][path[0]][path[1]][path[2]][path[3]][param]
+"""
 
 """
-					if (single_user
-					and path[0] in single_user
-					and path[1] in single_user[path[0]]
-					and param in single_user[path[0]][path[1]]
-					):
-						return single_user[path[0]][path[1]][param]
-					else:
-						return supabase_get_data('crossplatform_initial_users', '*')[0][path[0]][path[1]][param]
-					"""
+if (single_user
+and path[0] in single_user
+and path[1] in single_user[path[0]]
+and param in single_user[path[0]][path[1]]
+):
+	return single_user[path[0]][path[1]][param]
+else:
+	return supabase_get_data('crossplatform_initial_users', '*')[0][path[0]][path[1]][param]
+"""
 
 
 
 """
-	if path:
-		path_len = len(path)
+if path:
+	path_len = len(path)
+else:
+	path_len = 0
+
+if guild:
+	guild_id = str(guild)
+else: 
+	guild_id = str(interaction.guild.id)
+
+if user:
+	user_id = user.id
+else:
+	if isinstance(interaction, discord.Interaction):
+		user_id = interaction.user.id
 	else:
-		path_len = 0
-	
-	if guild:
-		guild_id = str(guild)
-	else: 
-		guild_id = str(interaction.guild.id)
-	
-	if user:
-		user_id = user.id
-	else:
-		if isinstance(interaction, discord.Interaction):
-			user_id = interaction.user.id
+		user_id = interaction.author.id
+
+match branch:
+	case 'g':
+		initial_data = cspl_initial_guilds()
+		custom_data = single_guild.get('guild_id', {})
+		merged_data = merge_data(initial_data, custom_data)
+
+		if path_len == 2:
+			return merged_data[path[0]][path[1]].get(param)
+		elif path_len == 1:
+			return merged_data[path[0]].get(param)
 		else:
-			user_id = interaction.author.id
+			return merged_data.get(param)
 
-	match branch:
-		case 'g':
-			initial_data = cspl_initial_guilds()
-			custom_data = single_guild.get('guild_id', {})
-			merged_data = merge_data(initial_data, custom_data)
+	case 'u':
+		initial_data = cspl_initial_users()
+		custom_data = single_user.get('user_id', {})
+		merged_data = merge_data(initial_data, custom_data)
 
-			if path_len == 2:
-				return merged_data[path[0]][path[1]].get(param)
-			elif path_len == 1:
-				return merged_data[path[0]].get(param)
-			else:
-				return merged_data.get(param)
-
-		case 'u':
-			initial_data = cspl_initial_users()
-			custom_data = single_user.get('user_id', {})
-			merged_data = merge_data(initial_data, custom_data)
-
-			if path_len == 2:
-				return merged_data[path[0]][path[1]].get(param)
-			elif path_len == 1:
-				return merged_data[path[0]].get(param)
-			else:
-				return merged_data.get(param)
-	"""
+		if path_len == 2:
+			return merged_data[path[0]][path[1]].get(param)
+		elif path_len == 1:
+			return merged_data[path[0]].get(param)
+		else:
+			return merged_data.get(param)
+"""

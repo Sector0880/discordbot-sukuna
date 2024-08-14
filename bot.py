@@ -14,12 +14,12 @@ bot = commands.AutoShardedBot(
 	shard_count = 1,
 	command_prefix = get_bot_prefix,
 	intents = discord.Intents.all(),
-	help_command=None
+	help_command = None
 )
 
 @bot.event
 async def on_ready():
-	await bot.change_presence(status = discord.Status.online, activity=discord.Game(bot_presence()))
+	await bot.change_presence(status = discord.Status.online, activity = discord.Game(bot_presence()))
 	synced = await bot.tree.sync()
 	print(f'\x1b[43m{datetime.now()}\x1b[0m Добавилась(-ись) \x1b[35m{len(synced)}\x1b[0m команд(-ы)!')
 

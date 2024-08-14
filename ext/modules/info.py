@@ -640,26 +640,28 @@ class Info(commands.Cog):
 			avatar = Image.open(BytesIO(await user.avatar.read()))
 			avatar = avatar.resize((570, 570))
 
+			def prepare_mask(size, antialias=2):
+				mask = Image.new('L', (size[0] * antialias, size[1] * antialias), 0)
+				ImageDraw.Draw(mask).ellipse((0, 0) + mask.size, fill=255)
+				return mask.resize(size, Image.LANCZOS)
+
+			def crop(im, s):
+				w, h = im.size
+				k = w / s[0] - h / s[1]
+				if k > 0: im = im.crop(((w - h) / 2, 0, (w + h) / 2, h))
+				elif k < 0: im = im.crop((0, (h - w) / 2, w, (h + w) / 2))
+				return im.resize(s, Image.LANCZOS)
+			
 			if interaction.guild.icon:
-				def prepare_mask(size, antialias=2):
-					mask = Image.new('L', (size[0] * antialias, size[1] * antialias), 0)
-					ImageDraw.Draw(mask).ellipse((0, 0) + mask.size, fill=255)
-					return mask.resize(size, Image.LANCZOS)
-
-				def crop(im, s):
-					w, h = im.size
-					k = w / s[0] - h / s[1]
-					if k > 0: im = im.crop(((w - h) / 2, 0, (w + h) / 2, h))
-					elif k < 0: im = im.crop((0, (h - w) / 2, w, (h + w) / 2))
-					return im.resize(s, Image.LANCZOS)
-
 				server_logo = Image.open(BytesIO(requests.get(interaction.guild.icon.url).content))
-				server_logo = server_logo.resize((100, 100))
-				server_logo = crop(server_logo, (100, 100))
-				server_logo.putalpha(prepare_mask((100, 100), 4))
-				img.paste(server_logo, (50, 50), server_logo)
+			else:
+				server_logo = Image.open(f"{path_start}.db/content/card/discord.jpg")
+			server_logo = server_logo.resize((100, 100))
+			server_logo = crop(server_logo, (100, 100))
+			server_logo.putalpha(prepare_mask((100, 100), 4))
+			img.paste(server_logo, (50, 50), server_logo)
 
-				draw_img.text((180, 65), f'{interaction.guild.name[:32]}...' if len(interaction.guild.name) > 35 else interaction.guild.name, 'black', ImageFont.truetype(f"{path_start}.db/content/card/DejaVuSans/DejaVuSans-Bold.ttf", 50))
+			draw_img.text((180, 65), f'{interaction.guild.name[:32]}...' if len(interaction.guild.name) > 35 else interaction.guild.name, 'black', ImageFont.truetype(f"{path_start}.db/content/card/DejaVuSans/DejaVuSans-Bold.ttf", 50))
 
 			avatar_circle_img = Image.open(circle_path)
 			draw_avatar_circle = ImageDraw.Draw(avatar_circle_img)
@@ -771,39 +773,39 @@ else:
 
 	
 def find_current_level_xp(xp):
-				economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
-				current_level = cspl_get_param(interaction, 'u', 'lvl', 'economy')
-				next_level = cspl_get_param(interaction, 'u', 'lvl', 'economy') + 1
+	economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+	current_level = cspl_get_param(interaction, 'u', 'lvl', 'economy')
+	next_level = cspl_get_param(interaction, 'u', 'lvl', 'economy') + 1
 
-				for i in range(1, len(economy_levels)):
-					if xp >= economy_levels[i]["xp"]:
-						current_level = economy_levels[i]["lvl"]
-						next_level = economy_levels[i + 1]["lvl"]
+	for i in range(1, len(economy_levels)):
+		if xp >= economy_levels[i]["xp"]:
+			current_level = economy_levels[i]["lvl"]
+			next_level = economy_levels[i + 1]["lvl"]
 
-				current_xp = economy_levels[current_level - 1]["xp"]
-				next_xp = economy_levels[next_level - 1]["xp"]
+	current_xp = economy_levels[current_level - 1]["xp"]
+	next_xp = economy_levels[next_level - 1]["xp"]
 
-				percent_to_next_level = int(((xp - current_xp) / (next_xp - current_xp)) * 100)
+	percent_to_next_level = int(((xp - current_xp) / (next_xp - current_xp)) * 100)
 
-				return current_level, next_level, percent_to_next_level
-			current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy'))
+	return current_level, next_level, percent_to_next_level
+current_level, next_level, percent_to_next_level = find_current_level_xp(cspl_get_param(interaction, 'u', 'xp', 'economy'))
 
-			progress_bar_length = 10
-			filled_blocks = int(percent_to_next_level / 100 * progress_bar_length)
-			empty_blocks = progress_bar_length - filled_blocks
+progress_bar_length = 10
+filled_blocks = int(percent_to_next_level / 100 * progress_bar_length)
+empty_blocks = progress_bar_length - filled_blocks
 
-			progress_bar = f"[{'▰' * filled_blocks}{'═' * empty_blocks}]"
+progress_bar = f"[{'▰' * filled_blocks}{'═' * empty_blocks}]"
 
-			economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
-			current_xp_needed = economy_levels[current_level - 1]["xp"]
-			next_xp_needed = economy_levels[next_level - 1]["xp"]
+economy_levels = cspl_get_param(interaction, 'g', 'lvls', 'economy')
+current_xp_needed = economy_levels[current_level - 1]["xp"]
+next_xp_needed = economy_levels[next_level - 1]["xp"]
 
-			emb.add_field(
-				name = "Экономика",
-				value = '\n'.join([
-					f"**Уровень:** \n`{current_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]} ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]} ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]})`",
-					f"**{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'xp', 'economy')}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]}`",
-					f"**{cspl_get_param(interaction, 'g', 'coinsTxt', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy')}{cspl_get_param(interaction, 'g', 'coinsTxt', 'economy')[0]}`"
-				])
-			)
+emb.add_field(
+	name = "Экономика",
+	value = '\n'.join([
+		f"**Уровень:** \n`{current_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]} ({current_xp_needed}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]})` `{progress_bar}{percent_to_next_level:02d}%` `{next_level}{cspl_get_param(interaction, 'g', 'lvlTxt', ['economy'])[0]} ({next_xp_needed}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]})`",
+		f"**{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'xp', 'economy')}{cspl_get_param(interaction, 'g', 'xpTxt', 'economy')[0]}`",
+		f"**{cspl_get_param(interaction, 'g', 'coinsTxt', 'economy')[1]}:** `{cspl_get_param(interaction, 'u', 'coins', 'economy')}{cspl_get_param(interaction, 'g', 'coinsTxt', 'economy')[0]}`"
+	])
+)
 """

@@ -231,29 +231,29 @@ async def setup(bot):
 
 
 """
-		identification_key = f'{interaction.user.id}&{interaction.guild.id}'
+identification_key = f'{interaction.user.id}&{interaction.guild.id}'
 
-		single_user = get_single_user(interaction.user.id, interaction.guild.id)
+single_user = get_single_user(interaction.user.id, interaction.guild.id)
 
-		biography = single_user.get('biography', {})
+biography = single_user.get('biography', {})
 
-		if identification_key == single_user['identification']:
-			biography[param] = str(content)  # обновляем локально
+if identification_key == single_user['identification']:
+	biography[param] = str(content)  # обновляем локально
 
-			supabase_update_data(
-				'crossplatform_custom_users', 
-				{'biography': biography},  # сохраняем весь объект JSON
-				[('user_id', interaction.user.id), ('guild_id', interaction.guild.id)]
-			)
-		else:
-			biography[param] = str(content)  # добавляем новый параметр
-			supabase_insert_data(
-				'crossplatform_custom_users', 
-				{
-					'user_id': interaction.user.id, 
-					'guild_id': interaction.guild.id, 
-					'identification': f'{interaction.user.id}&{interaction.guild.id}', 
-					'biography': biography
-				}
-			)
-		"""
+	supabase_update_data(
+		'crossplatform_custom_users', 
+		{'biography': biography},  # сохраняем весь объект JSON
+		[('user_id', interaction.user.id), ('guild_id', interaction.guild.id)]
+	)
+else:
+	biography[param] = str(content)  # добавляем новый параметр
+	supabase_insert_data(
+		'crossplatform_custom_users', 
+		{
+			'user_id': interaction.user.id, 
+			'guild_id': interaction.guild.id, 
+			'identification': f'{interaction.user.id}&{interaction.guild.id}', 
+			'biography': biography
+		}
+	)
+"""

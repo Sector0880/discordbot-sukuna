@@ -40,9 +40,9 @@ class Owner(commands.Cog):
 		except Exception as e:
 			print(e)
 	
-	@commands.command(aliases = ['o_gg'])
+	@commands.command(aliases = ['o_ggd'])
 	@commands.is_owner()
-	async def owner_get_guild(self, ctx: discord.Message, guild_id: int = None):
+	async def owner_get_guild_dashboard(self, ctx: discord.Message, guild_id: int = None):
 		try:
 			msg = await ctx.send('Проверка сервера...')
 			if not guild_id: guild_id = ctx.guild.id

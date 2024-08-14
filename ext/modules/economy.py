@@ -352,58 +352,58 @@ elif dbVars.cspl_get_param(message, 'u', 'xp', 'economy') == 100:
 
 
 """
-		identification_key = f'{message.author.id}&{message.guild.id}'
+identification_key = f'{message.author.id}&{message.guild.id}'
 
-		single_user = dbVars.get_single_user(message.author.id, message.guild.id)
+single_user = dbVars.get_single_user(message.author.id, message.guild.id)
 
-		economy = single_user.get('economy', {})
+economy = single_user.get('economy', {})
 
-		xp_add = dbVars.cspl_get_param(message, 'g', 'xp', ['economy', 'msgAward'])
-		coins_add = dbVars.cspl_get_param(message, 'g', 'coins', ['economy', 'msgAward'])
-		
-		if single_user.get('identification', False):
-			if identification_key == single_user['identification']:
-				# Добавляем XP
-				if 'xp' not in economy:
-					economy['xp'] = xp_add
-				else:
-					economy['xp'] += xp_add
+xp_add = dbVars.cspl_get_param(message, 'g', 'xp', ['economy', 'msgAward'])
+coins_add = dbVars.cspl_get_param(message, 'g', 'coins', ['economy', 'msgAward'])
 
-				# Добавляем монеты
-				if 'coins' not in economy:
-					economy['coins'] = coins_add
-				else:
-					economy['coins'] += coins_add
-				
-				print('ik')
-
-				# Обновляем данные в базе данных
-				dbVars.supabase_update_data(
-					'crossplatform_custom_users',
-					{'economy': economy},
-					[('user_id', message.author.id), ('guild_id', message.guild.id)]
-				)
-			else:
-				# Если пользователя нет в базе данных, создаем новую запись
-				economy['xp'] = xp_add
-				economy['coins'] = coins_add
-
-				dbVars.supabase_insert_data(
-					'crossplatform_custom_users',
-					{
-						'user_id': message.author.id,
-						'guild_id': message.guild.id,
-						'identification': identification_key,
-						'economy': economy
-					}
-				)
+if single_user.get('identification', False):
+	if identification_key == single_user['identification']:
+		# Добавляем XP
+		if 'xp' not in economy:
+			economy['xp'] = xp_add
 		else:
-			dbVars.supabase_insert_data(
-				'crossplatform_custom_users',
-				{
-					'user_id': message.author.id,
-					'guild_id': message.guild.id,
-					'identification': identification_key
-				}
-			)
-		"""
+			economy['xp'] += xp_add
+
+		# Добавляем монеты
+		if 'coins' not in economy:
+			economy['coins'] = coins_add
+		else:
+			economy['coins'] += coins_add
+		
+		print('ik')
+
+		# Обновляем данные в базе данных
+		dbVars.supabase_update_data(
+			'crossplatform_custom_users',
+			{'economy': economy},
+			[('user_id', message.author.id), ('guild_id', message.guild.id)]
+		)
+	else:
+		# Если пользователя нет в базе данных, создаем новую запись
+		economy['xp'] = xp_add
+		economy['coins'] = coins_add
+
+		dbVars.supabase_insert_data(
+			'crossplatform_custom_users',
+			{
+				'user_id': message.author.id,
+				'guild_id': message.guild.id,
+				'identification': identification_key,
+				'economy': economy
+			}
+		)
+else:
+	dbVars.supabase_insert_data(
+		'crossplatform_custom_users',
+		{
+			'user_id': message.author.id,
+			'guild_id': message.guild.id,
+			'identification': identification_key
+		}
+	)
+"""
