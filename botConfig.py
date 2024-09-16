@@ -1,4 +1,4 @@
-token = "MTI0OTMyMDU0MzU3NzA1MTI1Nw.GouUC6.visTiuBFJJ1tHc33iFmyNkxU5fOaC32F2V8JAE"
+token = "глотнули обратно свои язычки :3"
 # -----------------------------------
 info = {
     "creator": "Пашков Максим (Sectormain)",
@@ -53,7 +53,7 @@ path_db_cspl_custom_users = f'{path_start}.db/crossplatform/custom/users.json'
 path_db_staff = f'{path_start}.db/staff.yml'
 
 
-
+# дескрипшон
 # сайт с цветами для красивого вывода в терминал
 ansi_color_codes = "https://talyian.github.io/ansicolors/"
 #guide Option
